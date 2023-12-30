@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SDWebImage
 
 protocol MBLocationOnboardingViewDelegate: AnyObject {
     func mbLocationOnboardingViewDidTapCountry(onboardingView: MBLocationOnboardingView)
@@ -29,7 +30,7 @@ class MBLocationOnboardingView: UIView {
     private let locationImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.contentMode = .scaleAspectFit
+        imageView.contentMode = .scaleAspectFill
         imageView.backgroundColor = .lightGray
         return imageView
     }()
@@ -60,6 +61,7 @@ class MBLocationOnboardingView: UIView {
             titleColor: .white,
             image: nil
         )
+        button.alpha = 0.6
         return button
     }()
 
@@ -89,6 +91,25 @@ class MBLocationOnboardingView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
+    public func configureImage(with url: URL) {
+        locationImageView.sd_setImage(with: url)
+    }
+
+    public func configureCountryButtonLabel(with text: String) {
+        selectCountryButton.setTitle(text, for: .normal)
+    }
+
+    public func configureLanguageButtonLabel(with text: String) {
+        selectBookLanguageButton.setTitle(text, for: .normal)
+    }
+
+    public func configureReadyButtonState() {
+        DispatchQueue.main.async { [weak self] in
+            UIView.animate(withDuration: 0.2) {
+                self?.readyToGoButton.alpha = 1
+            }
+        }
+    }
 
     private func setupConstraints() {
         let leftMargins: CGFloat = 25
@@ -116,15 +137,6 @@ class MBLocationOnboardingView: UIView {
             readyToGoButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -70),
             readyToGoButton.centerXAnchor.constraint(equalTo: centerXAnchor)
         ])
-    }
-
-    public func modifyButtonTitle(countryTitle: String? = nil, languageTitle: String? = nil) {
-        if let countryTitle = countryTitle {
-            selectCountryButton.setTitle(countryTitle, for: .normal)
-        }
-        if let languageTitle = languageTitle {
-            selectBookLanguageButton.setTitle(languageTitle, for: .normal)
-        }
     }
 
     private func addTargets() {

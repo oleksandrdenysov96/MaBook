@@ -45,20 +45,9 @@ class MBOnboardingListView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
 
-    public func configureView(by vc: MBOnboardingListViewController) {
-        tableView.delegate = vc
-        tableView.dataSource = vc
-        searchBar.delegate = vc
-        tableView.reloadData()
-    }
-
-    public func reloadTableData() {
-        tableView.reloadData()
-    }
-
     private func setupConstraints() {
         NSLayoutConstraint.activate([
-            searchBar.topAnchor.constraint(equalTo: topAnchor, constant: 40),
+            searchBar.topAnchor.constraint(equalTo: topAnchor, constant: 5),
             searchBar.leftAnchor.constraint(equalTo: leftAnchor, constant: 10),
             searchBar.rightAnchor.constraint(equalTo: rightAnchor, constant: -10),
             searchBar.heightAnchor.constraint(equalToConstant: 90),

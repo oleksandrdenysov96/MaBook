@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum MBEndpoint: String {
+enum MBEndpoint: String, CaseIterable {
     case auth = "auth"
     case user = "user"
     case books = "books"

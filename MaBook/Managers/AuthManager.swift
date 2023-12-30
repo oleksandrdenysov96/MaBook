@@ -102,13 +102,13 @@ final class AuthManager {
         let request = MBRequest(endpoint: .user)
 
         MBApiCaller.shared.executeRequest(
-            request, accessToken: self.accessToken, expected: User.self
+            request, accessToken: self.accessToken, expected: MBGetUserResponse.self
         ) { result, status in
 
             switch result {
-            case .success(let user):
-                OnboardingManager.shared.isOnboarded = user.isUnboarding
-                LocalStateManager.shared.loggedUser = user
+            case .success(let response):
+                OnboardingManager.shared.isOnboarded = response.data.user.isOnboarding
+                LocalStateManager.shared.loggedUser = response.data.user
                 completion(true)
             case .failure(let failure):
                 MBLogger.shared.debugInfo(

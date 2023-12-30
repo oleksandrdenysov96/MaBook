@@ -4,7 +4,7 @@
 //
 //  Created by Oleksandr Denysov on 22.12.2023.
 //
-
+import UserNotifications
 import Foundation
 
 public class LocalStateManager {
@@ -14,11 +14,17 @@ public class LocalStateManager {
         case isLoggedIn
         case isOnboarded
         case userData
+        case notificationsPermission
     }
 
     static let shared = LocalStateManager()
 
     private init() {}
+
+    public var allBooks: BooksData?
+    public var recentlyAdded: BooksData?
+    public var mostViewed: BooksData?
+    public var categories: [Categories] = []
 
     public var userName: String? {
         guard let user = loggedUser else {
@@ -41,6 +47,26 @@ public class LocalStateManager {
                     encodedData, forKey: Keys.userData.rawValue
                 )
             }
+        }
+    }
+}
+
+
+extension LocalStateManager {
+
+    func requestNotificationPermissionIfNeeded(_ completion: @escaping (Bool) -> Void) {
+        let permissionRequested = UserDefaults.standard.bool(forKey: Keys.notificationsPermission.rawValue)
+
+        guard !permissionRequested else {
+            return
+        }
+
+        UNUserNotificationCenter.current()
+            .requestAuthorization() { granted, _ in
+            completion(granted)
+            UserDefaults.standard.set(
+                true, forKey: Keys.notificationsPermission.rawValue
+            )
         }
     }
 }

@@ -8,20 +8,17 @@
 import UIKit
 
 protocol MBOnboardingListViewControllerDelegate: AnyObject {
-    func didTapClose()
-    func didSelectCountry(_ country: String)
-    func didSelectLanguage(_ country: String)
+    func shouldBeDismissedWithSelection(item: String?)
 }
 
 class MBOnboardingListViewController: UIViewController {
 
     public weak var delegate: MBOnboardingListViewControllerDelegate?
-
     private let listView = MBOnboardingListView()
 
     private let initialData: [String: [String]]
-
     private var data: [String: [String]]
+    private var selectedItem: String?
 
     init(data: [String: [String]]) {
         self.data = data
@@ -37,14 +34,12 @@ class MBOnboardingListViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = .white
         view.addSubview(listView)
-        listView.configureView(by: self)
+        listView.tableView.delegate = self
+        listView.tableView.dataSource = self
+        listView.searchBar.delegate = self
         navigationItem.rightBarButtonItem = UIBarButtonItem(
             barButtonSystemItem: .close, target: self, action: #selector(didTapClose)
         )
-    }
-
-    override func viewWillDisappear(_ animated: Bool) {
-        delegate?.didTapClose()
     }
 
     override func viewDidLayoutSubviews() {
@@ -67,12 +62,9 @@ class MBOnboardingListViewController: UIViewController {
         let valuesForSection = data[key.key] ?? []
         return valuesForSection
     }
-
-    // MARK: REWRITE WITH LIST VIEW DELEGATE (RECEIVE SELECTED OPTION AND PASS TO PARENT VC ON DISMISS)??
-    // func didTapClose(selectedOption: String)
     
     @objc private func didTapClose() {
-        delegate?.didTapClose()
+        delegate?.shouldBeDismissedWithSelection(item: selectedItem)
     }
 }
 
@@ -95,6 +87,17 @@ extension MBOnboardingListViewController: UITableViewDelegate, UITableViewDataSo
         return cell
     }
 
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+        guard let cell = tableView.cellForRow(at: indexPath),
+              let cellText = cell.textLabel?.text else {
+            MBLogger.shared.debugInfo("no string from cell")
+            return
+        }
+        selectedItem = cellText
+        delegate?.shouldBeDismissedWithSelection(item: selectedItem)
+    }
+
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         if data.sorted(by: { $0.key < $1.key })[section].value.isEmpty {
             return nil
@@ -107,7 +110,6 @@ extension MBOnboardingListViewController: UITableViewDelegate, UITableViewDataSo
 
 extension MBOnboardingListViewController: UISearchBarDelegate {
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-//        let sortedData = data.sorted(by: { $0.key < $1.key })
         var newDictionary: [String: [String]] = [:]
 
         for (key, value) in initialData {
@@ -116,7 +118,7 @@ extension MBOnboardingListViewController: UISearchBarDelegate {
             })
         }
         data = searchText.isEmpty ? initialData : newDictionary
-        listView.reloadTableData()
+        listView.tableView.reloadData()
     }
 
     func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
@@ -128,7 +130,7 @@ extension MBOnboardingListViewController: UISearchBarDelegate {
         searchBar.text = ""
         searchBar.resignFirstResponder()
         data = initialData
-        listView.reloadTableData()
+        listView.tableView.reloadData()
     }
 
 }

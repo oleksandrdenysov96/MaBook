@@ -14,6 +14,8 @@ final class MBApiCaller {
         case failedToGetData
     }
 
+    private let cacheManager = MBApiCacheManager()
+
     static let shared = MBApiCaller()
 
     private init() {}
@@ -53,8 +55,25 @@ final class MBApiCaller {
         body: Data? = nil,
         accessToken: String? = AuthManager.shared.accessToken,
         expected responseType: T.Type,
+        shouldCache: Bool = false,
         completion: @escaping (Result<T, Error>, Int?) -> Void
     ) {
+        if let cachedData = cacheManager.cacheResponseFor(
+            endpoint: request.endpoint,
+            url: request.url
+        ), shouldCache {
+            do {
+                MBLogger.shared.debugInfo("api caller: reading from cache")
+                MBLogger.shared.debugInfo("request - \(String(describing: request.url))")
+                let result = try JSONDecoder().decode(responseType.self, from: cachedData)
+                completion(.success(result), nil)
+            }
+            catch {
+                completion(.failure(error), nil)
+            }
+            return
+        }
+
         guard let urlRequest = self.request(
             from: request, body: body, accessToken: accessToken
         ) else {
@@ -63,7 +82,7 @@ final class MBApiCaller {
             return
         }
 
-        let task = URLSession.shared.dataTask(with: urlRequest) { data, response, error in
+        let task = URLSession.shared.dataTask(with: urlRequest) { [weak self] data, response, error in
             guard let response = response as? HTTPURLResponse else {
                 return
             }
@@ -80,7 +99,17 @@ final class MBApiCaller {
                     "Decoding response...\nSource - *** \(String(describing: urlRequest.url!)) ***"
                 )
                 MBLogger.shared.debugInfo(String(data: data, encoding: .utf8) ?? "unable to read")
+
                 let result = try JSONDecoder().decode(responseType.self, from: data)
+
+                if shouldCache {
+                    MBLogger.shared.debugInfo("api caller: setting cache")
+                    self?.cacheManager.setCacheFor(
+                        endpoint: request.endpoint,
+                        url: request.url,
+                        data: data
+                    )
+                }
                 completion(.success(result), statusCode)
             }
             catch {

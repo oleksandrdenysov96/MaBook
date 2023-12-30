@@ -9,9 +9,36 @@ import UIKit
 
 class MBLocationOnboardingViewController: UIViewController {
     
-    private var country: String?
-    private var language: String?
-    private var locationsData: MBOnboardingResponse?
+    private var country: String? {
+        didSet {
+            if let country = country {
+                locationOnboardingView
+                    .configureCountryButtonLabel(with: country)
+            }
+        }
+    }
+    private var language: String? {
+        didSet {
+            if let language = language {
+                locationOnboardingView
+                    .configureLanguageButtonLabel(with: language)
+            }
+        }
+    }
+
+    private var locationsData: MBOnboardingResponse? {
+        didSet {
+            guard let data = locationsData,
+                  let url = URL(string: data.data.onboardingImage) else {
+                MBLogger.shared.debugInfo(
+                    "end: locations vc failed with locations data retrieving"
+                )
+                return
+            }
+            locationOnboardingView.configureImage(with: url)
+        }
+    }
+
     private let locationOnboardingView = MBLocationOnboardingView()
     private let loader = MBLoader()
 
@@ -19,9 +46,9 @@ class MBLocationOnboardingViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
-        locationOnboardingView.isHidden = true
         view.addSubview(loader)
         view.addSubview(locationOnboardingView)
+
         locationOnboardingView.delegate = self
         fetchLocations()
     }
@@ -55,10 +82,12 @@ class MBLocationOnboardingViewController: UIViewController {
     }
 
     private func showUI() {
-        loader.stopLoader()
-        UIView.animate(withDuration: 0.3) { [weak self] in
-            self?.locationOnboardingView.isHidden = false
-            self?.locationOnboardingView.alpha = 1
+        DispatchQueue.main.async { [weak self] in
+            self?.loader.stopLoader()
+            UIView.animate(withDuration: 0.3) { [weak self] in
+                self?.locationOnboardingView.isHidden = false
+                self?.locationOnboardingView.alpha = 1
+            }
         }
     }
 
@@ -77,37 +106,58 @@ class MBLocationOnboardingViewController: UIViewController {
 
 extension MBLocationOnboardingViewController: MBLocationOnboardingViewDelegate {
     func mbLocationOnboardingViewDidTapCountry(onboardingView: MBLocationOnboardingView) {
-        guard let data = locationsData else {
-            return
-        }
-        let vc = MBOnboardingListViewController(data: data.data.countries)
-        vc.delegate = self
-        present(vc, animated: true)
-
+        guard let data = locationsData else { return }
+        presentListController(with: data.data.countries, title: "Select your country")
     }
     
     func mbLocationOnboardingViewDidTapLanguage(onboardingView: MBLocationOnboardingView) {
+        guard let data = locationsData else { return }
+        presentListController(with: data.data.languages, title: "Select book language")
     }
-    
-    func mbLocationOnboardingViewDidTapReady(onboardingView: MBLocationOnboardingView) {
 
+    func presentListController(with listData: [String: [String]], title: String) {
+        let vc = MBOnboardingListViewController(data: listData)
+        let navVC = UINavigationController(rootViewController: vc)
+
+        vc.delegate = self
+        vc.title = title
+        present(navVC, animated: true)
+    }
+
+    func mbLocationOnboardingViewDidTapReady(onboardingView: MBLocationOnboardingView) {
+        if let country = country, let language = language,
+           country != "Country" && language != "Book Language" {
+            OnboardingManager.shared.completeOnboardingWith(
+                country: country, language: language) { success in
+                    if success {
+                        AuthManager.shared.getUser { _ in }
+                    }
+                }
+            let vc = MBPermissionsOnboardingViewController()
+            navigationController?.pushViewController(vc, animated: true)
+        }
     }
 }
 
 extension MBLocationOnboardingViewController: MBOnboardingListViewControllerDelegate {
-    func didSelectCountry(_ country: String) {
-        self.country = country
-        locationOnboardingView.modifyButtonTitle(countryTitle: country)
-    }
-    
-    func didSelectLanguage(_ language: String) {
-        self.language = language
-        locationOnboardingView.modifyButtonTitle(languageTitle: language)
-    }
-    
-    func didTapClose() {
+    func shouldBeDismissedWithSelection(item: String?) {
+        if let item = item, let locationsData = locationsData {
+            locationsData.data.countries.values.forEach { array in
+                if array.contains(item) {
+                    self.country = item
+                }
+            }
+            locationsData.data.languages.values.forEach { array in
+                if array.contains(item) {
+                    self.language = item
+                }
+            }
+        }
         dismiss(animated: true)
-    }
-    
 
+        if let country = country, let language = language,
+           country != "Country" && language != "Book Language" {
+            locationOnboardingView.configureReadyButtonState()
+        }
+    }
 }

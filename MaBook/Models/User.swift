@@ -8,11 +8,19 @@
 import Foundation
 
 public struct User: Codable {
-    let id, name, lastName, email: String
-    let password, points, avatar, location: String
-    let language, address: String
-    let isUnboarding: Bool
-    let storage, favorites, basket, recentSearches: [String]
-    let userBooks: [String]
+    let id: Int
+    let name, lastName, email: String
+    let points: Int
+    let avatar, location, language: String
+    let address: String?
+    let isOnboarding: Bool
+    let storage: [Storage]?
+    let basket: Int
+    let historySearches: [String]?
     let createdAt, updatedAt: String
+}
+
+
+struct Storage: Codable {
+    let title, author, fullName, id: String
 }

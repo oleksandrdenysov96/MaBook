@@ -49,5 +49,33 @@ final class OnboardingManager {
         }
     }
 
-    
+    public func completeOnboardingWith(country: String, language: String, _ completion: @escaping (Bool) -> Void) {
+        let request = MBRequest(
+            endpoint: .user, httpMethod: .post, pathComponents: ["onboarding"]
+        )
+        let body = MBApiCaller.shared.requestBody(
+            body: [
+                "language": language,
+                "location": country
+            ]
+        )
+        MBApiCaller.shared.executeRequest(
+            request, body: body, expected: Dictionary<String, Int>.self
+        ) { result, statusCode in
+            switch result {
+            case .success(_):
+                guard let statusCode = statusCode,
+                      statusCode == 201 else {
+                    return
+                }
+                completion(true)
+            case .failure(let err):
+                MBLogger.shared.debugInfo(
+                    "onboarding manager: failure on post onboarding"
+                )
+                MBLogger.shared.debugInfo("error - \(err)")
+                completion(false)
+            }
+        }
+    }
 }

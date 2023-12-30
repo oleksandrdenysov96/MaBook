@@ -29,7 +29,7 @@ extension UIViewController {
         return string
     }
 
-    func presentSingleOptionErrorAlert(title: String, message: String, buttonTitle: String) {
+    func presentSingleOptionErrorAlert(title: String = "Damn...", message: String, buttonTitle: String = "Got it") {
         let alert = UIAlertController(title: title, message: message,
                                       preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: buttonTitle, style: .cancel))
@@ -40,18 +40,21 @@ extension UIViewController {
     }
 
     func presentRequiredController() {
-        if OnboardingManager.shared.isOnboarded {
-            let vc = MBTabBarViewController()
-            vc.modalPresentationStyle = .fullScreen
-            self.present(vc, animated: true)
+        AuthManager.shared.getUser { [weak self] success in
+            DispatchQueue.main.async {
+                if success && OnboardingManager.shared.isOnboarded {
+                    let vc = MBTabBarViewController()
+                    vc.modalPresentationStyle = .fullScreen
+                    self?.present(vc, animated: true)
+                }
+                else {
+                    let vc = UINavigationController(
+                        rootViewController: MBLocationOnboardingViewController()
+                    )
+                    vc.modalPresentationStyle = .fullScreen
+                    self?.present(vc, animated: true)
+                }
+            }
         }
-        else {
-            let vc = UINavigationController(
-                rootViewController: MBLocationOnboardingViewController()
-            )
-            vc.modalPresentationStyle = .fullScreen
-            self.present(vc, animated: true)
-        }
-
     }
 }

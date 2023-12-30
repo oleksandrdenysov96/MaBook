@@ -6,24 +6,58 @@
 //
 
 import UIKit
+import UserNotifications
 
 class MBPermissionsOnboardingViewController: UIViewController {
 
+    private let permissionsView = MBPermissionsOnboardingView()
+
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
+        view.backgroundColor = .white
+        view.addSubview(permissionsView)
+        permissionsView.delegate = self
+        navigationItem.hidesBackButton = true
     }
-    
 
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        setupConstraints()
     }
-    */
 
+    private func setupConstraints() {
+        NSLayoutConstraint.activate([
+            permissionsView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            permissionsView.leftAnchor.constraint(equalTo: view.leftAnchor),
+            permissionsView.rightAnchor.constraint(equalTo: view.rightAnchor),
+            permissionsView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+        ])
+    }
+}
+
+extension MBPermissionsOnboardingViewController: MBPermissionsOnboardingViewDelegate {
+    func mbPermissionsOnboardingViewDidTapContinue(_ permissionsView: MBPermissionsOnboardingView) {
+        LocalStateManager.shared.requestNotificationPermissionIfNeeded { [weak self] granted in
+            if !granted {
+                DispatchQueue.main.async {
+                    let alertController = UIAlertController(
+                        title: "Enable Notifications",
+                        message: "To receive important updates, please enable notifications in Settings.",
+                        preferredStyle: .alert
+                    )
+
+                    alertController.addAction(UIAlertAction(title: "Cancel", style: .default, handler: nil))
+                    alertController.addAction(UIAlertAction(title: "Settings", style: .cancel, handler: { _ in
+                        if let settingsUrl = URL(string: UIApplication.openSettingsURLString) {
+                            UIApplication.shared.open(settingsUrl)
+                        }
+                    }))
+
+                    self?.present(alertController, animated: true) {
+
+                    }
+                }
+            }
+        }
+    }
 }

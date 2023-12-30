@@ -28,8 +28,9 @@ class MBButton: UIButton {
         buttonColor: UIColor = UIColor(
         red: 0.243, green: 0.286, blue: 0.29, alpha: 1
         ),
-        titleColor: UIColor,
-        withBorder: Bool = false, image: UIImage?
+        titleColor: UIColor = .white,
+        withBorder: Bool = false,
+        image: UIImage? = nil
     ) {
         self.image = image
         super.init(frame: .zero)
