@@ -10,6 +10,17 @@ import UIScrollView_InfiniteScroll
 
 class MBBooksListViewController: UIViewController {
 
+    typealias DataSource = UICollectionViewDiffableDataSource<
+        MBBookListViewViewModel.Sections, Books
+    >
+    typealias DataSourceSnapshot = NSDiffableDataSourceSnapshot<
+        MBBookListViewViewModel.Sections, Books
+    >
+
+
+    private var dataSource: DataSource!
+    private var dataSourceSnapshot = DataSourceSnapshot()
+
     private let listView = MBBooksListView()
     private let viewModel = MBBookListViewViewModel()
     private let loader: MBLoader = {
@@ -44,6 +55,7 @@ class MBBooksListViewController: UIViewController {
         view.addSubview(loader)
         listView.delegate = self
         listView.configureCollectionView()
+        applySnapshot(books: viewModel.books)
         listView.updateCollectionView()
     }
 
@@ -58,10 +70,8 @@ class MBBooksListViewController: UIViewController {
             listView.leftAnchor.constraint(equalTo: view.leftAnchor),
             listView.rightAnchor.constraint(equalTo: view.rightAnchor),
             listView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-
             loader.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             loader.centerYAnchor.constraint(equalTo: view.centerYAnchor)
-
         ])
     }
 }
@@ -73,30 +83,27 @@ extension MBBooksListViewController: MBBooksListViewDelegate {
             self?.loader.startLoader()
 
             UIView.animate(withDuration: 0.3) {
-                collection.alpha = 0
+                collection.alpha = 0.5
             } completion: { _ in
-                collection.isHidden = true
-
                 self?.viewModel.performSorting { [weak self] success in
+                    guard let self = self else {return}
                     DispatchQueue.main.async {
                         if success {
-                            collection.reloadData()
-
-                            let indexPath: IndexPath? = IndexPath(item: 0, section: 0)
-                            if let firstIndexPath = indexPath {
-                                collection.scrollToItem(at: firstIndexPath, at: .top, animated: false)
-                            }
+                            self.dataSourceSnapshot.deleteAllItems()
+                            self.applySnapshot(books: self.viewModel.books)
                         }
                         else {
-                            self?.presentSingleOptionErrorAlert(
+                            self.presentSingleOptionErrorAlert(
                                 message: "We're in trouble to sort this page"
                             )
                         }
                         UIView.animate(withDuration: 0.1) {
-                            collection.isHidden = false
                             collection.alpha = 1
                         } completion: { _ in
-                            self?.loader.stopLoader()
+                            self.loader.stopLoader()
+
+                            let indexPath = IndexPath(item: 0, section: 0)
+                            collection.scrollToItem(at: indexPath, at: .top, animated: true)
                         }
                     }
                 }
@@ -107,7 +114,38 @@ extension MBBooksListViewController: MBBooksListViewDelegate {
 
     func mbBooksListView(_ listView: MBBooksListView, needsConfigure collection: UICollectionView) {
         collection.delegate = self
-        collection.dataSource = self
+        dataSource = DataSource(
+            collectionView: collection, cellProvider: {
+                [weak self] (collectionView, indexPath, book) -> MBBookListCollectionViewCell in
+
+                guard let self = self else { fatalError() }
+                let cell: MBBookListCollectionViewCell = collectionView
+                    .dequeueReusableCell(for: indexPath)
+                var badgeText: String?
+
+                switch self.cellBadge {
+                case .none: 
+                    badgeText = nil
+                case .timestamp: 
+                    badgeText = book.createdAt
+                case .views: 
+                    badgeText = String(book.view)
+                }
+
+                cell.configure(
+                    badgeType: cellBadge, badgeText: badgeText,
+                    price: String(book.price), bookTitle: book.title,
+                    bookImage: book.images[0], genre: book.genre
+                )
+                return cell
+            }
+        )
+    }
+
+    private func applySnapshot(books: [Books]) {
+        dataSourceSnapshot.appendSections([MBBookListViewViewModel.Sections.list])
+        dataSourceSnapshot.appendItems(books)
+        dataSource.apply(dataSourceSnapshot, animatingDifferences: true)
     }
 
     func mbBooksListView(_ listView: MBBooksListView, needsUpdate collection: UICollectionView) {
@@ -121,59 +159,21 @@ extension MBBooksListViewController: MBBooksListViewDelegate {
                         return
                     }
 
-                    let startIndex = self.viewModel.books.count
                     self.viewModel.books.append(contentsOf: newData)
+                    self.dataSourceSnapshot.appendItems(newData)
+                    self.dataSource.apply(dataSourceSnapshot, animatingDifferences: true)
 
-                    let endIndex = self.viewModel.books.count
-                    let indexPaths = (startIndex..<endIndex).compactMap { index in
-                        return IndexPath(row: index, section: 0)
-                    }
-
-                    collection.performBatchUpdates {
-                        collection.insertItems(at: indexPaths)
-                    } completion: { _ in
-                        collectionView.finishInfiniteScroll()
-                    }
+                    collectionView.finishInfiniteScroll()
                 }
             }
         }
     }
-
-
 }
 
-extension MBBooksListViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+extension MBBooksListViewController: UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return viewModel.books.count
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard indexPath.row < viewModel.books.count, let cell = collectionView.dequeueReusableCell(
-            withReuseIdentifier: MBBookListCollectionViewCell.cellIdentifier,
-            for: indexPath
-        ) as? MBBookListCollectionViewCell else {
-            MBLogger.shared.debugInfo("end: vc has ended with failure of creating cell")
-            fatalError()
-        }
-        let currentBook = viewModel.books[indexPath.row]
-        var badgeText: String?
-
-        switch cellBadge {
-        case .none: badgeText = nil
-        case .timestamp: badgeText = currentBook.createdAt
-        case .views: badgeText = String(currentBook.view)
-        }
-
-        cell.configure(
-            badgeType: cellBadge,
-            badgeText: badgeText,
-            price: String(currentBook.price),
-            bookTitle: currentBook.title,
-            bookImage: currentBook.images[0],
-            genre: currentBook.genre
-        )
-        return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, 

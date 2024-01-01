@@ -10,6 +10,10 @@ import Foundation
 
 final class MBBookListViewViewModel {
 
+    enum Sections {
+        case list
+    }
+
     enum SortDirection: String {
         case desc
         case asc

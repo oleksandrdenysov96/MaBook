@@ -8,7 +8,7 @@
 import Foundation
 
 
-struct Books: Codable {
+struct Books: Codable, Hashable {
     let id, userId: Int
     let title, description, author: String
     let images: [String]
@@ -19,6 +19,12 @@ struct Books: Codable {
     let view: Int
     let isFavorite: Bool
     let createdAt: String
+
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+        hasher.combine(createdAt)
+        hasher.combine(title)
+    }
 }
 
 struct Info: Codable {
