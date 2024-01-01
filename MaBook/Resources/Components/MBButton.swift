@@ -17,11 +17,25 @@ class MBButton: UIButton {
 
     private let image: UIImage?
 
+    private let loader: UIActivityIndicatorView = {
+        let loader = UIActivityIndicatorView(style: .medium)
+        loader.translatesAutoresizingMaskIntoConstraints = false
+        loader.color = .white
+        loader.hidesWhenStopped = true
+        return loader
+    }()
+
     private let buttonImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
     }()
+
+    public var isLoading: Bool = false {
+        didSet {
+            updateView()
+        }
+    }
 
     init(
         title: String, 
@@ -46,7 +60,16 @@ class MBButton: UIButton {
             ).cgColor
             layer.borderWidth = 1
         }
+        addSubview(loader)
         setupImageView()
+    }
+
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        NSLayoutConstraint.activate([
+            loader.centerXAnchor.constraint(equalTo: self.centerXAnchor),
+            loader.centerYAnchor.constraint(equalTo: self.centerYAnchor)
+        ])
     }
 
     convenience init(_ option: SSOOptions) {
@@ -92,8 +115,22 @@ class MBButton: UIButton {
                 buttonImageView.leftAnchor.constraint(equalTo: leftAnchor, constant: 10),
                 buttonImageView.widthAnchor.constraint(equalToConstant: 25),
                 buttonImageView.heightAnchor.constraint(equalToConstant: 25),
-                buttonImageView.centerYAnchor.constraint(equalTo: centerYAnchor)
+                buttonImageView.centerYAnchor.constraint(equalTo: centerYAnchor),
             ])
+        }
+    }
+
+    private func updateView() {
+        if isLoading {
+            loader.startAnimating()
+            titleLabel?.alpha = 0
+            imageView?.alpha = 0
+            isEnabled = false
+        } else {
+            loader.stopAnimating()
+            titleLabel?.alpha = 1
+            imageView?.alpha = 0
+            isEnabled = true
         }
     }
 
@@ -103,5 +140,4 @@ class MBButton: UIButton {
             heightAnchor.constraint(equalToConstant: height),
         ])
     }
-
 }

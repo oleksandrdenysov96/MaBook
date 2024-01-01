@@ -7,7 +7,7 @@
 
 import UIKit
 
-class MBCategoriesCollectionViewCell: UICollectionViewCell {
+class MBCategoriesCollectionViewCell: UICollectionViewCell, MBReusableCell {
 
     public static let cellIdentifier = "MBCategoriesCollectionViewCell"
 

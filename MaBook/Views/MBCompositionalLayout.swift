@@ -20,9 +20,9 @@ class MBCompositionalLayout {
             layoutSize: NSCollectionLayoutSize(
                 widthDimension: itemWidthDimension, heightDimension: itemHeightDimension)
         )
-
-        self.itemInsets(item: item, top: 0, leading: 6, bottom: 3, trailing: 6)
-
+        item.contentInsets = NSDirectionalEdgeInsets(
+            top: 0, leading: 6, bottom: 3, trailing: 6
+        )
 
         let group = NSCollectionLayoutGroup.horizontal(
             layoutSize: NSCollectionLayoutSize(widthDimension: groupWidthDimension,
@@ -36,12 +36,53 @@ class MBCompositionalLayout {
         return section
     }
 
-    public func itemInsets(item: NSCollectionLayoutItem, top: CGFloat,
-                           leading: CGFloat, bottom: CGFloat, trailing: CGFloat) {
 
-        item.contentInsets = NSDirectionalEdgeInsets(
-            top: top, leading: leading, bottom: bottom, trailing: trailing
+    public func createBookPhotoDetailsLayout(
+        itemWidthDimension: NSCollectionLayoutDimension,
+        itemHeightDimension: NSCollectionLayoutDimension,
+        groupWidthDimension: NSCollectionLayoutDimension,
+        groupHeightDimension: NSCollectionLayoutDimension
+    ) -> NSCollectionLayoutSection {
+        let item = NSCollectionLayoutItem(
+            layoutSize: NSCollectionLayoutSize(
+                widthDimension: itemWidthDimension, heightDimension: itemHeightDimension)
         )
+        item.contentInsets = NSDirectionalEdgeInsets(
+            top: 0, leading: 6, bottom: 0, trailing: 6
+        )
+
+        let group = NSCollectionLayoutGroup.horizontal(
+            layoutSize: NSCollectionLayoutSize(widthDimension: groupWidthDimension,
+                                               heightDimension: groupHeightDimension),
+            subitems: [item])
+        let section = NSCollectionLayoutSection(group: group)
+        section.orthogonalScrollingBehavior = .groupPagingCentered
+        section.interGroupSpacing = 5
+//        section.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 0, bottom: 30, trailing: 0)
+        return section
+    }
+
+    public func createBaseLayout(
+        itemWidthDimension: NSCollectionLayoutDimension,
+        itemHeightDimension: NSCollectionLayoutDimension,
+        groupWidthDimension: NSCollectionLayoutDimension,
+        groupHeightDimension: NSCollectionLayoutDimension
+    ) -> NSCollectionLayoutSection {
+        let item = NSCollectionLayoutItem(
+            layoutSize: NSCollectionLayoutSize(
+                widthDimension: itemWidthDimension, heightDimension: itemHeightDimension)
+        )
+        item.contentInsets = NSDirectionalEdgeInsets(
+            top: 0, leading: 25, bottom: 0, trailing: 25
+        )
+
+        let group = NSCollectionLayoutGroup.horizontal(
+            layoutSize: NSCollectionLayoutSize(widthDimension: groupWidthDimension,
+                                               heightDimension: groupHeightDimension),
+            subitems: [item])
+        let section = NSCollectionLayoutSection(group: group)
+//        section.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 0, bottom: 30, trailing: 0)
+        return section
     }
 
     public func createHomeSectionHeader() -> NSCollectionLayoutBoundarySupplementaryItem {

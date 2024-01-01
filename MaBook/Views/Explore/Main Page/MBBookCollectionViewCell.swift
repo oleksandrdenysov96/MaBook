@@ -13,7 +13,7 @@ enum CellBadgeType {
     case none
 }
 
-class MBBookCollectionViewCell: UICollectionViewCell {
+class MBBookCollectionViewCell: UICollectionViewCell, MBReusableCell {
     
     public class var cellIdentifier: String {
         "MBExploreBookCollectionViewCell"

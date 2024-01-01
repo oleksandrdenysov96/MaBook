@@ -12,7 +12,7 @@ struct Books: Codable {
     let id, userId: Int
     let title, description, author: String
     let images: [String]
-    let price: Double
+    let price: String
     let category, genre, condition: String
     let pages: Int
     let dimensions, status: String

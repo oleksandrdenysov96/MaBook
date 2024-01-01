@@ -5,6 +5,7 @@
 //  Created by Oleksandr Denysov on 23.12.2023.
 //
 
+import Combine
 import UIKit
 
 protocol MBSignUpViewDelegate: AnyObject {
@@ -16,7 +17,13 @@ protocol MBSignUpViewDelegate: AnyObject {
 
 class MBSignUpView: UIView {
 
-    private var isAgreedTerms = false
+//    private var isAgreedTerms = false
+    private var isAgreedTerms = CurrentValueSubject<Bool, Never>(false)
+    private var registerButtonPressed = CurrentValueSubject<Bool, Never>(false)
+    private var emailFilled = CurrentValueSubject<Bool, Never>(false)
+    private var passwordFilled = CurrentValueSubject<Bool, Never>(false)
+    private var cancellables = Set<AnyCancellable>()
+    private var fieldsCancellables = Set<AnyCancellable>()
 
     public weak var delegate: MBSignUpViewDelegate?
 
@@ -139,6 +146,7 @@ class MBSignUpView: UIView {
         passwordTextField.delegate = self
         setupConstraints()
         addTargets()
+        setupCombine()
     }
 
     override func layoutSubviews() {
@@ -149,6 +157,34 @@ class MBSignUpView: UIView {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+
+    private func setupCombine() {
+        Publishers.CombineLatest4(isAgreedTerms, registerButtonPressed, emailFilled, passwordFilled)
+            .map { agreed, registerPressed, emailFilled, passwordFilled in
+                return ((agreed), (registerPressed), (emailFilled && passwordFilled))
+            }
+            .sink { [weak self] agreed, registerPressed, filledFields in
+                self?.updateUIForAgreedTerms(agreed, registerPressed, filledFields)
+            }
+            .store(in: &cancellables)
+    }
+
+    private func updateUIForAgreedTerms(_ agreed: Bool, _ registerPressed: Bool, _ filledFields: Bool) {
+        let labelColor: UIColor = registerPressed && !agreed ? .red : .black
+        registerButtonPressed.send(false)
+        
+        termsLabel.textColor = labelColor
+        termsLinkButton.setTitleColor(labelColor, for: .normal)
+        privacyLabel.textColor = labelColor
+        privacyLinkButton.setTitleColor(labelColor, for: .normal)
+        
+        UIView.animate(withDuration: 0.2) { [weak self] in
+            self?.termsCheckbox.setImage(UIImage(
+                systemName: agreed ? "checkmark.square.fill" : "square"
+            ), for: .normal)
+            self?.registerButton.alpha = agreed && filledFields ? 1.0 : 0.6
+        }
+    }                                                                                                                                                                                   
 
     private func setupConstraints() {
         let stackView = UIStackView(arrangedSubviews: [
@@ -208,31 +244,14 @@ extension MBSignUpView {
     }
 
     @objc private func didSelectCheckBox() {
-        termsLabel.textColor = .black
-        termsLinkButton.setTitleColor(.black, for: .normal)
-        privacyLabel.textColor = .black
-        privacyLinkButton.setTitleColor(.black, for: .normal)
+        isAgreedTerms.value.toggle()
+        guard let emailText = emailTextField.text,
+              let passwordText = passwordTextField.text else {
+            return
+        }
 
-        if isAgreedTerms {
-            UIView.animate(withDuration: 0.2, animations: { [weak self] in
-                self?.termsCheckbox.setImage(UIImage(
-                    systemName: "square"
-                ), for: .normal)
-                self?.registerButton.alpha = 0.6
-            }, completion: { _ in
-                self.isAgreedTerms = false
-            })
-        }
-        else {
-            UIView.animate(withDuration: 0.2, animations: { [weak self] in
-                self?.termsCheckbox.setImage(UIImage(
-                    systemName: "checkmark.square.fill"
-                ), for: .normal)
-                self?.registerButton.alpha = 1
-            }, completion: { _ in
-                self.isAgreedTerms = true
-            })
-        }
+        emailFilled.send(!emailText.isEmpty)
+        passwordFilled.send(!passwordText.isEmpty)
 
     }
 
@@ -245,16 +264,13 @@ extension MBSignUpView {
     }
 
     @objc private func didTapRegister() {
-        if isAgreedTerms {
+        if isAgreedTerms.value {
             delegate?.mbSignUpViewDidTapRegister(
                 self, email: emailTextField.text, password: passwordTextField.text
             )
         }
         else {
-            termsLabel.textColor = .red
-            termsLinkButton.setTitleColor(.red, for: .normal)
-            privacyLabel.textColor = .red
-            privacyLinkButton.setTitleColor(.red, for: .normal)
+            registerButtonPressed.send(true)
         }
     }
     
@@ -270,7 +286,6 @@ extension MBSignUpView: UITextFieldDelegate {
             passwordTextField.becomeFirstResponder()
         } else {
             textField.resignFirstResponder()
-            didTapRegister()
         }
         return true
     }
@@ -278,5 +293,4 @@ extension MBSignUpView: UITextFieldDelegate {
     func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
         return true
     }
-
 }

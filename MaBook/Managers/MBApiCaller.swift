@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Combine
 
 final class MBApiCaller {
 
@@ -121,5 +122,69 @@ final class MBApiCaller {
             }
         }
         task.resume()
+    }
+}
+
+
+
+// MARK: COMBINE REALISATION
+
+extension MBApiCaller {
+
+    public func exectuteCMBRequest<T: Codable>(
+        _ request: MBRequest,
+        body: Data? = nil,
+        accessToken: String? = AuthManager.shared.accessToken,
+        expected responseType: T.Type,
+        shouldCache: Bool = false
+    ) -> (Future<T, Error>) {
+
+        return Future { promise in
+            guard let urlRequest = self.request(
+                from: request, body: body, accessToken: accessToken
+            ) else {
+                MBLogger.shared.debugInfo("api caller: failed to create request")
+                promise(.failure(Self.MBError.failedToCreateRequest))
+                return
+            }
+            URLSession.shared.dataTask(with: urlRequest) { [weak self] data, response, error in
+                guard let response = response as? HTTPURLResponse else {
+                    return
+                }
+                let statusCode = response.statusCode
+
+                guard let data = data, error == nil else {
+                    promise(.failure(Self.MBError.failedToGetData))
+                    return
+                }
+
+                // Decode response
+                do {
+                    MBLogger.shared.debugInfo(
+                        "Decoding response...\nSource - *** \(String(describing: urlRequest.url!)) ***"
+                    )
+                    MBLogger.shared.debugInfo(String(data: data, encoding: .utf8) ?? "unable to read")
+
+                    let result = try JSONDecoder().decode(responseType.self, from: data)
+
+                    if shouldCache {
+                        MBLogger.shared.debugInfo("api caller: setting cache")
+                        self?.cacheManager.setCacheFor(
+                            endpoint: request.endpoint,
+                            url: request.url,
+                            data: data
+                        )
+                    }
+                    promise(.success(result))
+                }
+                catch {
+                    MBLogger.shared.debugInfo("Failed to decode response")
+                    MBLogger.shared.debugInfo(
+                        "Describtion - \(String(describing: error))\nStatus code - \(statusCode)"
+                    )
+                    promise(.failure(error))
+                }
+            }.resume()
+        }
     }
 }

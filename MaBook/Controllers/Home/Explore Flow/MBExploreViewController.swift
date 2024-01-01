@@ -117,6 +117,27 @@ extension MBExploreViewController: MBExploreViewDelegate {
 
 extension MBExploreViewController: UICollectionViewDelegate, 
                                     UICollectionViewDataSource {
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        var dataToPass: Books?
+        switch viewModel.sections[indexPath.section] {
+        case .categories:
+            break
+        case .allBooks:
+            dataToPass = viewModel.allBooks?.books[indexPath.row]
+        case .recentlyAdded:
+            dataToPass = viewModel.recentlyAdded?.books[indexPath.row]
+        case .mostViewed:
+            dataToPass = viewModel.mostViewed?.books[indexPath.row]
+        }
+
+        guard let dataToPass = dataToPass else {
+            MBLogger.shared.debugInfo("end: vc has ended with data failure for details vc")
+            return
+        }
+        let vc = MBBookDetailsViewController(with: dataToPass)
+        navigationController?.pushViewController(vc, animated: true)
+    }
 
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         return viewModel.sections.count
@@ -142,15 +163,19 @@ extension MBExploreViewController: UICollectionViewDelegate,
 
     func collectionView(_ collectionView: UICollectionView,
                         cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+
+        guard let book = viewModel.allBooks?.books[indexPath.row],
+              let recentlyAddedBook = viewModel.recentlyAdded?.books[indexPath.row],
+              let mostViewedBook = viewModel.mostViewed?.books[indexPath.row] 
+        else {
+            MBLogger.shared.debugInfo("end: vc failed to unwrap cells data")
+            fatalError()
+        }
+
         switch viewModel.sections[indexPath.section] {
         case .categories:
-            guard let cell = collectionView.dequeueReusableCell(
-                withReuseIdentifier: MBCategoriesCollectionViewCell.cellIdentifier,
-                for: indexPath
-            ) as? MBCategoriesCollectionViewCell else {
-                MBLogger.shared.debugInfo("vc: failed to create categories cell")
-                fatalError()
-            }
+            let cell: MBCategoriesCollectionViewCell = collectionView
+                .dequeueReusableCell(for: indexPath)
             cell.configure(
                 image: viewModel.categories[indexPath.row].image,
                 titleText: viewModel.categories[indexPath.row].name
@@ -158,40 +183,34 @@ extension MBExploreViewController: UICollectionViewDelegate,
             return cell
 
         case .allBooks:
-            guard let book = viewModel
-                .allBooks?.books[indexPath.row] else {fatalError()}
-            return viewModel.dequeueCellFor(
-                collectionView, index: indexPath,
-                badgeType: .none,
-                price: String(book.price),
-                bookTitle: book.title,
-                bookImage: book.images[0],
-                genre: book.genre
+            let cell: MBBookCollectionViewCell = collectionView
+                .dequeueReusableCell(for: indexPath)
+            cell.configure(
+                badgeType: .none, badgeText: nil,
+                price: book.price, bookTitle: book.title,
+                bookImage: book.images[0], genre: book.genre
             )
+            return cell
+
         case .recentlyAdded:
-            guard let recentlyAddedBook = viewModel
-                .recentlyAdded?.books[indexPath.row] else {fatalError()}
-            return viewModel.dequeueCellFor(
-                collectionView, index: indexPath,
-                badgeType: .timestamp,
-                badgeText: "no badge",
-                price: String(recentlyAddedBook.price),
-                bookTitle: recentlyAddedBook.title,
-                bookImage: recentlyAddedBook.images[0],
-                genre: recentlyAddedBook.genre
+            let cell: MBBookCollectionViewCell = collectionView
+                .dequeueReusableCell(for: indexPath)
+            cell.configure(
+                badgeType: .timestamp, badgeText: recentlyAddedBook.createdAt,
+                price: recentlyAddedBook.price, bookTitle: recentlyAddedBook.title,
+                bookImage: recentlyAddedBook.images[0], genre: recentlyAddedBook.genre
             )
+            return cell
+
         case .mostViewed:
-            guard let mostViewedBook = viewModel
-                .mostViewed?.books[indexPath.row] else {fatalError()}
-            return viewModel.dequeueCellFor(
-                collectionView, index: indexPath,
-                badgeType: .views,
-                badgeText: String(mostViewedBook.view),
-                price: String(mostViewedBook.price),
-                bookTitle: mostViewedBook.title,
-                bookImage: mostViewedBook.images[0],
-                genre: mostViewedBook.genre
+            let cell: MBBookCollectionViewCell = collectionView
+                .dequeueReusableCell(for: indexPath)
+            cell.configure(
+                badgeType: .views, badgeText: String(mostViewedBook.view),
+                price: mostViewedBook.price, bookTitle: mostViewedBook.title,
+                bookImage: mostViewedBook.images[0], genre: mostViewedBook.genre
             )
+            return cell
         }
     }
 
