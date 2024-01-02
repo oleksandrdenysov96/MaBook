@@ -7,6 +7,6 @@
 
 import Foundation
 
-struct MBPhotoSectionViewModel {
-    let imageURL: [String]
+struct MBPhotoSectionViewModel: Hashable {
+    let imageURL: String
 }

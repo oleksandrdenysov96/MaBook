@@ -8,10 +8,19 @@
 import UIKit
 import Combine
 
+fileprivate typealias DataSource = UICollectionViewDiffableDataSource<
+    MBBooksDetailViewViewModel.SectionCellType, MBBooksDetailViewViewModel.Items
+>
+fileprivate typealias DataSourceSnapshot = NSDiffableDataSourceSnapshot<
+    MBBooksDetailViewViewModel.SectionCellType, MBBooksDetailViewViewModel.Items
+>
+
+
 class MBBookDetailsViewController: UIViewController {
 
+    private var dataSource: DataSource!
+    private var dataSourceSnapshot = DataSourceSnapshot()
     private var bookData: Books
-    private var cancellables = Set<AnyCancellable>()
 
     private let detailsView = MBBookDetailsView()
     private let viewModel: MBBooksDetailViewViewModel
@@ -34,6 +43,7 @@ class MBBookDetailsViewController: UIViewController {
         view.addSubview(detailsView)
         detailsView.delegate = self
         detailsView.configureCollectionView()
+        applySnapshot()
         detailsView.configureCartButtonPrice()
     }
 
@@ -55,15 +65,65 @@ class MBBookDetailsViewController: UIViewController {
 
 extension MBBookDetailsViewController: MBBookDetailsViewDelegate {
     func mbBookDetailsView(_ detailsView: MBBookDetailsView, needsConfigure collection: UICollectionView) {
-        collection.delegate = self
-        collection.dataSource = self
 
         let layout = UICollectionViewCompositionalLayout { [weak self] section, _ in
             return self?.viewModel.createLayout(for: section)
         }
         collection.collectionViewLayout = layout
+
+        dataSource = DataSource(collectionView: collection, cellProvider: { 
+            (collectionView, indexPath, item) -> UICollectionViewCell? in
+
+            switch item {
+            case .photoCell(let model):
+                let cell: MBBookPhotosCollectionViewCell = collection
+                    .dequeueReusableCell(for: indexPath)
+                cell.configure(with: model.imageURL)
+                return cell
+            case .summaryCell(let model):
+                let cell: MBBookSummaryCollectionViewCell = collection
+                    .dequeueReusableCell(for: indexPath)
+                cell.configure(with: model)
+                return cell
+            case .conditionCell(let model):
+                let cell: MBBookInfoCollectionViewCell = collection
+                    .dequeueReusableCell(for: indexPath)
+                cell.configure(with: model)
+                return cell
+            case .pagesCell(let model):
+                let cell: MBBookInfoCollectionViewCell = collection
+                    .dequeueReusableCell(for: indexPath)
+                cell.configure(with: model)
+                return cell
+            case .dimensionsCell(let model):
+                let cell: MBBookInfoCollectionViewCell = collection
+                    .dequeueReusableCell(for: indexPath)
+                cell.configure(with: model)
+                return cell
+            }
+        })
     }
-    
+
+    private func applySnapshot() {
+        dataSourceSnapshot.appendSections(viewModel.sections)
+
+        for sectionIndex in 0..<viewModel.sections.count {
+            switch viewModel.sections[sectionIndex] {
+            case .photo:
+                dataSourceSnapshot.appendItems(
+                    viewModel.photoItems,
+                    toSection: viewModel.sections[sectionIndex]
+                )
+            default:
+                dataSourceSnapshot.appendItems(
+                    [viewModel.items[sectionIndex - 1]],
+                    toSection: viewModel.sections[sectionIndex]
+                )
+            }
+        }
+        dataSource.apply(dataSourceSnapshot, animatingDifferences: true)
+    }
+
     func mbBookDetailsView(_ detailsView: MBBookDetailsView, needsConfigure button: MBButton) {
         viewModel.fetchPrice { [weak self] newData in
             guard let self = self else {return}
@@ -75,55 +135,6 @@ extension MBBookDetailsViewController: MBBookDetailsViewDelegate {
                 button.isLoading = false
             }
 
-        }
-    }
-}
-
-
-extension MBBookDetailsViewController: UICollectionViewDelegate, UICollectionViewDataSource {
-
-    func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return viewModel.sections.count
-    }
-
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-
-        switch viewModel.sections[section] {
-        case .photo(let model): return model.imageURL.count
-        case .summary(_): return 1
-        case .condition(_): return 1
-        case .pages(_): return 1
-        case .dimensions(_): return 1
-        }
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        switch viewModel.sections[indexPath.section] {
-        case .photo(let model):
-            let cell: MBBookPhotosCollectionViewCell = collectionView
-                .dequeueReusableCell(for: indexPath)
-            cell.configure(with: model.imageURL[indexPath.row])
-            return cell
-        case .summary(let model):
-            let cell: MBBookSummaryCollectionViewCell = collectionView
-                .dequeueReusableCell(for: indexPath)
-            cell.configure(with: model)
-            return cell
-        case .condition(let model):
-            let cell: MBBookInfoCollectionViewCell = collectionView
-                .dequeueReusableCell(for: indexPath)
-            cell.configure(with: model)
-            return cell
-        case .pages(let model):
-            let cell: MBBookInfoCollectionViewCell = collectionView
-                .dequeueReusableCell(for: indexPath)
-            cell.configure(with: model)
-            return cell
-        case .dimensions(let model):
-            let cell: MBBookInfoCollectionViewCell = collectionView
-                .dequeueReusableCell(for: indexPath)
-            cell.configure(with: model)
-            return cell
         }
     }
 }

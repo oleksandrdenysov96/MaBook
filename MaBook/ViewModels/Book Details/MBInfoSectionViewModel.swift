@@ -8,7 +8,7 @@
 import Foundation
 
 
-struct MBInfoSectionViewModel {
+struct MBInfoSectionViewModel: Hashable {
     let infoParam: String
     let value: String
 }

@@ -8,7 +8,7 @@
 import Foundation
 
 
-struct MBSummarySectionViewModel {
+struct MBSummarySectionViewModel: Hashable {
     let title: String
     let author: String
     let summary: String

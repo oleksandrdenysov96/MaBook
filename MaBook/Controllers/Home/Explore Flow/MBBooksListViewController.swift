@@ -8,17 +8,17 @@
 import UIKit
 import UIScrollView_InfiniteScroll
 
+fileprivate typealias DataSource = UICollectionViewDiffableDataSource<
+    MBBookListViewViewModel.Sections, Books
+>
+fileprivate typealias DataSourceSnapshot = NSDiffableDataSourceSnapshot<
+    MBBookListViewViewModel.Sections, Books
+>
+
+
 class MBBooksListViewController: UIViewController {
 
-    typealias DataSource = UICollectionViewDiffableDataSource<
-        MBBookListViewViewModel.Sections, Books
-    >
-    typealias DataSourceSnapshot = NSDiffableDataSourceSnapshot<
-        MBBookListViewViewModel.Sections, Books
-    >
-
-
-    private var dataSource: DataSource!
+    private var dataSource: DataSource?
     private var dataSourceSnapshot = DataSourceSnapshot()
 
     private let listView = MBBooksListView()
@@ -145,6 +145,7 @@ extension MBBooksListViewController: MBBooksListViewDelegate {
     private func applySnapshot(books: [Books]) {
         dataSourceSnapshot.appendSections([MBBookListViewViewModel.Sections.list])
         dataSourceSnapshot.appendItems(books)
+        guard let dataSource = dataSource else { return }
         dataSource.apply(dataSourceSnapshot, animatingDifferences: true)
     }
 
@@ -154,14 +155,15 @@ extension MBBooksListViewController: MBBooksListViewDelegate {
         collection.addInfiniteScroll { [weak self] collectionView in
             self?.viewModel.fetchMoreBooks { [weak self] success, newData in
                 DispatchQueue.main.async { [weak self] in
-                    guard let self = self, success == true, let newData = newData else {
+                    guard let self = self, success == true,
+                          let newData = newData, let dataSource = self.dataSource else {
                         collectionView.finishInfiniteScroll()
                         return
                     }
 
                     self.viewModel.books.append(contentsOf: newData)
                     self.dataSourceSnapshot.appendItems(newData)
-                    self.dataSource.apply(dataSourceSnapshot, animatingDifferences: true)
+                    dataSource.apply(dataSourceSnapshot, animatingDifferences: true)
 
                     collectionView.finishInfiniteScroll()
                 }

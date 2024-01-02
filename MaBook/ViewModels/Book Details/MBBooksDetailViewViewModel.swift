@@ -12,23 +12,36 @@ import Foundation
 
 final class MBBooksDetailViewViewModel {
 
-    enum SectionCellType {
-        case photo(MBPhotoSectionViewModel)
-        case summary(MBSummarySectionViewModel)
-        case condition(MBInfoSectionViewModel)
-        case pages(MBInfoSectionViewModel)
-        case dimensions(MBInfoSectionViewModel)
+    enum SectionCellType: CaseIterable {
+        case photo
+        case summary
+        case condition
+        case pages
+        case dimensions
     }
+
+    enum Items: Hashable {
+        case photoCell(MBPhotoSectionViewModel)
+        case summaryCell(MBSummarySectionViewModel)
+        case conditionCell(MBInfoSectionViewModel)
+        case pagesCell(MBInfoSectionViewModel)
+        case dimensionsCell(MBInfoSectionViewModel)
+    }
+
 
     private var data: Books
 
-    public var sections = [SectionCellType]()
+    public var sections: [SectionCellType] {
+        return SectionCellType.allCases
+    }
+    public var items = [Items]()
+    public var photoItems = [Items]()
 
     private let layout = MBCompositionalLayout()
 
     init(with data: Books) {
         self.data = data
-        retrieveCellsModels()
+        retrieveCellItems()
     }
 
     public func fetchPrice(_ completion: @escaping (Books) -> Void) {
@@ -45,33 +58,35 @@ final class MBBooksDetailViewViewModel {
         }
     }
 
-    public func retrieveCellsModels() {
-        sections = [
-            .photo(.init(imageURL: data.images)),
-            .summary(.init(title: data.title, author: data.author, summary: data.description, genre: data.genre)),
-            .condition(.init(infoParam: "Condition:", value: data.condition)),
-            .pages(.init(infoParam: "Pages:", value: String(data.pages))),
-            .dimensions(.init(infoParam: "Dimensions:", value: data.dimensions))
+    private func retrieveCellItems() {
+        photoItems = data.images.compactMap {
+            return Items.photoCell(.init(imageURL: $0))
+        }
+        items = [
+            .summaryCell(.init(title: data.title, author: data.author, summary: data.description, genre: data.genre)),
+            .conditionCell(.init(infoParam: "Condition:", value: data.condition)),
+            .pagesCell(.init(infoParam: "Pages:", value: String(data.pages))),
+            .dimensionsCell(.init(infoParam: "Dimensions:", value: data.dimensions))
         ]
     }
 
     public func createLayout(for section: Int) -> NSCollectionLayoutSection {
         switch sections[section] {
-        case .photo(_):
+        case .photo:
             return layout.createBookPhotoDetailsLayout(
                 itemWidthDimension: .absolute(310),
                 itemHeightDimension: .absolute(310),
                 groupWidthDimension: .absolute(310),
                 groupHeightDimension: .absolute(310)
             )
-        case .summary(_):
+        case .summary:
             return layout.createBaseLayout(
                 itemWidthDimension: .fractionalWidth(1.0),
                 itemHeightDimension: .absolute(270),
                 groupWidthDimension: .fractionalWidth(1.0),
                 groupHeightDimension: .absolute(280)
             )
-        case .condition(_), .dimensions(_), .pages(_):
+        case .condition, .dimensions, .pages:
             return layout.createBaseLayout(
                 itemWidthDimension: .fractionalWidth(1.0),
                 itemHeightDimension: .absolute(25),
