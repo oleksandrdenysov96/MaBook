@@ -1,5 +1,5 @@
 //
-//  MBListBookCollectionViewCell.swift
+//  MBBookListCollectionViewCell.swift
 //  MaBook
 //
 //  Created by Oleksandr Denysov on 29.12.2023.

@@ -84,7 +84,7 @@ final class MBBooksDetailViewViewModel {
                 itemWidthDimension: .fractionalWidth(1.0),
                 itemHeightDimension: .absolute(270),
                 groupWidthDimension: .fractionalWidth(1.0),
-                groupHeightDimension: .absolute(280)
+                groupHeightDimension: .absolute(310)
             )
         case .condition, .dimensions, .pages:
             return layout.createBaseLayout(

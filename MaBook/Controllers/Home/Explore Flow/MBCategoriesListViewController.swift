@@ -76,7 +76,8 @@ extension MBCategoriesListViewController: UICollectionViewDelegate, UICollection
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         collectionView.deselectItem(at: indexPath, animated: true)
 
-        let vc = MBBooksListViewController()
+        // MARK: define the data for page
+        let vc = MBBooksListViewController(selectedCategory: data[indexPath.row].name)
         navigationController?.pushViewController(vc, animated: true)
     }
 

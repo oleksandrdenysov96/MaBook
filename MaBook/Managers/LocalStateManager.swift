@@ -21,6 +21,19 @@ public class LocalStateManager {
 
     private init() {}
 
+    public var booksData: AllData? {
+        didSet {
+            if let data = booksData {
+                categories = data.categories
+                allBooks = data.allBooks
+                recentlyAdded = data.recentlyAdded
+                mostViewed = data.mostViewed
+            }
+        }
+    }
+
+    public var selectedCategoryData: BooksData?
+
     public var allBooks: BooksData?
     public var recentlyAdded: BooksData?
     public var mostViewed: BooksData?

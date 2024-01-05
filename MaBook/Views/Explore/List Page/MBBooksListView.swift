@@ -15,6 +15,7 @@ protocol MBBooksListViewDelegate: AnyObject {
         _ listView: MBBooksListView, needsUpdate collection: UICollectionView
     )
     func mbBooksListView(_ listView: MBBooksListView, needsSort collection: UICollectionView)
+    func mbBooksListViewShouldShowFilters(updateOnCompletion collection: UICollectionView)
 }
 
 final class MBBooksListView: UIView {
@@ -106,7 +107,7 @@ final class MBBooksListView: UIView {
     }
 
     @objc private func didTapFilter() {
-        
+        delegate?.mbBooksListViewShouldShowFilters(updateOnCompletion: collectionView)
     }
 
     private func setupConstraints() {

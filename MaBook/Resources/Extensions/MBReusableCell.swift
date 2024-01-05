@@ -35,3 +35,20 @@ extension UICollectionView {
         return cell
     }
 }
+
+extension UITableView {
+    func register<T: UITableViewCell>(_: T.Type) where T: MBReusableCell {
+        register(T.self, forCellReuseIdentifier: T.cellIdentifier)
+    }
+
+    func dequeueReusableCell<T: UITableViewCell>(for indexPath: IndexPath) -> T where T: MBReusableCell {
+        register(T.self)
+        guard let cell = dequeueReusableCell(withIdentifier: T.cellIdentifier, for: indexPath) as? T else {
+            MBLogger.shared.debugInfo(
+                "reuse cell error - unable to dequeue cell ** \(T.cellIdentifier) **"
+            )
+            fatalError()
+        }
+        return cell
+    }
+}

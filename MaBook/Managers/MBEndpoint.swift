@@ -11,4 +11,5 @@ enum MBEndpoint: String, CaseIterable {
     case auth = "auth"
     case user = "user"
     case books = "books"
+    case category = "category"
 }

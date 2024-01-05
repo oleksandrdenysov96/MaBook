@@ -7,14 +7,14 @@
 
 import Foundation
 
-struct MBBooksHomeResponse: Codable {
+public struct MBBooksHomeResponse: Codable {
     let status: Int
     let message: String
     let data: AllData
 }
 
 
-struct AllData: Codable {
+public struct AllData: Codable {
     let categories: [Categories]
     let allBooks: BooksData
     let recentlyAdded: BooksData

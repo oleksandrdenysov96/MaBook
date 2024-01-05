@@ -7,7 +7,6 @@
 
 import Foundation
 
-
 final class MBBookListViewViewModel {
 
     enum Sections {
@@ -21,8 +20,8 @@ final class MBBookListViewViewModel {
 
     public static private(set) var selectedSortingType: SortDirection = .desc
 
-    public var allBooksData: BooksData {
-        guard let data = LocalStateManager.shared.allBooks else {
+    public lazy var allBooksData: BooksData = {
+        guard let data = LocalStateManager.shared.selectedCategoryData else {
             MBLogger.shared.debugInfo(
                 "list vm: failed to retrieve books data from LS"
             )
@@ -33,7 +32,7 @@ final class MBBookListViewViewModel {
         }
         books = data.books
         return data
-    }
+    }()
 
     private lazy var info: Info = {
         return allBooksData.info
@@ -43,48 +42,131 @@ final class MBBookListViewViewModel {
         return allBooksData.books
     }()
 
-    private var clearURL: String {
-        if let url = info.currentPage,
-            var trimmedUrl = url.components(separatedBy: "?").first {
-
-            switch Self.selectedSortingType {
-            case .desc:
-                trimmedUrl.append("?direction=DESC")
-            case .asc:
-                trimmedUrl.append("?direction=ASC")
-            }
-            trimmedUrl.append("&field=title")
-            return trimmedUrl
+    private lazy var configuredUrl: URL? = {
+        guard let url = info.currentPage,
+                var components = URLComponents(string: url) else {
+            return nil
         }
-        MBLogger.shared.debugInfo(
-            "vm: no url reference - unable to create base url"
-        )
-        return ""
+        let categoryQueryItem = components.queryItems?
+            .first(where: {$0.name == "category"})
+        components.queryItems = nil
+
+        if var baseURL = components.url {
+            baseURL.append(queryItems: [
+                URLQueryItem(
+                    name: "direction",
+                    value: Self.selectedSortingType
+                        .rawValue.uppercased()
+                ),
+                URLQueryItem(
+                    name: "field",
+                    value: "title"
+                )
+            ])
+            if let categoryQueryItem {
+                baseURL.append(
+                    queryItems: [categoryQueryItem]
+                )
+            }
+            return baseURL
+        }
+        else {
+            MBLogger.shared.debugInfo(
+                "vm: no url reference - unable to create base url"
+            )
+            return nil
+        }
+    }()
+
+
+    public func fetchCategoriesBooks(
+        for category: String,
+        via url: URL? = nil,
+        _ completion: @escaping (Bool, [Books]?
+        ) -> Void = {_,_ in }) 
+    {
+        var request: MBRequest!
+        if let url = url {
+            request = MBRequest(url: url)
+        }
+        else {
+            request = MBRequest(
+                endpoint: .books,
+                pathComponents: ["category"],
+                queryParameters: [
+                    URLQueryItem(name: "category", value: category)
+                ]
+            )
+        }
+
+        self.perform(request, receive: MBBooksSectionResponse.self) { [weak self] isSuccess, data in
+            guard isSuccess, let data = data else {
+                MBLogger.shared.debugInfo("vm: failed to retrieve more books data")
+                completion(false, nil)
+                return
+            }
+            self?.allBooksData = data.data
+            completion(true, data.data.books)
+
+        }
     }
 
 
-
-    public func fetchMoreBooks(_ completion: @escaping (Bool, [Books]?) -> Void) {
-        guard let urlString = info.nextPage,
-              let url = URL(string: urlString),
-              let request = MBRequest(url: url)
+    public func fetchBooks(via url: URL? = nil, _ completion: @escaping (Bool, [Books]?) -> Void) {
+        var request: MBRequest!
+        if let url = url {
+            request = MBRequest(url: url)
+        }
         else {
-            MBLogger.shared.debugInfo("vm: failed to get nexp page pagination link")
-            completion(false, nil)
+            guard let urlString = info.nextPage,
+                  let url = URL(string: urlString)
+            else {
+                MBLogger.shared.debugInfo("vm: failed to get next page pagination link")
+                completion(false, nil)
+                return
+            }
+            request = MBRequest(url: url)
+        }
+        self.perform(request, receive: MBBooksSectionResponse.self) { [weak self] isSuccess, data in
+            guard isSuccess, let data = data else {
+                return
+            }
+            self?.info = data.data.info
+            completion(isSuccess, data.data.books)
+        }
+    }
+
+    public func performSorting(_ completion: @escaping (Bool) -> Void) {
+        guard let url = self.configuredUrl,
+              let request = MBRequest(url: url) else {
             return
         }
+        self.perform(request, receive: MBBooksSectionResponse.self) { [weak self] isSuccess, data in
+            guard isSuccess, let data = data else {
+                MBLogger.shared.debugInfo("vm: failed to retrieve sorted books data")
+                completion(false)
+                return
+            }
+            self?.books = data.data.books
+            self?.info = data.data.info
+
+            Self.selectedSortingType = (Self.selectedSortingType == .asc) ?
+                .desc : .asc
+            completion(isSuccess)
+        }
+    }
+    
+    private func perform<T: Codable>(_ request: MBRequest, receive type: T.Type,
+                                     completion: @escaping (Bool, T?) -> Void) {
 
         MBApiCaller.shared.executeRequest(
-            request, expected: MBBooksSectionResponse.self, shouldCache: false
+            request, expected: type.self, shouldCache: false
         ) { [weak self] result, statusCode in
             guard let self = self else {return}
 
             switch result {
             case .success(let success):
-                self.info = success.data.info
-                completion(true, success.data.books)
-                
-
+                completion(true, success)
             case .failure(let failure):
                 MBLogger.shared.debugInfo("vm: failed to retrieve more books data")
                 MBLogger.shared.debugInfo("error - \(failure)")
@@ -93,35 +175,4 @@ final class MBBookListViewViewModel {
 
         }
     }
-
-    public func performSorting(_ completion: @escaping (Bool) -> Void) {
-        guard let url = URL(string: clearURL),
-              let request = MBRequest(url: url) else {
-            return
-        }
-
-        MBApiCaller.shared.executeRequest(
-            request, expected: MBBooksSectionResponse.self
-        ) { [weak self] result, statusCode in
-
-            switch result {
-            case .success(let success):
-                self?.books = success.data.books
-                self?.info = success.data.info
-
-                if Self.selectedSortingType == .asc {
-                    Self.selectedSortingType = .desc
-                }
-                else {
-                    Self.selectedSortingType = .asc
-                }
-                completion(true)
-            case .failure(let failure):
-                MBLogger.shared.debugInfo("vm: failed to retrieve sorted books data")
-                MBLogger.shared.debugInfo("error - \(failure)")
-                completion(false)
-            }
-        }
-    }
-
 }

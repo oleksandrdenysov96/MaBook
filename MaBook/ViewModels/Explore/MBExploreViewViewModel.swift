@@ -8,7 +8,7 @@
 import UIKit
 import Foundation
 
-enum Sections: String, CaseIterable {
+enum MBHomeSections: String, CaseIterable {
     case categories = "Categories"
     case allBooks = "All Books"
     case recentlyAdded = "Recently Added"
@@ -17,7 +17,7 @@ enum Sections: String, CaseIterable {
 
 final class MBExploreViewViewModel {
 
-    public let sections = Sections.allCases
+    public let sections = MBHomeSections.allCases
 
     private let layout = MBCompositionalLayout()
 
@@ -48,6 +48,7 @@ final class MBExploreViewViewModel {
             switch result {
             case .success(let response):
                 self.responseData = response
+                LocalStateManager.shared.booksData = response.data
                 completion(true)
             case .failure(let failure):
                 MBLogger.shared.debugInfo("explore vm: failed to retrieve response for home data")
@@ -58,7 +59,7 @@ final class MBExploreViewViewModel {
     }
 
     public func createSectionLayout(for section: Int) -> NSCollectionLayoutSection {
-        let sections: [Sections] = [.categories, .allBooks, .recentlyAdded, .mostViewed]
+        let sections: [MBHomeSections] = [.categories, .allBooks, .recentlyAdded, .mostViewed]
 
         switch sections[section] {
         case .categories:
@@ -104,5 +105,18 @@ final class MBExploreViewViewModel {
             genre: genre
         )
         return cell
+    }
+
+    public func setSelectedSectionData(for section: MBHomeSections) {
+        switch section {
+        case .allBooks:
+            LocalStateManager.shared.selectedCategoryData = allBooks
+        case .recentlyAdded:
+            LocalStateManager.shared.selectedCategoryData = recentlyAdded
+        case .mostViewed:
+            LocalStateManager.shared.selectedCategoryData = mostViewed
+        default:
+            return
+        }
     }
 }

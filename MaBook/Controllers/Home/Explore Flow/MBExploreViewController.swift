@@ -122,7 +122,11 @@ extension MBExploreViewController: UICollectionViewDelegate,
         var dataToPass: Books?
         switch viewModel.sections[indexPath.section] {
         case .categories:
-            break
+            let categoryListVC = MBBooksListViewController(
+                selectedCategory: viewModel.categories[indexPath.row].name
+            )
+            navigationController?.pushViewController(categoryListVC, animated: true)
+            return
         case .allBooks:
             dataToPass = viewModel.allBooks?.books[indexPath.row]
         case .recentlyAdded:
@@ -135,8 +139,8 @@ extension MBExploreViewController: UICollectionViewDelegate,
             MBLogger.shared.debugInfo("end: vc has ended with data failure for details vc")
             return
         }
-        let vc = MBBookDetailsViewController(with: dataToPass)
-        navigationController?.pushViewController(vc, animated: true)
+        let sectionListVC = MBBookDetailsViewController(with: dataToPass)
+        navigationController?.pushViewController(sectionListVC, animated: true)
     }
 
     func numberOfSections(in collectionView: UICollectionView) -> Int {
@@ -254,23 +258,13 @@ extension MBExploreViewController: MBExploreSectionCollectionReusableViewDelegat
         _ reusableView: MBExploreSectionCollectionReusableView
     ) {
         let section = viewModel.sections[reusableView.tag]
-
-        switch section {
-        case .categories:
-            LocalStateManager.shared.categories = viewModel.categories
-        case .allBooks:
-            LocalStateManager.shared.allBooks = viewModel.allBooks
-        case .recentlyAdded:
-            LocalStateManager.shared.allBooks = viewModel.recentlyAdded
-        case .mostViewed:
-            LocalStateManager.shared.allBooks = viewModel.mostViewed
-        }
-        let detailsVC = section == .categories ?
+        let listVC = section == .categories ?
         MBCategoriesListViewController() : MBBooksListViewController()
 
-        detailsVC.title = section.rawValue
+        viewModel.setSelectedSectionData(for: section)
+        listVC.title = section.rawValue
         navigationController?.pushViewController(
-            detailsVC, animated: true
+            listVC, animated: true
         )
     }
 }
