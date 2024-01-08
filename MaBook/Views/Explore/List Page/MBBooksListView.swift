@@ -18,7 +18,7 @@ protocol MBBooksListViewDelegate: AnyObject {
     func mbBooksListViewShouldShowFilters(updateOnCompletion collection: UICollectionView)
 }
 
-final class MBBooksListView: UIView {
+final class MBBooksListView: MBBookReusableView {
 
     public weak var delegate: MBBooksListViewDelegate?
 
@@ -62,23 +62,32 @@ final class MBBooksListView: UIView {
 
     override init(frame: CGRect) {
         super.init(frame: frame)
-        translatesAutoresizingMaskIntoConstraints = false
-        backgroundColor = .white
         addSubviews(
             views: sortButton,
             filterButton,
             collectionView
         )
+        setupCartButton()
         addTargets()
     }
 
     override func layoutSubviews() {
         super.layoutSubviews()
-        setupConstraints()
+        super.setupConstraints()
+        setupSelfConstraints()
     }
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+
+    public func hideSortAndFilterButtons() {
+        sortButton.isHidden = true
+        filterButton.isHidden = true
+
+        NSLayoutConstraint.activate([
+            collectionView.topAnchor.constraint(equalTo: topAnchor, constant: 20)
+        ])
     }
 
     public func configureCollectionView() {
@@ -110,7 +119,7 @@ final class MBBooksListView: UIView {
         delegate?.mbBooksListViewShouldShowFilters(updateOnCompletion: collectionView)
     }
 
-    private func setupConstraints() {
+    private func setupSelfConstraints() {
         NSLayoutConstraint.activate([
             sortButton.topAnchor.constraint(equalTo: topAnchor),
             sortButton.leftAnchor.constraint(equalTo: leftAnchor, constant: bounds.width / 6.5),

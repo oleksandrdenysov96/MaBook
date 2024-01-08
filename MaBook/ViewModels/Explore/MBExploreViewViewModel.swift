@@ -58,6 +58,29 @@ final class MBExploreViewViewModel {
         }
     }
 
+
+    // Home data && User data
+    public func performMainRequests(_ completion: @escaping (Bool) -> Void) {
+        let group = DispatchGroup()
+
+        group.enter()
+        fetchHomeData { success in
+            completion(success)
+            group.leave()
+        }
+
+        group.enter()
+        AuthManager.shared.getUser { success in
+            if success {
+                MBLogger.shared.debugInfo("user data is received")
+            }
+            else {
+                MBLogger.shared.debugInfo("failed to get user data on homepage")
+            }
+            group.leave()
+        }
+    }
+
     public func createSectionLayout(for section: Int) -> NSCollectionLayoutSection {
         let sections: [MBHomeSections] = [.categories, .allBooks, .recentlyAdded, .mostViewed]
 

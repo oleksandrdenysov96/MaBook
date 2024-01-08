@@ -14,7 +14,7 @@ protocol MBCategoriesListViewDelegate: AnyObject {
     )
 }
 
-class MBCategoriesListView: UIView {
+class MBCategoriesListView: MBBookReusableView {
 
     public weak var delegate: MBCategoriesListViewDelegate?
 
@@ -39,7 +39,9 @@ class MBCategoriesListView: UIView {
         translatesAutoresizingMaskIntoConstraints = false
         backgroundColor = .white
         addSubview(collectionView)
+        setupCartButton()
         setupConstraints()
+        setupSelfConstraints()
     }
     
     required init?(coder: NSCoder) {
@@ -51,7 +53,7 @@ class MBCategoriesListView: UIView {
     }
 
 
-    private func setupConstraints() {
+    private func setupSelfConstraints() {
         NSLayoutConstraint.activate([
             collectionView.topAnchor.constraint(equalTo: topAnchor, constant: 30),
             collectionView.leftAnchor.constraint(equalTo: leftAnchor, constant: 15),

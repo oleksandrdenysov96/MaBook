@@ -7,10 +7,11 @@
 
 import UIKit
 
-class MBExploreViewController: UIViewController {
+class MBExploreViewController: UIViewController, UISearchControllerDelegate {
 
     private let viewModel = MBExploreViewViewModel()
     private let exploreView = MBExploreView()
+    private let searchController = MBSearchViewController()
     private let refreshControl = UIRefreshControl()
     private let loader = MBLoader()
 
@@ -24,12 +25,18 @@ class MBExploreViewController: UIViewController {
             action: #selector(didTapNotifications)
         )
         navigationItem.rightBarButtonItem?.tintColor = .black
+        navigationItem.searchController = searchController
+        navigationItem.hidesSearchBarWhenScrolling = false
+        
+        searchController.delegate = self
+        searchController.searchBar.placeholder = "Book name or author name"
         view.addSubviews(views: exploreView, loader)
         loader.startLoader()
         exploreView.delegate = self
         updateHomePage()
         addTargets()
     }
+
 
     @objc private func didTapNotifications() {
 
@@ -41,7 +48,7 @@ class MBExploreViewController: UIViewController {
     }
 
     private func updateHomePage(_ completion: @escaping () -> Void = {}) {
-        viewModel.fetchHomeData { [weak self] success in
+        viewModel.performMainRequests() { [weak self] success in
             if success {
                 self?.exploreView.configureCollectionView()
             }
@@ -54,6 +61,21 @@ class MBExploreViewController: UIViewController {
                     buttonTitle: "Got it")
             }
             completion()
+        }
+    }
+
+    func willPresentSearchController(_ searchController: UISearchController) {
+        UIView.animate(withDuration: 0.01) { [weak self] in
+            self?.exploreView.alpha = 0
+        } completion: { [weak self] _ in
+            self?.exploreView.isHidden = true
+        }
+    }
+
+    func willDismissSearchController(_ searchController: UISearchController) {
+        UIView.animate(withDuration: 0.5) { [weak self] in
+            self?.exploreView.isHidden = false
+            self?.exploreView.alpha = 1
         }
     }
 
@@ -80,6 +102,8 @@ class MBExploreViewController: UIViewController {
         ])
     }
 }
+
+
 
 
 // MARK: VIEW DELEGATE

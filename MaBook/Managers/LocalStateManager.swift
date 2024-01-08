@@ -60,9 +60,34 @@ public class LocalStateManager {
                     encodedData, forKey: Keys.userData.rawValue
                 )
             }
+            guard let user = newValue, let history = user.historySearches else {
+                recentSearches = [[:]]
+                return
+            }
+            recentSearches = history
         }
     }
-}
+
+    public var recentSearches = [[String: String]]()
+//        get {
+//            if let history = loggedUser?.historySearches {
+//                return history
+//            } else {
+//                return [[:]]
+//            }
+//        }
+//        set {
+//            if let history = loggedUser?.historySearches {
+//                if (history.count + newValue.count) > 6 {
+//                    loggedUser?.historySearches?.removeSubrange(0...(history.count + newValue.count) - 6)
+//                }
+//                if !history.contains(newValue) {
+//                    loggedUser?.historySearches?.append(contentsOf: newValue)
+//                }
+//            }
+//        }
+    }
+
 
 
 extension LocalStateManager {

@@ -58,6 +58,12 @@ extension MBPermissionsOnboardingViewController: MBPermissionsOnboardingViewDele
                     }
                 }
             }
+
+            DispatchQueue.main.async {
+                let vc = MBTabBarViewController()
+                vc.modalPresentationStyle = .fullScreen
+                self?.present(vc, animated: true)
+            }
         }
     }
 }

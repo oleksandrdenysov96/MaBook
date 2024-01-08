@@ -7,8 +7,14 @@
 
 import UIKit
 
+protocol MBBookListCollectionViewCellDelegate: AnyObject {
+    func mbBookListCollectionViewCellDidTapAddToCart(on cell: MBBookListCollectionViewCell)
+}
+
 class MBBookListCollectionViewCell: MBBookCollectionViewCell {
-    
+
+    public weak var delegate: MBBookListCollectionViewCellDelegate?
+
     override class var cellIdentifier: String {
         "MBDetailsListBookCollectionViewCell"
     }
@@ -19,10 +25,18 @@ class MBBookListCollectionViewCell: MBBookCollectionViewCell {
         contentView.addSubview(addToCartButton)
         super.setupConstraints()
         setupConstraintsForListCell()
+
+        addToCartButton.addTarget(
+            self, action: #selector(didTapAddToCart), for: .touchUpInside
+        )
     }
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+
+    @objc private func didTapAddToCart() {
+        delegate?.mbBookListCollectionViewCellDidTapAddToCart(on: self)
     }
 
     private func setupConstraintsForListCell() {

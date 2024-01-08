@@ -15,20 +15,9 @@ protocol MBExploreViewDelegate: AnyObject {
     )
 }
 
-class MBExploreView: UIView {
+class MBExploreView: MBBookReusableView {
 
     public weak var delegate: MBExploreViewDelegate?
-
-    public let searchBar: UISearchBar = {
-        let searchBar = UISearchBar()
-        searchBar.backgroundColor = .clear
-        searchBar.searchBarStyle = .minimal
-        searchBar.placeholder = "Book name or writer name"
-        searchBar.isHidden = true
-        searchBar.alpha = 0
-        searchBar.translatesAutoresizingMaskIntoConstraints = false
-        return searchBar
-    }()
 
     private let collectionView: UICollectionView = {
         let collectionView = UICollectionView(
@@ -61,24 +50,19 @@ class MBExploreView: UIView {
         return collectionView
     }()
 
-    private let floatingButton: MBFloatingCartButton = {
-        let button = MBFloatingCartButton(frame: .zero)
-        button.isHidden = true
-        button.alpha = 0
-        return button
-    }()
-
     override init(frame: CGRect) {
         super.init(frame: frame)
         backgroundColor = .white
         translatesAutoresizingMaskIntoConstraints = false
         addSubviews(
-            views: searchBar,
-            collectionView,
-            floatingButton
+            views:
+            collectionView
         )
+        setupCartButton()
         setupConstraints()
-
+        setupSelfConstraints()
+        floatingButton.isHidden = true
+        floatingButton.alpha = 0
     }
     
     required init?(coder: NSCoder) {
@@ -91,33 +75,17 @@ class MBExploreView: UIView {
         ) {
             UIView.animate(withDuration: 0.2) { [weak self] in
                 self?.floatingButton.isHidden = false
-                self?.searchBar.isHidden = false
                 self?.floatingButton.alpha = 1
-                self?.searchBar.alpha = 1
             }
         }
     }
 
-    private func setupConstraints() {
+    private func setupSelfConstraints() {
         NSLayoutConstraint.activate([
-            searchBar.topAnchor.constraint(equalTo: topAnchor, constant: 10),
-            searchBar.leftAnchor.constraint(equalTo: leftAnchor, constant: 15),
-            searchBar.rightAnchor.constraint(equalTo: rightAnchor, constant: -15),
-            searchBar.heightAnchor.constraint(equalToConstant: 70),
-
-            collectionView.topAnchor.constraint(equalTo: searchBar.bottomAnchor, constant: 20),
+            collectionView.topAnchor.constraint(equalTo: topAnchor, constant: 30),
             collectionView.leftAnchor.constraint(equalTo: leftAnchor, constant: 15),
             collectionView.rightAnchor.constraint(equalTo: rightAnchor, constant: -15),
             collectionView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -15),
         ])
-
-        NSLayoutConstraint.activate([
-            floatingButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
-            floatingButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -120),
-            floatingButton.widthAnchor.constraint(equalToConstant: 60),
-            floatingButton.heightAnchor.constraint(equalToConstant: 60)
-        ])
-        floatingButton.layer.cornerRadius = 30
-        floatingButton.layer.shadowRadius = 10
     }
 }

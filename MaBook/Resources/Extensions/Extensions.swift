@@ -39,6 +39,24 @@ extension UIViewController {
         }
     }
 
+    func presentMultiOptionAlert(
+        title: String = "Are you sure?",
+        message: String,
+        actionTitle: String,
+        buttonTitle: String,
+        _ actionHandler: @escaping () -> Void) {
+        let alert = UIAlertController(title: title, message: message,
+                                      preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: actionTitle, style: .destructive, handler: { _ in
+            actionHandler()
+        }))
+        alert.addAction(UIAlertAction(title: buttonTitle, style: .cancel))
+
+        DispatchQueue.main.async {
+            self.present(alert, animated: true)
+        }
+    }
+
     func presentRequiredController() {
         AuthManager.shared.getUser { [weak self] success in
             DispatchQueue.main.async {

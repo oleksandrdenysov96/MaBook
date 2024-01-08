@@ -462,9 +462,9 @@
             filePath = "MaBook/Views/Explore/List Page/MBBooksListView.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "116"
-            endingLineNumber = "116"
-            landmarkName = "setupConstraints()"
+            startingLineNumber = "125"
+            endingLineNumber = "125"
+            landmarkName = "setupSelfConstraints()"
             landmarkType = "7">
             <Locations>
                <Location
@@ -574,8 +574,8 @@
             filePath = "MaBook/Controllers/Home/Explore Flow/MBExploreViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "265"
-            endingLineNumber = "265"
+            startingLineNumber = "289"
+            endingLineNumber = "289"
             landmarkName = "mbExploreSectionCollectionReusableViewDidTapSeeAll(_:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -606,8 +606,8 @@
             filePath = "MaBook/Controllers/Home/Explore Flow/MBBooksListViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "91"
-            endingLineNumber = "91"
+            startingLineNumber = "100"
+            endingLineNumber = "100"
             landmarkName = "configureView()"
             landmarkType = "7">
          </BreakpointContent>
@@ -622,8 +622,8 @@
             filePath = "MaBook/Controllers/Home/Explore Flow/MBBooksListViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "79"
-            endingLineNumber = "79"
+            startingLineNumber = "88"
+            endingLineNumber = "88"
             landmarkName = "viewDidLayoutSubviews()"
             landmarkType = "7">
          </BreakpointContent>
@@ -638,8 +638,8 @@
             filePath = "MaBook/Controllers/Home/Explore Flow/MBBooksListViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "74"
-            endingLineNumber = "74"
+            startingLineNumber = "83"
+            endingLineNumber = "83"
             landmarkName = "viewDidLoad()"
             landmarkType = "7">
          </BreakpointContent>
@@ -654,8 +654,8 @@
             filePath = "MaBook/Controllers/Home/Explore Flow/MBBooksListViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "90"
-            endingLineNumber = "90"
+            startingLineNumber = "99"
+            endingLineNumber = "99"
             landmarkName = "configureView()"
             landmarkType = "7">
          </BreakpointContent>
@@ -846,8 +846,8 @@
             filePath = "MaBook/Controllers/Home/Explore Flow/MBBooksListViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "127"
-            endingLineNumber = "127"
+            startingLineNumber = "142"
+            endingLineNumber = "142"
             landmarkName = "mbBooksListViewShouldShowFilters(updateOnCompletion:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -961,6 +961,419 @@
                   offsetFromSymbolStart = "152">
                </Location>
             </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "C6FBA5AC-7310-47B3-8A25-FAEB808A1A13"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "MaBook/Controllers/Home/Explore Flow/MBExploreViewController.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "69"
+            endingLineNumber = "69"
+            landmarkName = "willPresentSearchController(_:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "C6FBA5AC-7310-47B3-8A25-FAEB808A1A13 - 77c972be955268fd"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 () -&gt; () in MaBook.MBExploreViewController.willPresentSearchController(__C.UISearchController) -&gt; ()"
+                  moduleName = "MaBook"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/oleksandrdenysov/Documents/Learning/MaBook/MaBook/Controllers/Home/Explore%20Flow/MBExploreViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "73"
+                  endingLineNumber = "73"
+                  offsetFromSymbolStart = "68">
+               </Location>
+               <Location
+                  uuid = "C6FBA5AC-7310-47B3-8A25-FAEB808A1A13 - 77c972be955268fd"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 () -&gt; () in MaBook.MBExploreViewController.willPresentSearchController(__C.UISearchController) -&gt; ()"
+                  moduleName = "MaBook"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/oleksandrdenysov/Documents/Learning/MaBook/MaBook/Controllers/Home/Explore%20Flow/MBExploreViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "73"
+                  endingLineNumber = "73"
+                  offsetFromSymbolStart = "28">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "1B9AD9AE-688B-44E2-BE4E-BEFFBC7B238E"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "MaBook/Controllers/Home/Explore Flow/Search/MBSearchViewController.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "88"
+            endingLineNumber = "88"
+            landmarkName = "updateSearchResults(for:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "B45FDA33-38D2-45D8-81AF-BF0E86724CFB"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "MaBook/Controllers/Home/Explore Flow/Search/MBSearchViewController.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "78"
+            endingLineNumber = "78"
+            landmarkName = "updateSearchResults(for:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "B45FDA33-38D2-45D8-81AF-BF0E86724CFB - d8c596f5f7aeb497"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "MaBook.MBSearchViewController.updateSearchResults(for: __C.UISearchController) -&gt; ()"
+                  moduleName = "MaBook"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/oleksandrdenysov/Documents/Learning/MaBook/MaBook/Controllers/Home/Explore%20Flow/Search/MBSearchViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "76"
+                  endingLineNumber = "76"
+                  offsetFromSymbolStart = "364">
+               </Location>
+               <Location
+                  uuid = "B45FDA33-38D2-45D8-81AF-BF0E86724CFB - 77e41ac39965dae7"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (Swift.Bool) -&gt; () in MaBook.MBSearchViewController.updateSearchResults(for: __C.UISearchController) -&gt; ()"
+                  moduleName = "MaBook"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/oleksandrdenysov/Documents/Learning/MaBook/MaBook/Controllers/Home/Explore%20Flow/Search/MBSearchViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "76"
+                  endingLineNumber = "76"
+                  offsetFromSymbolStart = "32">
+               </Location>
+               <Location
+                  uuid = "B45FDA33-38D2-45D8-81AF-BF0E86724CFB - 77e41ac39965dae7"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (Swift.Bool) -&gt; () in MaBook.MBSearchViewController.updateSearchResults(for: __C.UISearchController) -&gt; ()"
+                  moduleName = "MaBook"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/oleksandrdenysov/Documents/Learning/MaBook/MaBook/Controllers/Home/Explore%20Flow/Search/MBSearchViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "76"
+                  endingLineNumber = "76"
+                  offsetFromSymbolStart = "168">
+               </Location>
+               <Location
+                  uuid = "B45FDA33-38D2-45D8-81AF-BF0E86724CFB - 57fa0e86d81270e8"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 @Swift.MainActor () -&gt; () in closure #1 (Swift.Bool) -&gt; () in MaBook.MBSearchViewController.updateSearchResults(for: __C.UISearchController) -&gt; ()"
+                  moduleName = "MaBook"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/oleksandrdenysov/Documents/Learning/MaBook/MaBook/Controllers/Home/Explore%20Flow/Search/MBSearchViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "76"
+                  endingLineNumber = "76"
+                  offsetFromSymbolStart = "16">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "59287148-B1B7-47EF-9AE8-2D810CA9B916"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "MaBook/Controllers/Home/Explore Flow/Search/MBSearchViewController.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "83"
+            endingLineNumber = "83"
+            landmarkName = "updateSearchResults(for:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "59287148-B1B7-47EF-9AE8-2D810CA9B916 - d8c596f5f7aeb7f8"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "MaBook.MBSearchViewController.updateSearchResults(for: __C.UISearchController) -&gt; ()"
+                  moduleName = "MaBook"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/oleksandrdenysov/Documents/Learning/MaBook/MaBook/Controllers/Home/Explore%20Flow/Search/MBSearchViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "81"
+                  endingLineNumber = "81"
+                  offsetFromSymbolStart = "520">
+               </Location>
+               <Location
+                  uuid = "59287148-B1B7-47EF-9AE8-2D810CA9B916 - 77e41ac39965d988"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (Swift.Bool) -&gt; () in MaBook.MBSearchViewController.updateSearchResults(for: __C.UISearchController) -&gt; ()"
+                  moduleName = "MaBook"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/oleksandrdenysov/Documents/Learning/MaBook/MaBook/Controllers/Home/Explore%20Flow/Search/MBSearchViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "81"
+                  endingLineNumber = "81"
+                  offsetFromSymbolStart = "356">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "ED1A1463-9FEE-4A10-98C8-961E2A4A6A13"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "MaBook/ViewModels/Explore/Search/MBSearchViewModel.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "57"
+            endingLineNumber = "57"
+            landmarkName = "fetchSearchResults(with:_:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "273E615E-E1BF-4FB1-8A78-70C779336653"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "MaBook/Controllers/Home/Explore Flow/Search/MBSearchViewController.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "75"
+            endingLineNumber = "75"
+            landmarkName = "updateSearchResults(for:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "6761B278-B889-4486-A710-A65F981930FC"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "MaBook/Controllers/Home/Explore Flow/Search/MBSearchViewController.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "161"
+            endingLineNumber = "161"
+            landmarkName = "tableView(_:cellForRowAt:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "6761B278-B889-4486-A710-A65F981930FC - 9b0e652db92037ed"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "MaBook.MBSearchViewController.tableView(_: __C.UITableView, cellForRowAt: Foundation.IndexPath) -&gt; __C.UITableViewCell"
+                  moduleName = "MaBook"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/oleksandrdenysov/Documents/Learning/MaBook/MaBook/Controllers/Home/Explore%20Flow/Search/MBSearchViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "141"
+                  endingLineNumber = "141"
+                  offsetFromSymbolStart = "1448">
+               </Location>
+               <Location
+                  uuid = "6761B278-B889-4486-A710-A65F981930FC - 9b0e652db92037ed"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "MaBook.MBSearchViewController.tableView(_: __C.UITableView, cellForRowAt: Foundation.IndexPath) -&gt; __C.UITableViewCell"
+                  moduleName = "MaBook"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/oleksandrdenysov/Documents/Learning/MaBook/MaBook/Controllers/Home/Explore%20Flow/Search/MBSearchViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "141"
+                  endingLineNumber = "141"
+                  offsetFromSymbolStart = "1328">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "EBBC6D3B-99C8-4C2C-B5EC-CB655D44B290"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "MaBook/Controllers/Home/Explore Flow/Search/MBSearchViewController.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "215"
+            endingLineNumber = "215"
+            landmarkName = "tableView(_:viewForHeaderInSection:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "40CC43F6-B01B-4A13-8433-1C00771A1B2C"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "MaBook/ViewModels/Explore/Search/MBSearchViewModel.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "111"
+            endingLineNumber = "111"
+            landmarkName = "fetchBooksList(bookIds:_:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "0976C6C8-60D5-40E4-8E15-11904AC2BF4F"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "MaBook/Controllers/Home/Explore Flow/Search/MBSearchViewController.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "268"
+            endingLineNumber = "268"
+            landmarkName = "mbTableHeaderReusableViewDidTapButton(_:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "8A788CD7-7C95-4C65-B36D-44C2E36C4602"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "MaBook/ViewModels/Explore/Search/MBSearchViewModel.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "30"
+            endingLineNumber = "30"
+            landmarkName = "recentSearchesData"
+            landmarkType = "24">
+            <Locations>
+               <Location
+                  uuid = "8A788CD7-7C95-4C65-B36D-44C2E36C4602 - 9c976c70c29b22e"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "MaBook.MBSearchViewModel.init() -&gt; MaBook.MBSearchViewModel"
+                  moduleName = "MaBook"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/oleksandrdenysov/Documents/Learning/MaBook/MaBook/ViewModels/Explore/Search/MBSearchViewModel.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "30"
+                  endingLineNumber = "30"
+                  offsetFromSymbolStart = "48">
+               </Location>
+               <Location
+                  uuid = "8A788CD7-7C95-4C65-B36D-44C2E36C4602 - c435a1c9ec513b75"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "MaBook.MBSearchViewModel.recentSearchesData.getter : MaBook.MBSearchViewModel.Section"
+                  moduleName = "MaBook"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/oleksandrdenysov/Documents/Learning/MaBook/MaBook/ViewModels/Explore/Search/MBSearchViewModel.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "30"
+                  endingLineNumber = "30"
+                  offsetFromSymbolStart = "148">
+               </Location>
+               <Location
+                  uuid = "8A788CD7-7C95-4C65-B36D-44C2E36C4602 - 59c3e040b2431f5b"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "MaBook.MBSearchViewModel.recentSearchesData.setter : MaBook.MBSearchViewModel.Section"
+                  moduleName = "MaBook"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/oleksandrdenysov/Documents/Learning/MaBook/MaBook/ViewModels/Explore/Search/MBSearchViewModel.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "0"
+                  endingLineNumber = "0"
+                  offsetFromSymbolStart = "24">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "E5648927-D903-4E1E-A2EC-7B3D44845A2B"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "MaBook/Controllers/Home/Explore Flow/Search/MBSearchViewController.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "135"
+            endingLineNumber = "135"
+            landmarkName = "actualSearchData()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "28C5EA27-1BB8-4D27-9173-48C941FE20A5"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "MaBook/Managers/LocalStateManager.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "71"
+            endingLineNumber = "71"
+            landmarkName = "LocalStateManager"
+            landmarkType = "3">
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

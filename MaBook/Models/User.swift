@@ -16,7 +16,7 @@ public struct User: Codable {
     let isOnboarding: Bool
     let storage: [Storage]?
     let basket: Int
-    let historySearches: [String]?
+    var historySearches: [[String: String]]?
     let createdAt, updatedAt: String
 }
 

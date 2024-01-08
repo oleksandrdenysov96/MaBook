@@ -62,12 +62,6 @@ class MBExploreSectionCollectionReusableView: UICollectionReusableView {
     public func configureHeader(with text: String) {
         title.text = text
     }
-//
-//    public func setupTarget(_ target: Selector) {
-//        seeAllButton.addTarget(
-//            self, action: target, for: .touchUpInside
-//        )
-//    }
 
     @objc private func didTapSeeAll() {
         delegate?.mbExploreSectionCollectionReusableViewDidTapSeeAll(self)

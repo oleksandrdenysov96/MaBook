@@ -19,6 +19,7 @@ fileprivate typealias DataSourceSnapshot = NSDiffableDataSourceSnapshot<
 class MBBooksListViewController: UIViewController {
 
     private let selectedCategory: String?
+    private let selectedBooks: [Books]?
 
     private var dataSource: DataSource?
     private var dataSourceSnapshot = DataSourceSnapshot()
@@ -52,13 +53,21 @@ class MBBooksListViewController: UIViewController {
 
     init() {
         self.selectedCategory = nil
+        self.selectedBooks = nil
         super.init(nibName: nil, bundle: nil)
     }
 
     init(selectedCategory: String) {
         self.selectedCategory = selectedCategory
+        self.selectedBooks = nil
         super.init(nibName: nil, bundle: nil)
         title = "\(selectedCategory) books"
+    }
+
+    init(selectedBooks: [Books]) {
+        self.selectedCategory = nil
+        self.selectedBooks = selectedBooks
+        super.init(nibName: nil, bundle: nil)
     }
 
     required init?(coder: NSCoder) {
@@ -93,6 +102,12 @@ class MBBooksListViewController: UIViewController {
                     }
                 }
             }
+        }
+        else if let selectedBooks = selectedBooks {
+            self.listView.hideSortAndFilterButtons()
+            self.listView.configureCollectionView()
+            self.applySnapshot(books: selectedBooks)
+            self.listView.updateCollectionView()
         }
         else {
             self.listView.configureCollectionView()
@@ -215,6 +230,7 @@ extension MBBooksListViewController: MBBooksListViewDelegate {
                     bookImage: book.images[0], genre: book.genre
                 )
                 cell.tag = indexPath.row
+                cell.delegate = self
                 return cell
             }
         )
@@ -264,4 +280,13 @@ extension MBBooksListViewController: UICollectionViewDelegate, UICollectionViewD
         let detailsVC = MBBookDetailsViewController(with: viewModel.books[indexPath.row])
         navigationController?.pushViewController(detailsVC, animated: true)
     }
+}
+
+extension MBBooksListViewController: MBBookListCollectionViewCellDelegate {
+    func mbBookListCollectionViewCellDidTapAddToCart(on cell: MBBookListCollectionViewCell) {
+        let selectedItem = viewModel.books[cell.tag]
+        print(selectedItem.title)
+    }
+    
+
 }

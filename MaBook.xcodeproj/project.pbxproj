@@ -50,6 +50,14 @@
 		697C66622B45AB480073659C /* MBBookListFilterExpandableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 697C66612B45AB480073659C /* MBBookListFilterExpandableCell.swift */; };
 		697C66642B45AB790073659C /* MBBookFilterTextFiledCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 697C66632B45AB790073659C /* MBBookFilterTextFiledCell.swift */; };
 		697C66662B45C08F0073659C /* MBBookFilterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 697C66652B45C08F0073659C /* MBBookFilterViewController.swift */; };
+		697C66692B489A4E0073659C /* MBSearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 697C66682B489A4E0073659C /* MBSearchViewController.swift */; };
+		697C666B2B489B380073659C /* MBSearchResultsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 697C666A2B489B380073659C /* MBSearchResultsViewController.swift */; };
+		697C666E2B48A8D10073659C /* MBSearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 697C666D2B48A8D10073659C /* MBSearchView.swift */; };
+		697C66712B49892B0073659C /* MBSearchViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 697C66702B49892B0073659C /* MBSearchViewModel.swift */; };
+		697C66732B49C3E20073659C /* MBTableHeaderReusableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 697C66722B49C3E20073659C /* MBTableHeaderReusableView.swift */; };
+		697C66752B49CB790073659C /* MBSearchResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 697C66742B49CB790073659C /* MBSearchResponse.swift */; };
+		697C66772B49DFAC0073659C /* MBSearchTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 697C66762B49DFAC0073659C /* MBSearchTableViewCell.swift */; };
+		697C667A2B49F5590073659C /* MBSearchBookDetailsResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 697C66792B49F5590073659C /* MBSearchBookDetailsResponse.swift */; };
 		6988C5002B32072100F60F9F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6988C4FF2B32072100F60F9F /* AppDelegate.swift */; };
 		6988C5022B32072100F60F9F /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6988C5012B32072100F60F9F /* SceneDelegate.swift */; };
 		6988C5042B32072100F60F9F /* MBSignInViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6988C5032B32072100F60F9F /* MBSignInViewController.swift */; };
@@ -86,6 +94,7 @@
 		6988C70B2B38C8F200F60F9F /* RobotoCondensed-VariableFont_wght.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6988C6F22B361D3500F60F9F /* RobotoCondensed-VariableFont_wght.ttf */; };
 		6988C70D2B38D22300F60F9F /* MBOnboardingListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6988C70C2B38D22300F60F9F /* MBOnboardingListViewController.swift */; };
 		6988C70F2B38EE6F00F60F9F /* MBOnboardingListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6988C70E2B38EE6F00F60F9F /* MBOnboardingListView.swift */; };
+		69E7D06B2B4C66F60082B07E /* MBBookReusableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69E7D06A2B4C66F60082B07E /* MBBookReusableView.swift */; };
 		CE8950D9F2269DE7C3A214D9 /* Pods_MaBook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F8BEBA31FEC7F672C227D851 /* Pods_MaBook.framework */; };
 /* End PBXBuildFile section */
 
@@ -133,6 +142,14 @@
 		697C66612B45AB480073659C /* MBBookListFilterExpandableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MBBookListFilterExpandableCell.swift; sourceTree = "<group>"; };
 		697C66632B45AB790073659C /* MBBookFilterTextFiledCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MBBookFilterTextFiledCell.swift; sourceTree = "<group>"; };
 		697C66652B45C08F0073659C /* MBBookFilterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MBBookFilterViewController.swift; sourceTree = "<group>"; };
+		697C66682B489A4E0073659C /* MBSearchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MBSearchViewController.swift; sourceTree = "<group>"; };
+		697C666A2B489B380073659C /* MBSearchResultsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MBSearchResultsViewController.swift; sourceTree = "<group>"; };
+		697C666D2B48A8D10073659C /* MBSearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MBSearchView.swift; sourceTree = "<group>"; };
+		697C66702B49892B0073659C /* MBSearchViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MBSearchViewModel.swift; sourceTree = "<group>"; };
+		697C66722B49C3E20073659C /* MBTableHeaderReusableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MBTableHeaderReusableView.swift; sourceTree = "<group>"; };
+		697C66742B49CB790073659C /* MBSearchResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MBSearchResponse.swift; sourceTree = "<group>"; };
+		697C66762B49DFAC0073659C /* MBSearchTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MBSearchTableViewCell.swift; sourceTree = "<group>"; };
+		697C66792B49F5590073659C /* MBSearchBookDetailsResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MBSearchBookDetailsResponse.swift; sourceTree = "<group>"; };
 		6988C4FC2B32072100F60F9F /* MaBook.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MaBook.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6988C4FF2B32072100F60F9F /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		6988C5012B32072100F60F9F /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -171,6 +188,7 @@
 		6988C7092B38BD0C00F60F9F /* MBDropdownButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MBDropdownButton.swift; sourceTree = "<group>"; };
 		6988C70C2B38D22300F60F9F /* MBOnboardingListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MBOnboardingListViewController.swift; sourceTree = "<group>"; };
 		6988C70E2B38EE6F00F60F9F /* MBOnboardingListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MBOnboardingListView.swift; sourceTree = "<group>"; };
+		69E7D06A2B4C66F60082B07E /* MBBookReusableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MBBookReusableView.swift; sourceTree = "<group>"; };
 		F60A00F761281F82B42C9982 /* Pods-MaBook.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MaBook.debug.xcconfig"; path = "Target Support Files/Pods-MaBook/Pods-MaBook.debug.xcconfig"; sourceTree = "<group>"; };
 		F8BEBA31FEC7F672C227D851 /* Pods_MaBook.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MaBook.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -191,6 +209,7 @@
 		6905F7D82B3B6106006D45FE /* Explore */ = {
 			isa = PBXGroup;
 			children = (
+				697C666C2B48A8B30073659C /* Search */,
 				691BDCE22B40906700F680F6 /* Details Page */,
 				6905F95D2B3E2F87006D45FE /* List Page */,
 				6905F95C2B3E2F2B006D45FE /* Main Page */,
@@ -201,6 +220,7 @@
 		6905F7DB2B3B6137006D45FE /* Explore */ = {
 			isa = PBXGroup;
 			children = (
+				697C666F2B4989180073659C /* Search */,
 				6905F7DC2B3B6146006D45FE /* MBExploreViewViewModel.swift */,
 				6905F9662B3EE3DB006D45FE /* MBBookListViewViewModel.swift */,
 				697C665F2B459DF40073659C /* MBBookListFiltersViewModel.swift */,
@@ -211,6 +231,7 @@
 		6905F7E22B3B6415006D45FE /* ResponseModels */ = {
 			isa = PBXGroup;
 			children = (
+				697C66782B49F5350073659C /* Search */,
 				6988C5382B322E7700F60F9F /* Auth */,
 				6905F7E32B3B6438006D45FE /* MBBooksHomeResponse.swift */,
 				6905F9682B3F15D3006D45FE /* MBBooksSectionResponse.swift */,
@@ -221,11 +242,12 @@
 		6905F9552B3DBFBF006D45FE /* Explore Flow */ = {
 			isa = PBXGroup;
 			children = (
+				697C66672B489A160073659C /* Search */,
+				691BDCDF2B40901700F680F6 /* Details Page */,
 				6905F6762B39FDAF006D45FE /* MBExploreViewController.swift */,
 				6905F9562B3DC026006D45FE /* MBBooksListViewController.swift */,
 				6905F9582B3DC036006D45FE /* MBCategoriesListViewController.swift */,
 				697C66652B45C08F0073659C /* MBBookFilterViewController.swift */,
-				691BDCDF2B40901700F680F6 /* Details Page */,
 			);
 			path = "Explore Flow";
 			sourceTree = "<group>";
@@ -330,6 +352,42 @@
 			path = Filters;
 			sourceTree = "<group>";
 		};
+		697C66672B489A160073659C /* Search */ = {
+			isa = PBXGroup;
+			children = (
+				697C66682B489A4E0073659C /* MBSearchViewController.swift */,
+				697C666A2B489B380073659C /* MBSearchResultsViewController.swift */,
+			);
+			path = Search;
+			sourceTree = "<group>";
+		};
+		697C666C2B48A8B30073659C /* Search */ = {
+			isa = PBXGroup;
+			children = (
+				697C666D2B48A8D10073659C /* MBSearchView.swift */,
+				697C66722B49C3E20073659C /* MBTableHeaderReusableView.swift */,
+				697C66762B49DFAC0073659C /* MBSearchTableViewCell.swift */,
+			);
+			path = Search;
+			sourceTree = "<group>";
+		};
+		697C666F2B4989180073659C /* Search */ = {
+			isa = PBXGroup;
+			children = (
+				697C66702B49892B0073659C /* MBSearchViewModel.swift */,
+			);
+			path = Search;
+			sourceTree = "<group>";
+		};
+		697C66782B49F5350073659C /* Search */ = {
+			isa = PBXGroup;
+			children = (
+				697C66742B49CB790073659C /* MBSearchResponse.swift */,
+				697C66792B49F5590073659C /* MBSearchBookDetailsResponse.swift */,
+			);
+			path = Search;
+			sourceTree = "<group>";
+		};
 		6988C4F32B32072100F60F9F = {
 			isa = PBXGroup;
 			children = (
@@ -392,6 +450,7 @@
 				6988C7062B38904B00F60F9F /* Onboarding */,
 				6988C6ED2B361B8B00F60F9F /* Auth */,
 				6905F9472B3C6665006D45FE /* MBCompositionalLayout.swift */,
+				69E7D06A2B4C66F60082B07E /* MBBookReusableView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -663,6 +722,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				6988C51F2B320B8800F60F9F /* MBEmailSignInViewController.swift in Sources */,
+				697C666E2B48A8D10073659C /* MBSearchView.swift in Sources */,
 				6905F9692B3F15D3006D45FE /* MBBooksSectionResponse.swift in Sources */,
 				6905F67F2B3A0547006D45FE /* MBStrings.swift in Sources */,
 				6905F9652B3E38C7006D45FE /* MBBookListCollectionViewCell.swift in Sources */,
@@ -676,12 +736,14 @@
 				6988C5042B32072100F60F9F /* MBSignInViewController.swift in Sources */,
 				691BDCE82B41A41A00F680F6 /* MBBookSummaryCollectionViewCell.swift in Sources */,
 				6988C7082B38907400F60F9F /* MBLocationOnboardingView.swift in Sources */,
+				69E7D06B2B4C66F60082B07E /* MBBookReusableView.swift in Sources */,
 				6905F9592B3DC036006D45FE /* MBCategoriesListViewController.swift in Sources */,
 				6988C5372B322A1700F60F9F /* MBEndpoint.swift in Sources */,
 				6988C6EA2B35EB5900F60F9F /* OnboardingManager.swift in Sources */,
 				6988C5232B320CA400F60F9F /* MBWelcomeSplashViewController.swift in Sources */,
 				6988C6FB2B37144800F60F9F /* MBEmailSignInView.swift in Sources */,
 				6988C5212B320C7900F60F9F /* MBUsernameSignUpViewController.swift in Sources */,
+				697C667A2B49F5590073659C /* MBSearchBookDetailsResponse.swift in Sources */,
 				6988C6F42B36214E00F60F9F /* Extensions.swift in Sources */,
 				6988C70D2B38D22300F60F9F /* MBOnboardingListViewController.swift in Sources */,
 				6988C7032B387E2900F60F9F /* MBLoader.swift in Sources */,
@@ -704,6 +766,7 @@
 				6905F7EC2B3C3B85006D45FE /* MBViewsBadgeView.swift in Sources */,
 				6905F7E62B3B6BDB006D45FE /* MBCategoriesCollectionViewCell.swift in Sources */,
 				6988C6FD2B37270F00F60F9F /* MBSignUpView.swift in Sources */,
+				697C666B2B489B380073659C /* MBSearchResultsViewController.swift in Sources */,
 				6905F9612B3E2FCA006D45FE /* MBBooksListView.swift in Sources */,
 				691BDCF72B42116500F680F6 /* MBReusableCell.swift in Sources */,
 				6905F67B2B39FDCE006D45FE /* MBMyPageViewController.swift in Sources */,
@@ -711,16 +774,21 @@
 				6905F7E82B3B6BEF006D45FE /* MBBookCollectionViewCell.swift in Sources */,
 				6988C52E2B320D8400F60F9F /* MBTabBarViewController.swift in Sources */,
 				6988C51D2B320B0D00F60F9F /* MBSignUpViewController.swift in Sources */,
+				697C66712B49892B0073659C /* MBSearchViewModel.swift in Sources */,
 				691BDCF92B42417B00F680F6 /* MBBookInfoCollectionViewCell.swift in Sources */,
 				6905F7E42B3B6438006D45FE /* MBBooksHomeResponse.swift in Sources */,
 				6905F7DA2B3B6120006D45FE /* MBExploreView.swift in Sources */,
 				6905F9572B3DC026006D45FE /* MBBooksListViewController.swift in Sources */,
+				697C66732B49C3E20073659C /* MBTableHeaderReusableView.swift in Sources */,
+				697C66752B49CB790073659C /* MBSearchResponse.swift in Sources */,
+				697C66772B49DFAC0073659C /* MBSearchTableViewCell.swift in Sources */,
 				6988C5292B320D3700F60F9F /* MBPermissionsOnboardingViewController.swift in Sources */,
 				691BDCED2B41FF1900F680F6 /* MBPhotoSectionViewModel.swift in Sources */,
 				6988C53E2B32325F00F60F9F /* MBAuthResponse.swift in Sources */,
 				691BDCE62B41A3CC00F680F6 /* MBBookPhotosCollectionViewCell.swift in Sources */,
 				6988C7052B3889CF00F60F9F /* MBOnboardingResponse.swift in Sources */,
 				6988C6F92B3710EB00F60F9F /* MBTextField.swift in Sources */,
+				697C66692B489A4E0073659C /* MBSearchViewController.swift in Sources */,
 				6988C6F72B3621AA00F60F9F /* MBButton.swift in Sources */,
 				6988C70F2B38EE6F00F60F9F /* MBOnboardingListView.swift in Sources */,
 				6905F9522B3D69D1006D45FE /* MBTimestamtBadgeView.swift in Sources */,
