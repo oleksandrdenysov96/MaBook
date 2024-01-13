@@ -79,6 +79,10 @@ final class MBExploreViewViewModel {
             }
             group.leave()
         }
+
+        group.notify(queue: .global()) {
+            MBLogger.shared.debugInfo("home data && user are received successfully")
+        }
     }
 
     public func createSectionLayout(for section: Int) -> NSCollectionLayoutSection {

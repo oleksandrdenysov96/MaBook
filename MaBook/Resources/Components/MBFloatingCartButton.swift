@@ -7,7 +7,11 @@
 
 import UIKit
 
-class MBFloatingCartButton: UIButton {
+class MBFloatingCartButton: UIButton, MBBadgeable {
+    var badgeView: UIView?
+    
+    var badgeLabel: UILabel?
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         backgroundColor = .white

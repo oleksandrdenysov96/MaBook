@@ -40,11 +40,8 @@ class MBEmailSignInView: UIView {
         return button
     }()
 
-    private let separatorView: UIView = {
-        let view = UIView()
-        view.translatesAutoresizingMaskIntoConstraints = false
-        view.backgroundColor = .lightGray
-        return view
+    private let separatorView: MBSeparator = {
+        return MBSeparator()
     }()
 
     private let forgotPasswordButton: UIButton = {
@@ -83,8 +80,6 @@ class MBEmailSignInView: UIView {
             passwordTextField.centerXAnchor.constraint(equalTo: centerXAnchor),
 
             separatorView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -170),
-            separatorView.heightAnchor.constraint(equalToConstant: 0.6),
-            separatorView.widthAnchor.constraint(equalTo: widthAnchor),
 
             loginButton.topAnchor.constraint(equalTo: separatorView.bottomAnchor, constant: 20),
             loginButton.centerXAnchor.constraint(equalTo: centerXAnchor),

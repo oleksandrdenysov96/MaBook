@@ -79,7 +79,7 @@ class MBSearchViewModel {
         }
     }
 
-    public func fetchBookDetails(bookId: String, _ completion: @escaping ([Books]?, Bool) -> Void) {
+    public func fetchBookDetails(bookId: String, _ completion: @escaping ([Book]?, Bool) -> Void) {
         let query = URLQueryItem(name: "id", value: bookId)
 
         let request = MBRequest(
@@ -88,7 +88,7 @@ class MBSearchViewModel {
             queryParameters: [query]
         )
 
-        MBApiCaller.shared.executeRequest(request, expected: MBSearchBookDetailsResponse.self) { result, statusCode in
+        MBApiCaller.shared.executeRequest(request, expected: MBRequestedBooksResponse.self) { result, statusCode in
             switch result {
             case .success(let data):
                 completion(data.data.books, true)
@@ -103,7 +103,7 @@ class MBSearchViewModel {
         }
     }
 
-    public func fetchBooksList(bookIds: [String], _ completion: @escaping ([Books]?, Bool) -> Void) {
+    public func fetchBooksList(bookIds: [String], _ completion: @escaping ([Book]?, Bool) -> Void) {
         let query = bookIds.compactMap {
             return URLQueryItem(name: "id", value: $0)
         }
@@ -114,7 +114,7 @@ class MBSearchViewModel {
             queryParameters: query
         )
 
-        MBApiCaller.shared.executeRequest(request, expected: MBSearchBookDetailsResponse.self) { result, statusCode in
+        MBApiCaller.shared.executeRequest(request, expected: MBRequestedBooksResponse.self) { result, statusCode in
             switch result {
             case .success(let data):
                 completion(data.data.books, true)

@@ -65,28 +65,13 @@ public class LocalStateManager {
                 return
             }
             recentSearches = history
+            cartItemsCount = String(user.basket)
         }
     }
 
     public var recentSearches = [[String: String]]()
-//        get {
-//            if let history = loggedUser?.historySearches {
-//                return history
-//            } else {
-//                return [[:]]
-//            }
-//        }
-//        set {
-//            if let history = loggedUser?.historySearches {
-//                if (history.count + newValue.count) > 6 {
-//                    loggedUser?.historySearches?.removeSubrange(0...(history.count + newValue.count) - 6)
-//                }
-//                if !history.contains(newValue) {
-//                    loggedUser?.historySearches?.append(contentsOf: newValue)
-//                }
-//            }
-//        }
-    }
+    public var cartItemsCount: String?
+}
 
 
 

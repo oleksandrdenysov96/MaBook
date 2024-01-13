@@ -29,7 +29,8 @@ final class MBBooksDetailViewViewModel {
     }
 
 
-    private var data: Books
+    private var data: Book
+    public lazy var isFavorite: Bool = false
 
     public var sections: [SectionCellType] {
         return SectionCellType.allCases
@@ -39,18 +40,19 @@ final class MBBooksDetailViewViewModel {
 
     private let layout = MBCompositionalLayout()
 
-    init(with data: Books) {
+    init(with data: Book) {
         self.data = data
         retrieveCellItems()
     }
 
-    public func fetchPrice(_ completion: @escaping (Books) -> Void) {
+    public func fetchSecondaryData(_ completion: @escaping (Book) -> Void) {
         let request = MBRequest(endpoint: .books, pathComponents: [String(data.id)])
 
         MBApiCaller.shared.executeRequest(request, expected: MBBookDetailsResponse.self) { [weak self] result, statusCode in
             switch result {
             case .success(let data):
                 self?.data = data.data
+                self?.isFavorite = data.data.isFavorite
                 completion(data.data)
             case .failure(let failure):
                 MBLogger.shared.debugInfo("failure - \(failure)")
@@ -68,6 +70,39 @@ final class MBBooksDetailViewViewModel {
             .pagesCell(.init(infoParam: "Pages:", value: String(data.pages))),
             .dimensionsCell(.init(infoParam: "Dimensions:", value: data.dimensions))
         ]
+    }
+
+    public func updateFavoritesForBook(action: MBRequest.HttpMethod, body: Book? = nil, id: String? = nil) {
+        if action == .post {
+            guard let body = body else {
+                MBLogger.shared.debugInfo("no body for update favorites")
+                return
+            }
+            let request = MBRequest(
+                endpoint: .user,
+                httpMethod: .post,
+                pathComponents: ["favorites"]
+            )
+            let bodyData = try? JSONEncoder().encode(body)
+
+            MBApiCaller.shared.executeRequest(
+                request, body: bodyData, expected: Dictionary<String, Int>.self
+            ) { _, _ in }
+        }
+        else if action == .delete {
+            guard let id = id else {
+                MBLogger.shared.debugInfo("no id for update favorites")
+                return
+            }
+            let request = MBRequest(
+                endpoint: .user,
+                httpMethod: .delete,
+                pathComponents: ["favorites", id]
+            )
+            MBApiCaller.shared.executeRequest(
+                request, expected: Dictionary<String, Int>.self
+            ) { _, _ in }
+        }
     }
 
     public func createLayout(for section: Int) -> NSCollectionLayoutSection {

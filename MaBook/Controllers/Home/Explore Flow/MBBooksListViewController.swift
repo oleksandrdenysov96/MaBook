@@ -9,17 +9,17 @@ import UIKit
 import UIScrollView_InfiniteScroll
 
 fileprivate typealias DataSource = UICollectionViewDiffableDataSource<
-    MBBookListViewViewModel.Sections, Books
+    MBBookListViewViewModel.Sections, Book
 >
 fileprivate typealias DataSourceSnapshot = NSDiffableDataSourceSnapshot<
-    MBBookListViewViewModel.Sections, Books
+    MBBookListViewViewModel.Sections, Book
 >
 
 
-class MBBooksListViewController: UIViewController {
+class MBBooksListViewController: MBCartProvidingViewController {
 
     private let selectedCategory: String?
-    private let selectedBooks: [Books]?
+    private let selectedBooks: [Book]?
 
     private var dataSource: DataSource?
     private var dataSourceSnapshot = DataSourceSnapshot()
@@ -64,7 +64,7 @@ class MBBooksListViewController: UIViewController {
         title = "\(selectedCategory) books"
     }
 
-    init(selectedBooks: [Books]) {
+    init(selectedBooks: [Book]) {
         self.selectedCategory = nil
         self.selectedBooks = selectedBooks
         super.init(nibName: nil, bundle: nil)
@@ -80,12 +80,19 @@ class MBBooksListViewController: UIViewController {
         view.addSubview(listView)
         view.addSubview(loader)
         listView.delegate = self
+        applyCartView(fromChild: listView)
+        listView.floatingButton.showBadge(withBlink: true)
         configureView()
     }
 
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         setupConstraints()
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        needUpdateBadgeOn(listView)
     }
 
     private func configureView() {
@@ -227,7 +234,7 @@ extension MBBooksListViewController: MBBooksListViewDelegate {
                 cell.configure(
                     badgeType: cellBadge, badgeText: badgeText,
                     price: String(book.price), bookTitle: book.title,
-                    bookImage: book.images[0], genre: book.genre
+                    bookImage: book.images.first, genre: book.genre
                 )
                 cell.tag = indexPath.row
                 cell.delegate = self
@@ -236,7 +243,7 @@ extension MBBooksListViewController: MBBooksListViewDelegate {
         )
     }
 
-    private func applySnapshot(books: [Books]) {
+    private func applySnapshot(books: [Book]) {
         dataSourceSnapshot.appendSections([MBBookListViewViewModel.Sections.list])
         dataSourceSnapshot.appendItems(books)
         guard let dataSource = dataSource else { return }
@@ -285,7 +292,13 @@ extension MBBooksListViewController: UICollectionViewDelegate, UICollectionViewD
 extension MBBooksListViewController: MBBookListCollectionViewCellDelegate {
     func mbBookListCollectionViewCellDidTapAddToCart(on cell: MBBookListCollectionViewCell) {
         let selectedItem = viewModel.books[cell.tag]
-        print(selectedItem.title)
+        viewModel.addToCart(item: selectedItem) { [weak self] success in
+            DispatchQueue.main.async {
+                if success, let count = LocalStateManager.shared.cartItemsCount {
+                    self?.listView.floatingButton.updateBadgeCounter(withCount: count)
+                }
+            }
+        }
     }
     
 

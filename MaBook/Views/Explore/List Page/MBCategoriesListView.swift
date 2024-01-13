@@ -14,7 +14,7 @@ protocol MBCategoriesListViewDelegate: AnyObject {
     )
 }
 
-class MBCategoriesListView: MBBookReusableView {
+class MBCategoriesListView: MBCartProvidingView {
 
     public weak var delegate: MBCategoriesListViewDelegate?
 
@@ -42,6 +42,7 @@ class MBCategoriesListView: MBBookReusableView {
         setupCartButton()
         setupConstraints()
         setupSelfConstraints()
+        
     }
     
     required init?(coder: NSCoder) {

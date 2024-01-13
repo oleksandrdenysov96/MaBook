@@ -7,7 +7,13 @@
 
 import UIKit
 
-class MBBookReusableView: UIView {
+protocol MBCartProvidingViewDelegate: AnyObject {
+    func mbCartProvidingViewDidTapCartButton()
+}
+
+class MBCartProvidingView: UIView {
+
+    public weak var cartProviderDelegate: MBCartProvidingViewDelegate?
 
     internal let floatingButton: MBFloatingCartButton = {
         let button = MBFloatingCartButton(frame: .zero)
@@ -33,6 +39,11 @@ class MBBookReusableView: UIView {
 
     internal func setupCartButton() {
         addSubview(floatingButton)
+        floatingButton.addTarget(self, action: #selector(didTapCartButton), for: .touchUpInside)
+    }
+
+    @objc internal func didTapCartButton() {
+        cartProviderDelegate?.mbCartProvidingViewDidTapCartButton()
     }
 
     internal func setupConstraints() {

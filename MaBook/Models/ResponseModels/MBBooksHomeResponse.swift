@@ -28,7 +28,7 @@ public struct Categories: Codable {
 }
 
 public struct BooksData: Codable {
-    let books: [Books]
+    let books: [Book]
     let info: Info
 }
 

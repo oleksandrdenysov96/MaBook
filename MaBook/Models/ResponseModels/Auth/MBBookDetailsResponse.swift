@@ -11,5 +11,5 @@ import Foundation
 struct MBBookDetailsResponse: Codable {
     let status: Int
     let message: String
-    let data: Books
+    let data: Book
 }

@@ -7,7 +7,7 @@
 
 import UIKit
 
-class MBExploreViewController: UIViewController, UISearchControllerDelegate {
+class MBExploreViewController: MBCartProvidingViewController, UISearchControllerDelegate {
 
     private let viewModel = MBExploreViewViewModel()
     private let exploreView = MBExploreView()
@@ -27,10 +27,12 @@ class MBExploreViewController: UIViewController, UISearchControllerDelegate {
         navigationItem.rightBarButtonItem?.tintColor = .black
         navigationItem.searchController = searchController
         navigationItem.hidesSearchBarWhenScrolling = false
-        
+
         searchController.delegate = self
         searchController.searchBar.placeholder = "Book name or author name"
         view.addSubviews(views: exploreView, loader)
+        applyCartView(fromChild: exploreView)
+
         loader.startLoader()
         exploreView.delegate = self
         updateHomePage()
@@ -42,6 +44,11 @@ class MBExploreViewController: UIViewController, UISearchControllerDelegate {
 
     }
 
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        needUpdateBadgeOn(exploreView)
+    }
+
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         setupConstraints()
@@ -50,7 +57,10 @@ class MBExploreViewController: UIViewController, UISearchControllerDelegate {
     private func updateHomePage(_ completion: @escaping () -> Void = {}) {
         viewModel.performMainRequests() { [weak self] success in
             if success {
-                self?.exploreView.configureCollectionView()
+                DispatchQueue.main.async {
+                    self?.exploreView.configureCollectionView()
+                    self?.exploreView.floatingButton.showBadge(withBlink: true)
+                }
             }
             else {
                 self?.loader.stopLoader()
@@ -143,7 +153,7 @@ extension MBExploreViewController: UICollectionViewDelegate,
                                     UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        var dataToPass: Books?
+        var dataToPass: Book?
         switch viewModel.sections[indexPath.section] {
         case .categories:
             let categoryListVC = MBBooksListViewController(
@@ -192,14 +202,6 @@ extension MBExploreViewController: UICollectionViewDelegate,
     func collectionView(_ collectionView: UICollectionView,
                         cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
 
-        guard let book = viewModel.allBooks?.books[indexPath.row],
-              let recentlyAddedBook = viewModel.recentlyAdded?.books[indexPath.row],
-              let mostViewedBook = viewModel.mostViewed?.books[indexPath.row] 
-        else {
-            MBLogger.shared.debugInfo("end: vc failed to unwrap cells data")
-            fatalError()
-        }
-
         switch viewModel.sections[indexPath.section] {
         case .categories:
             let cell: MBCategoriesCollectionViewCell = collectionView
@@ -211,6 +213,7 @@ extension MBExploreViewController: UICollectionViewDelegate,
             return cell
 
         case .allBooks:
+            guard let book = viewModel.allBooks?.books[indexPath.row] else {fatalError()}
             let cell: MBBookCollectionViewCell = collectionView
                 .dequeueReusableCell(for: indexPath)
             cell.configure(
@@ -221,16 +224,18 @@ extension MBExploreViewController: UICollectionViewDelegate,
             return cell
 
         case .recentlyAdded:
+            guard let recentlyAddedBook = viewModel.recentlyAdded?.books[indexPath.row] else {fatalError()}
             let cell: MBBookCollectionViewCell = collectionView
                 .dequeueReusableCell(for: indexPath)
             cell.configure(
                 badgeType: .timestamp, badgeText: recentlyAddedBook.createdAt,
                 price: recentlyAddedBook.price, bookTitle: recentlyAddedBook.title,
-                bookImage: recentlyAddedBook.images[0], genre: recentlyAddedBook.genre
+                bookImage: recentlyAddedBook.images.first, genre: recentlyAddedBook.genre
             )
             return cell
 
         case .mostViewed:
+            guard let mostViewedBook = viewModel.mostViewed?.books[indexPath.row] else {fatalError()}
             let cell: MBBookCollectionViewCell = collectionView
                 .dequeueReusableCell(for: indexPath)
             cell.configure(

@@ -20,13 +20,13 @@ class MBBookDetailsViewController: UIViewController {
 
     private var dataSource: DataSource!
     private var dataSourceSnapshot = DataSourceSnapshot()
-    private var bookData: Books
+    private var bookData: Book
 
     private let detailsView = MBBookDetailsView()
     private let viewModel: MBBooksDetailViewViewModel
 
 
-    init(with data: Books) {
+    init(with data: Book) {
         self.bookData = data
         self.viewModel = .init(with: data)
         super.init(nibName: nil, bundle: nil)
@@ -45,11 +45,39 @@ class MBBookDetailsViewController: UIViewController {
         detailsView.configureCollectionView()
         applySnapshot()
         detailsView.configureCartButtonPrice()
+        setupLikeButton()
     }
 
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         setupConstraints()
+    }
+
+    private func setupLikeButton() {
+        navigationItem.rightBarButtonItem = UIBarButtonItem(
+            image: self.viewModel.isFavorite ? UIImage(systemName: "heart.fill") : UIImage(systemName: "heart"),
+            style: .plain,
+            target: self,
+            action: #selector(didTapHeart)
+        )
+        navigationItem.rightBarButtonItem?.tintColor = self.viewModel.isFavorite ? .red : .black
+    }
+
+    
+    @objc private func didTapHeart() {
+        UIView.animate(withDuration: 0.2) { [weak self] in
+            guard let self = self else {return}
+            if self.viewModel.isFavorite {
+                navigationItem.rightBarButtonItem?.tintColor = .black
+                navigationItem.rightBarButtonItem?.image = UIImage(systemName: "heart")
+                self.viewModel.updateFavoritesForBook(action: .delete, id: String(self.bookData.id))
+            }
+            else {
+                navigationItem.rightBarButtonItem?.tintColor = .red
+                navigationItem.rightBarButtonItem?.image = UIImage(systemName: "heart.fill")
+                self.viewModel.updateFavoritesForBook(action: .post, body: self.bookData)
+            }
+        }
     }
 
     private func setupConstraints() {
@@ -125,16 +153,30 @@ extension MBBookDetailsViewController: MBBookDetailsViewDelegate {
     }
 
     func mbBookDetailsView(_ detailsView: MBBookDetailsView, needsConfigure button: MBButton) {
-        viewModel.fetchPrice { [weak self] newData in
+        viewModel.fetchSecondaryData { [weak self] newData in
             guard let self = self else {return}
-            DispatchQueue.main.async { 
+            DispatchQueue.main.async {
                 button.setTitle(
                     "Add to Cart (\(self.bookData.price)P | \(String(newData.price)))",
                     for: .normal
                 )
                 button.isLoading = false
-            }
 
+                UIView.animate(withDuration: 0.2) {
+                    if self.viewModel.isFavorite {
+                        self.navigationItem.rightBarButtonItem?.tintColor = .red
+                        self.navigationItem.rightBarButtonItem?.image = UIImage(systemName: "heart.fill")
+//                        self.viewModel.updateFavoritesForBook(action: .post, body: self.bookData)
+
+                    }
+                    else {
+                        self.navigationItem.rightBarButtonItem?.tintColor = .black
+                        self.navigationItem.rightBarButtonItem?.image = UIImage(systemName: "heart")
+//                        self.viewModel.updateFavoritesForBook(action: .delete, id: String(self.bookData.id))
+                    }
+
+                }
+            }
         }
     }
 }

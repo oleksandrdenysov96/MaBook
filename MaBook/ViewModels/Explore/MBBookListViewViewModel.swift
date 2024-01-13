@@ -38,7 +38,7 @@ final class MBBookListViewViewModel {
         return allBooksData.info
     }()
 
-    public lazy var books: [Books] = {
+    public lazy var books: [Book] = {
         return allBooksData.books
     }()
 
@@ -82,7 +82,7 @@ final class MBBookListViewViewModel {
     public func fetchCategoriesBooks(
         for category: String,
         via url: URL? = nil,
-        _ completion: @escaping (Bool, [Books]?
+        _ completion: @escaping (Bool, [Book]?
         ) -> Void = {_,_ in }) 
     {
         var request: MBRequest!
@@ -112,7 +112,7 @@ final class MBBookListViewViewModel {
     }
 
 
-    public func fetchBooks(via url: URL? = nil, _ completion: @escaping (Bool, [Books]?) -> Void) {
+    public func fetchBooks(via url: URL? = nil, _ completion: @escaping (Bool, [Book]?) -> Void) {
         var request: MBRequest!
         if let url = url {
             request = MBRequest(url: url)
@@ -155,14 +155,29 @@ final class MBBookListViewViewModel {
             completion(isSuccess)
         }
     }
-    
-    private func perform<T: Codable>(_ request: MBRequest, receive type: T.Type,
+
+    public func addToCart(item: Book, _ completion: @escaping (Bool) -> Void) {
+        let request = MBRequest(endpoint: .user, httpMethod: .post, pathComponents: ["basket"])
+        let jsonBody = try? JSONEncoder().encode(item)
+
+        self.perform(request, body: jsonBody, receive: MBAddToCartResponse.self) { success, result in
+            guard success, let count = result?.count else {
+                MBLogger.shared.debugInfo("list vm failed with adding to basket")
+                completion(false)
+                return
+            }
+            MBLogger.shared.debugInfo("list vm: successfuly add to basket")
+            LocalStateManager.shared.cartItemsCount = String(count)
+            completion(true)
+        }
+    }
+
+    private func perform<T: Codable>(_ request: MBRequest, body: Data? = nil, receive type: T.Type,
                                      completion: @escaping (Bool, T?) -> Void) {
 
         MBApiCaller.shared.executeRequest(
-            request, expected: type.self, shouldCache: false
-        ) { [weak self] result, statusCode in
-            guard let self = self else {return}
+            request, body: body, expected: type.self, shouldCache: false
+        ) { result, statusCode in
 
             switch result {
             case .success(let success):

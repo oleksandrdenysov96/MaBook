@@ -1,5 +1,5 @@
 //
-//  Books.swift
+//  Book.swift
 //  MaBook
 //
 //  Created by Oleksandr Denysov on 26.12.2023.
@@ -8,7 +8,7 @@
 import Foundation
 
 
-struct Books: Codable, Hashable {
+struct Book: Codable, Hashable {
     let id, userId: Int
     let title, description, author: String
     let images: [String]

@@ -116,14 +116,16 @@ class MBBookCollectionViewCell: UICollectionViewCell, MBReusableCell {
         if let views = badgeView as? MBViewsBadgeView {
             views.imageView.image = nil
             views.label.text = nil
+            views.removeFromSuperview()
         }
         else if let timestamp = badgeView as? MBTimestamtBadgeView {
             timestamp.label.text = nil
+            timestamp.removeFromSuperview()
         }
     }
 
     public func configure(badgeType: CellBadgeType, badgeText: String?, price: String,
-                          bookTitle: String, bookImage: String, genre: String) {
+                          bookTitle: String, bookImage: String?, genre: String) {
         switch badgeType {
         case .views:
             badgeView = MBViewsBadgeView()
@@ -150,10 +152,12 @@ class MBBookCollectionViewCell: UICollectionViewCell, MBReusableCell {
         cellBookTitle.text = bookTitle
         genreLabel.text = genre
 
-        guard let url = URL(string: bookImage) else {
+        guard let bookImage = bookImage, let url = URL(string: bookImage) else {
             MBLogger.shared.debugInfo(
                 "book cell: Image for book isn't found"
             )
+            imageView.image = UIImage(systemName: "photo")
+            imageView.tintColor = .lightGray
             return
         }
         imageView.sd_setImage(with: url)

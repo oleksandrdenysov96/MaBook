@@ -15,7 +15,7 @@ protocol MBExploreViewDelegate: AnyObject {
     )
 }
 
-class MBExploreView: MBBookReusableView {
+class MBExploreView: MBCartProvidingView {
 
     public weak var delegate: MBExploreViewDelegate?
 

@@ -18,7 +18,7 @@ protocol MBBooksListViewDelegate: AnyObject {
     func mbBooksListViewShouldShowFilters(updateOnCompletion collection: UICollectionView)
 }
 
-final class MBBooksListView: MBBookReusableView {
+final class MBBooksListView: MBCartProvidingView {
 
     public weak var delegate: MBBooksListViewDelegate?
 

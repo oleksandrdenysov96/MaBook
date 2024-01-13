@@ -7,13 +7,14 @@
 
 import Foundation
 
+// MARK: For Search && Basket
 
-struct MBSearchBookDetailsResponse: Codable {
+struct MBRequestedBooksResponse: Codable {
     let status: Int
     let message: String
     let data: BookSearchData
 }
 
 struct BookSearchData: Codable {
-    let books: [Books]
+    let books: [Book]
 }

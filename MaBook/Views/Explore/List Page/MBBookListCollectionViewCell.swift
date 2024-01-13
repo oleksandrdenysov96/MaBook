@@ -23,6 +23,7 @@ class MBBookListCollectionViewCell: MBBookCollectionViewCell {
         super.init(frame: frame)
         setupCommonSubviews()
         contentView.addSubview(addToCartButton)
+        
         super.setupConstraints()
         setupConstraintsForListCell()
 

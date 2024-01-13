@@ -64,11 +64,8 @@ class MBSignInOptionsView: UIView {
         return button
     }()
 
-    private let separatorView: UIView = {
-        let view = UIView()
-        view.translatesAutoresizingMaskIntoConstraints = false
-        view.backgroundColor = .lightGray
-        return view
+    private let separatorView: MBSeparator = {
+        return MBSeparator()
     }()
 
     private let dontHaveAccLabel: UILabel = {
@@ -164,8 +161,6 @@ class MBSignInOptionsView: UIView {
             separatorView.topAnchor.constraint(
                 equalTo: continueWithEmailButton.bottomAnchor, constant: 40
             ),
-            separatorView.heightAnchor.constraint(equalToConstant: 1),
-            separatorView.widthAnchor.constraint(equalToConstant: 360),
             separatorView.centerXAnchor.constraint(equalTo: centerXAnchor),
 
             appleSignInButton.topAnchor.constraint(equalTo: separatorView.bottomAnchor, constant: 40),

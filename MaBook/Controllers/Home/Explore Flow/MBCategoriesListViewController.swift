@@ -7,7 +7,7 @@
 
 import UIKit
 
-class MBCategoriesListViewController: UIViewController {
+class MBCategoriesListViewController: MBCartProvidingViewController {
 
     private let listView = MBCategoriesListView()
 
@@ -21,6 +21,13 @@ class MBCategoriesListViewController: UIViewController {
         view.addSubview(listView)
         listView.delegate = self
         listView.setupCollectionView()
+        applyCartView(fromChild: listView)
+        listView.floatingButton.showBadge(withBlink: true)
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        needUpdateBadgeOn(listView)
     }
 
     override func viewDidLayoutSubviews() {
@@ -45,8 +52,6 @@ extension MBCategoriesListViewController: MBCategoriesListViewDelegate {
         collection.delegate = self
         collection.dataSource = self
     }
-    
-
 
 }
 
