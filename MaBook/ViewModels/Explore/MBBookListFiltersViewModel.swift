@@ -28,7 +28,7 @@ final class MBBookListFiltersViewModel {
         case price
     }
 
-    private var currentSectionUrl: String {
+    var currentSectionUrl: String {
         didSet {
             guard let url = URL(string: currentSectionUrl),
                   let components = URLComponents(
@@ -41,21 +41,46 @@ final class MBBookListFiltersViewModel {
             if let categoryQueryItem = components.queryItems?
                 .first(where: {$0.name == "category"}) {
                 self.categoryQueryItem = categoryQueryItem
+                self.shouldShowCategories = false
             }
         }
     }
 
     private var categoryQueryItem: URLQueryItem?
+    public private(set) var shouldShowCategories: Bool = true
 
     init(currentSection: String) {
         self.currentSectionUrl = currentSection
+        self.shouldShowCategories = self
+            .determineShouldShowCategories(
+                from: currentSection
+            )
         setupSections()
     }
 
     public var sections = [Section]()
 
+    private func determineShouldShowCategories(from urlString: String) -> Bool {
+        guard let url = URL(string: urlString),
+              let components = URLComponents(url: url, resolvingAgainstBaseURL: true)
+        else {
+            return true
+        }
+
+        if let categoryQueryItem = components.queryItems?
+            .first(where: {
+                $0.name == "category"
+            }) {
+            self.categoryQueryItem = categoryQueryItem
+            return false
+        }
+
+        return true
+    }
+
+
     private func setupSections() {
-        if currentSectionUrl.contains("category") {
+        if shouldShowCategories == false {
             sections = [
                 .init(title: "Show only available books", options: nil),
                 .init(title: "Point Range", options: ["textfiled cell"])
@@ -128,23 +153,4 @@ final class MBBookListFiltersViewModel {
         }
         completion(generatedUrl)
     }
-
-//    private func performRequest(with url: URL, 
-//                                _ completion: @escaping (Bool, BooksData?) -> Void) {
-//        guard let request = MBRequest(url: url) else {
-//            return
-//        }
-//        MBApiCaller.shared.executeRequest(
-//            request, expected: MBBooksSectionResponse.self
-//        ) { result, ststusCode in
-//
-//            switch result {
-//            case .success(let success):
-//                completion(true, success.data)
-//            case .failure(let failure):
-//                MBLogger.shared.debugInfo("filter vm failed with filter request")
-//                completion(false, nil)
-//            }
-//        }
-//    }
 }

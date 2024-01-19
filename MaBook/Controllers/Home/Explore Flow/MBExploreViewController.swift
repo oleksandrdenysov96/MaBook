@@ -46,7 +46,6 @@ class MBExploreViewController: MBCartProvidingViewController, UISearchController
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        needUpdateBadgeOn(exploreView)
     }
 
     override func viewDidLayoutSubviews() {
@@ -59,7 +58,7 @@ class MBExploreViewController: MBCartProvidingViewController, UISearchController
             if success {
                 DispatchQueue.main.async {
                     self?.exploreView.configureCollectionView()
-                    self?.exploreView.floatingButton.showBadge(withBlink: true)
+//                    self?.exploreView.floatingButton.initiateBadge()
                 }
             }
             else {

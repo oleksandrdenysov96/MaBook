@@ -167,7 +167,7 @@ final class MBBookListViewViewModel {
                 return
             }
             MBLogger.shared.debugInfo("list vm: successfuly add to basket")
-            LocalStateManager.shared.cartItemsCount = String(count)
+            LocalStateManager.shared.cartItemsCount.send(String(count))
             completion(true)
         }
     }

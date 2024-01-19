@@ -27,7 +27,7 @@ class MBCategoriesListViewController: MBCartProvidingViewController {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        needUpdateBadgeOn(listView)
+//        needUpdateBadgeOn(listView)
     }
 
     override func viewDidLayoutSubviews() {

@@ -13,19 +13,12 @@ protocol MBExploreSectionCollectionReusableViewDelegate: AnyObject {
     )
 }
 
-class MBExploreSectionCollectionReusableView: UICollectionReusableView {
+class MBExploreSectionCollectionReusableView: MBHeaderCollectionReusableView {
 
-    static let identifier = "MBExploreSectionCollectionReusableView"
+    override class var identifier: String {
+        return "MBExploreSectionCollectionReusableView"
+    }
     public weak var delegate: MBExploreSectionCollectionReusableViewDelegate?
-
-    private let title: UILabel = {
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = .systemFont(ofSize: 18, weight: .bold)
-        label.textColor = .black
-        label.textAlignment = .left
-        return label
-    }()
 
     private let seeAllButton: UIButton = {
         let button = UIButton()
@@ -47,7 +40,7 @@ class MBExploreSectionCollectionReusableView: UICollectionReusableView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         backgroundColor = .clear
-        addSubviews(views: title, seeAllButton)
+        addSubviews(views: seeAllButton)
         setupConstraints()
         seeAllButton.addTarget(
             self, action: #selector(didTapSeeAll),
@@ -59,18 +52,16 @@ class MBExploreSectionCollectionReusableView: UICollectionReusableView {
         fatalError("init(coder:) has not been implemented")
     }
 
-    public func configureHeader(with text: String) {
-        title.text = text
-    }
-
     @objc private func didTapSeeAll() {
         delegate?.mbExploreSectionCollectionReusableViewDidTapSeeAll(self)
     }
     private func setupConstraints() {
         NSLayoutConstraint.activate([
-            title.leftAnchor.constraint(equalTo: leftAnchor, constant: 5),
-            title.topAnchor.constraint(equalTo: topAnchor),
+            self.title.leftAnchor.constraint(equalTo: leftAnchor, constant: 5),
+            self.title.topAnchor.constraint(equalTo: topAnchor, constant: 5),
+        ])
 
+        NSLayoutConstraint.activate([
             seeAllButton.rightAnchor.constraint(equalTo: rightAnchor, constant: -5),
             seeAllButton.topAnchor.constraint(equalTo: topAnchor),
             seeAllButton.widthAnchor.constraint(equalToConstant: 60),

@@ -132,9 +132,9 @@ extension MBCartViewController: MBCartItemCollectionViewCellDelegate {
                         self.cartView.updateTotalSumWith(
                             newPrice: self.viewModel.totalPrice
                         )
-                        LocalStateManager.shared.cartItemsCount = String(
+                        LocalStateManager.shared.cartItemsCount.send(String(
                             self.viewModel.basketItems.count
-                        )
+                        ))
                     }
                 }
             }

@@ -18,11 +18,11 @@ class MBCartProvidingViewController: UIViewController, MBCartProvidingViewDelega
     }
 
 
-    internal func needUpdateBadgeOn<T: MBCartProvidingView>(_ view: T) {
-        if let count = LocalStateManager.shared.cartItemsCount {
-            view.floatingButton.updateBadgeCounter(withCount: count)
-        }
-    }
+//    internal func needUpdateBadgeOn<T: MBCartProvidingView>(_ view: T) {
+//        if let count = LocalStateManager.shared.cartItemsCount {
+//            view.floatingButton.updateBadgeCounter(withCount: count)
+//        }
+//    }
 
     public func mbCartProvidingViewDidTapCartButton() {
         let cartVC = MBCartViewController()

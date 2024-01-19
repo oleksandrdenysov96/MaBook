@@ -73,7 +73,7 @@ class MBBooksListViewController: MBCartProvidingViewController {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
@@ -81,7 +81,7 @@ class MBBooksListViewController: MBCartProvidingViewController {
         view.addSubview(loader)
         listView.delegate = self
         applyCartView(fromChild: listView)
-        listView.floatingButton.showBadge(withBlink: true)
+        //        listView.floatingButton.initiateBadge()
         configureView()
     }
 
@@ -92,7 +92,6 @@ class MBBooksListViewController: MBCartProvidingViewController {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        needUpdateBadgeOn(listView)
     }
 
     private func configureView() {
@@ -176,7 +175,7 @@ extension MBBooksListViewController: MBBooksListViewDelegate {
         filtersVC.title = "Choose Filter"
         navigationController?.present(UINavigationController(rootViewController: filtersVC), animated: true)
     }
-    
+
     func mbBooksListView(_ listView: MBBooksListView, needsSort collection: UICollectionView) {
 
         DispatchQueue.main.async { [weak self] in
@@ -223,11 +222,11 @@ extension MBBooksListViewController: MBBooksListViewDelegate {
                 var badgeText: String?
 
                 switch self.cellBadge {
-                case .none: 
+                case .none:
                     badgeText = nil
-                case .timestamp: 
+                case .timestamp:
                     badgeText = book.createdAt
-                case .views: 
+                case .views:
                     badgeText = String(book.view)
                 }
 
@@ -241,6 +240,7 @@ extension MBBooksListViewController: MBBooksListViewDelegate {
                 return cell
             }
         )
+
     }
 
     private func applySnapshot(books: [Book]) {
@@ -267,6 +267,7 @@ extension MBBooksListViewController: MBBooksListViewDelegate {
                     dataSource.apply(dataSourceSnapshot, animatingDifferences: true)
 
                     collectionView.finishInfiniteScroll()
+
                 }
             }
         }
@@ -275,7 +276,7 @@ extension MBBooksListViewController: MBBooksListViewDelegate {
 
 extension MBBooksListViewController: UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
 
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, 
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout,
                         sizeForItemAt indexPath: IndexPath) -> CGSize {
         let screenBounds = UIScreen.main.bounds
         let itemReference = (screenBounds.width - 30) / 2.1
@@ -283,7 +284,7 @@ extension MBBooksListViewController: UICollectionViewDelegate, UICollectionViewD
     }
 
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        
+
         let detailsVC = MBBookDetailsViewController(with: viewModel.books[indexPath.row])
         navigationController?.pushViewController(detailsVC, animated: true)
     }
@@ -292,14 +293,8 @@ extension MBBooksListViewController: UICollectionViewDelegate, UICollectionViewD
 extension MBBooksListViewController: MBBookListCollectionViewCellDelegate {
     func mbBookListCollectionViewCellDidTapAddToCart(on cell: MBBookListCollectionViewCell) {
         let selectedItem = viewModel.books[cell.tag]
-        viewModel.addToCart(item: selectedItem) { [weak self] success in
-            DispatchQueue.main.async {
-                if success, let count = LocalStateManager.shared.cartItemsCount {
-                    self?.listView.floatingButton.updateBadgeCounter(withCount: count)
-                }
-            }
-        }
+        viewModel.addToCart(item: selectedItem) {_ in}
+
     }
-    
 
 }

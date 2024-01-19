@@ -19,11 +19,12 @@ protocol MBBadgeable: AnyObject {
 extension MBBadgeable where Self: UIView {
 
     func showBadge(withBlink: Bool) {
-        guard let numberOfItems = LocalStateManager.shared.cartItemsCount,
-              numberOfItems != "0" else {
-            MBLogger.shared.debugInfo("badgeable: no items in cart for showing the badge")
-            return
-        }
+//        guard let numberOfItems = LocalStateManager.shared.cartItemsCount,
+//              numberOfItems != "0" else {
+//            MBLogger.shared.debugInfo("badgeable: no items in cart for showing the badge")
+//            return
+//        }
+
         if let badgeView = badgeView {
             if !badgeView.isHidden {
                 return
@@ -46,7 +47,11 @@ extension MBBadgeable where Self: UIView {
         }
         guard let safeBadgeLabel = badgeLabel else { return }
 
-        safeBadgeLabel.text = String(numberOfItems)
+//        LocalStateManager.shared.cartItemsCount.assign(
+//            to: \.text,
+//            on: safeBadgeLabel
+//        )
+//        safeBadgeLabel.text = String(numberOfItems)
         safeBadgeLabel.textColor = .white
         safeBadgeLabel.font = .systemFont(ofSize: 15, weight: .bold)
         safeBadgeLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -77,18 +82,16 @@ extension MBBadgeable where Self: UIView {
             animation.timingFunction = .init(name: .easeOut)
             badgeView.layer.add(animation, forKey: "badgeBlinkAnimation")
         }
+        badgeView.isHidden = true
 
     }
 
-    func updateBadgeCounter(withCount count: String) {
-        guard let label = badgeLabel else {
-            MBLogger.shared.debugInfo("no baadge is setup for update")
-            return
-        }
-        label.text = String(count)
-    }
 
     func hideBadge() {
+        badgeView?.isHidden = true
+    }
+
+    func deallocateBadge() {
         badgeView?.layer.removeAnimation(forKey: "badgeBlinkAnimation")
         badgeView?.removeFromSuperview()
         badgeView = nil

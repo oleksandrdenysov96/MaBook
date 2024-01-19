@@ -25,6 +25,8 @@ class MBBookDetailsViewController: UIViewController {
     private let detailsView = MBBookDetailsView()
     private let viewModel: MBBooksDetailViewViewModel
 
+    private var cancellable = Set<AnyCancellable>()
+
 
     init(with data: Book) {
         self.bookData = data
@@ -55,29 +57,44 @@ class MBBookDetailsViewController: UIViewController {
 
     private func setupLikeButton() {
         navigationItem.rightBarButtonItem = UIBarButtonItem(
-            image: self.viewModel.isFavorite ? UIImage(systemName: "heart.fill") : UIImage(systemName: "heart"),
+            image: /*self.viewModel.isFavorite ? UIImage(systemName: "heart.fill") :*/ UIImage(systemName: "heart"),
             style: .plain,
             target: self,
             action: #selector(didTapHeart)
         )
-        navigationItem.rightBarButtonItem?.tintColor = self.viewModel.isFavorite ? .red : .black
+        navigationItem.rightBarButtonItem?.tintColor = /*self.viewModel.isFavorite ? .red :*/ .black
+
+        self.viewModel.isFavorite
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] isLiked in
+            UIView.animate(withDuration: 0.2) {
+                self?.navigationItem.rightBarButtonItem?.image = isLiked
+                ? UIImage(systemName: "heart.fill")
+                : UIImage(systemName: "heart")
+
+                self?.navigationItem.rightBarButtonItem?.tintColor = isLiked
+                ? .red : .black
+            }
+        }
+        .store(in: &cancellable)
     }
 
     
     @objc private func didTapHeart() {
         UIView.animate(withDuration: 0.2) { [weak self] in
             guard let self = self else {return}
-            if self.viewModel.isFavorite {
-                navigationItem.rightBarButtonItem?.tintColor = .black
-                navigationItem.rightBarButtonItem?.image = UIImage(systemName: "heart")
+            if self.viewModel.isFavorite.value {
+//                navigationItem.rightBarButtonItem?.tintColor = .black
+//                navigationItem.rightBarButtonItem?.image = UIImage(systemName: "heart")
                 self.viewModel.updateFavoritesForBook(action: .delete, id: String(self.bookData.id))
             }
             else {
-                navigationItem.rightBarButtonItem?.tintColor = .red
-                navigationItem.rightBarButtonItem?.image = UIImage(systemName: "heart.fill")
+//                navigationItem.rightBarButtonItem?.tintColor = .red
+//                navigationItem.rightBarButtonItem?.image = UIImage(systemName: "heart.fill")
                 self.viewModel.updateFavoritesForBook(action: .post, body: self.bookData)
             }
         }
+        viewModel.isFavorite.value.toggle()
     }
 
     private func setupConstraints() {
@@ -162,20 +179,20 @@ extension MBBookDetailsViewController: MBBookDetailsViewDelegate {
                 )
                 button.isLoading = false
 
-                UIView.animate(withDuration: 0.2) {
-                    if self.viewModel.isFavorite {
-                        self.navigationItem.rightBarButtonItem?.tintColor = .red
-                        self.navigationItem.rightBarButtonItem?.image = UIImage(systemName: "heart.fill")
-//                        self.viewModel.updateFavoritesForBook(action: .post, body: self.bookData)
-
-                    }
-                    else {
-                        self.navigationItem.rightBarButtonItem?.tintColor = .black
-                        self.navigationItem.rightBarButtonItem?.image = UIImage(systemName: "heart")
-//                        self.viewModel.updateFavoritesForBook(action: .delete, id: String(self.bookData.id))
-                    }
-
-                }
+//                UIView.animate(withDuration: 0.2) {
+//                    if self.viewModel.isFavorite {
+//                        self.navigationItem.rightBarButtonItem?.tintColor = .red
+//                        self.navigationItem.rightBarButtonItem?.image = UIImage(systemName: "heart.fill")
+////                        self.viewModel.updateFavoritesForBook(action: .post, body: self.bookData)
+//
+//                    }
+//                    else {
+//                        self.navigationItem.rightBarButtonItem?.tintColor = .black
+//                        self.navigationItem.rightBarButtonItem?.image = UIImage(systemName: "heart")
+////                        self.viewModel.updateFavoritesForBook(action: .delete, id: String(self.bookData.id))
+//                    }
+//
+//                }
             }
         }
     }

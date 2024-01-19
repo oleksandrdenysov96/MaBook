@@ -6,6 +6,7 @@
 //
 import UserNotifications
 import Foundation
+import Combine
 
 public class LocalStateManager {
 
@@ -65,14 +66,19 @@ public class LocalStateManager {
                 return
             }
             recentSearches = history
-            cartItemsCount = String(user.basket)
+
         }
     }
 
     public var recentSearches = [[String: String]]()
-    public var cartItemsCount: String?
-}
 
+    public lazy var cartItemsCount: CurrentValueSubject<String?, Never> = {
+        guard let user = loggedUser else {
+            return CurrentValueSubject<String?, Never>("")
+        }
+        return CurrentValueSubject<String?, Never>(String(user.basket))
+    }()
+}
 
 
 extension LocalStateManager {

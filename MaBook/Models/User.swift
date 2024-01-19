@@ -7,7 +7,8 @@
 
 import Foundation
 
-public struct User: Codable {
+public struct User: Codable, Hashable {
+    
     let id: Int
     let name, lastName, email: String
     let points: Int
@@ -18,9 +19,16 @@ public struct User: Codable {
     let basket: Int
     var historySearches: [[String: String]]?
     let createdAt, updatedAt: String
+
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+        hasher.combine(createdAt)
+        hasher.combine(email)
+        hasher.combine(name)
+    }
 }
 
 
-struct Storage: Codable {
+struct Storage: Codable, Hashable {
     let title, author, fullName, id: String
 }

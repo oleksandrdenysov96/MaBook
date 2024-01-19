@@ -23,6 +23,15 @@ class MBBookFilterViewController: UIViewController {
     private let viewModel: MBBookListFiltersViewModel
     private let filterView = MBBooksListFilterView()
 
+    private lazy var actualSections: [MBBookListFiltersViewModel.Sections] = {
+        var sections = MBBookListFiltersViewModel.Sections.allCases
+
+        if viewModel.sections.first(where: { $0.title == "Categories" }) == nil {
+            sections.remove(at: 1)
+        }
+        return sections
+    }()
+
     init(inititalData: String, selection: @escaping (URL) -> Void) {
         self.viewModel = .init(currentSection: inititalData)
         self.selectionBlock = selection
@@ -117,30 +126,30 @@ extension MBBookFilterViewController: MBBooksListFilterViewDelegate {
 
 extension MBBookFilterViewController: UITableViewDelegate, UITableViewDataSource {
 
+
     func numberOfSections(in tableView: UITableView) -> Int {
-        return viewModel.sections.count
+        return actualSections.count
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
 
-        switch MBBookListFiltersViewModel.Sections.allCases[section] {
+        switch actualSections[section] {
         case .available:
             return 1
         case .categories, .price:
             return viewModel.sections[section].isExpanded ?
             viewModel.sections[section].options!.count + 1 : 1
-
         }
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        var sections: [MBBookListFiltersViewModel.Sections] = [.available, .categories, .price]
+//        var sections: [MBBookListFiltersViewModel.Sections] = [.available, .categories, .price]
+//
+//        if viewModel.sections.first(where: { $0.title == "Categories" }) == nil {
+//            sections.remove(at: 1)
+//        }
 
-        if viewModel.sections.first(where: { $0.title == "Categories" }) == nil {
-            sections.remove(at: 1)
-        }
-
-        switch sections[indexPath.section] {
+        switch actualSections[indexPath.section] {
 
             // MARK: TOGGLE CELL
         case .available:
@@ -222,8 +231,7 @@ extension MBBookFilterViewController: UITableViewDelegate, UITableViewDataSource
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
 
-        switch MBBookListFiltersViewModel.Sections
-            .allCases[indexPath.section] {
+        switch actualSections[indexPath.section] {
         case .available:
             break
         case .categories:

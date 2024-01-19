@@ -30,7 +30,7 @@ final class MBBooksDetailViewViewModel {
 
 
     private var data: Book
-    public lazy var isFavorite: Bool = false
+    public var isFavorite = CurrentValueSubject<Bool, Never>(false)
 
     public var sections: [SectionCellType] {
         return SectionCellType.allCases
@@ -52,7 +52,7 @@ final class MBBooksDetailViewViewModel {
             switch result {
             case .success(let data):
                 self?.data = data.data
-                self?.isFavorite = data.data.isFavorite
+                self?.isFavorite.value = data.data.isFavorite
                 completion(data.data)
             case .failure(let failure):
                 MBLogger.shared.debugInfo("failure - \(failure)")
