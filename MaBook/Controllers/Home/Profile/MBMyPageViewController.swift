@@ -104,17 +104,19 @@ class MBMyPageViewController: UIViewController, UICollectionViewDelegate {
                 }
                 let cell: MBUserInfoCollectionViewCell = collectionView
                     .dequeueReusableCell(for: indexPath)
-                cell.configure(username: model.title, id: model.id)
+                cell.configure(
+                    username: model.title,
+                    id: model.id,
+                    image: model.image
+                )
 
-                cell.tapSubject.sink {
-                    self.initiateAvatarFlow()
-                    self.selectedImage.sink { image in
-                        cell.avatarImage.send(image)
-                    }
-                    .store(in: &self.cancellables)
+                cell.tapSubject.flatMap { _ -> AnyPublisher<UIImage?, Never> in
+                    return self.initiateAvatarFlow()
                 }
-                .store(in: &self.cancellables)
-
+                .sink { image in
+                    cell.avatarImage.send(image)
+                }
+                .store(in: &cancellables)
                 return cell
 
             default:
@@ -192,9 +194,24 @@ class MBMyPageViewController: UIViewController, UICollectionViewDelegate {
     }
 
 
-    private func initiateAvatarFlow() {
-        print("avatar tapped")
-        present(imagePicker, animated: true)
+    private func initiateAvatarFlow() -> AnyPublisher<UIImage?, Never> {
+        MBLogger.shared.debugInfo("vc: avatar tapped")
+        let actionSheet = UIAlertController(
+            title: "Edit photo",
+            message: "Select new photo from your gallery",
+            preferredStyle: .actionSheet
+        )
+        actionSheet.addAction(
+            UIAlertAction(title: "Cancel", style: .cancel)
+        )
+        actionSheet.addAction(
+            UIAlertAction(title: "Select Photo", style: .default, handler: { [weak self] _ in
+                guard let self = self else { return }
+                present(self.imagePicker, animated: true)
+            })
+        )
+        present(actionSheet, animated: true)
+        return selectedImage.eraseToAnyPublisher()
     }
 
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
@@ -235,9 +252,19 @@ extension MBMyPageViewController: UIImagePickerControllerDelegate, UINavigationC
 
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         if let selectedImage = info[.editedImage] as? UIImage {
+            let avatarData = selectedImage.jpegData(compressionQuality: 0.7)
             self.selectedImage.send(selectedImage)
+//            viewModel.postAvatarData(avatarData) { [weak self] success in
+//                if success {
+//                    self?.selectedImage.send(selectedImage)
+//                }
+//                else {
+//                    self?.presentSingleOptionErrorAlert(
+//                        message: "We have an error with uploading your avatar"
+//                    )
+//                }
+//            }
         }
-
         dismiss(animated: true)
     }
 

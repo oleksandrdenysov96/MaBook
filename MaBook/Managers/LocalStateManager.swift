@@ -66,9 +66,11 @@ public class LocalStateManager {
                 return
             }
             recentSearches = history
-
+            userAvatar = user.avatar
         }
     }
+
+    public var userAvatar: String?
 
     public var recentSearches = [[String: String]]()
 

@@ -33,7 +33,7 @@ final class MBApiCaller {
         }
     }
 
-    func request(from mbRequest: MBRequest, body: Data?, accessToken: String? = nil) -> URLRequest? {
+    public func request(from mbRequest: MBRequest, body: Data?, accessToken: String? = nil) -> URLRequest? {
         guard let url = mbRequest.url else {
             MBLogger.shared.debugInfo("mbrequest: no url inside")
             return nil
@@ -111,6 +111,45 @@ final class MBApiCaller {
                         data: data
                     )
                 }
+                completion(.success(result), statusCode)
+            }
+            catch {
+                MBLogger.shared.debugInfo("Failed to decode response")
+                MBLogger.shared.debugInfo(
+                    "Describtion - \(String(describing: error))\nStatus code - \(statusCode)"
+                )
+                completion(.failure(error), statusCode)
+            }
+        }
+        task.resume()
+    }
+
+    public func performRawRequest<T: Codable>(
+        urlRequest: URLRequest,
+        responseType: T.Type,
+        shouldCache: Bool = false,
+        _ completion: @escaping (Result<T, Error>, Int?
+        ) -> Void) {
+
+        let task = URLSession.shared.dataTask(with: urlRequest) { data, response, error in
+            guard let response = response as? HTTPURLResponse else {
+                return
+            }
+            let statusCode = response.statusCode
+
+            guard let data = data, error == nil else{
+                completion(.failure(error ?? MBError.failedToGetData), nil)
+                return
+            }
+
+            // Decode response
+            do {
+                MBLogger.shared.debugInfo(
+                    "Decoding response...\nSource - *** \(String(describing: urlRequest.url!)) ***"
+                )
+                MBLogger.shared.debugInfo(String(data: data, encoding: .utf8) ?? "unable to read")
+
+                let result = try JSONDecoder().decode(responseType.self, from: data)
                 completion(.success(result), statusCode)
             }
             catch {

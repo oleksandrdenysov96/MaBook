@@ -55,25 +55,25 @@ class MBUserInfoCollectionViewCell: UICollectionViewCell, MBReusableCell {
             uniqueIdLabel,
             uniqueIdValue
         )
+        handleAvatar()
+    }
 
+    private func handleAvatar() {
         let tapGesture = UITapGestureRecognizer(
             target: self, action: #selector(didTapAvatar)
         )
         tapGesture.numberOfTapsRequired = 1
         avatarImageView.addGestureRecognizer(tapGesture)
 
-
         avatarImage
             .receive(on: DispatchQueue.main)
             .sink { [weak self] image in
                 guard let self = self, let image = image else {
-                    self?.avatarImageView.image = UIImage(systemName: "person")
                     return
                 }
-
+                self.avatarImageView.contentMode = .scaleAspectFill
                 self.avatarImageView.image = image
-                self.avatarImageView.layer.cornerRadius = self
-                    .avatarImageView
+                avatarImageView.layer.cornerRadius = avatarImageView
                     .frame.width / 2
             }
             .store(in: &cancellables)
@@ -110,9 +110,20 @@ class MBUserInfoCollectionViewCell: UICollectionViewCell, MBReusableCell {
         return label
     }
 
-    public func configure(username: String, id: String) {
+    public func configure(username: String, id: String, image: String?) {
         usernameLabel.text = username.capitalized
         uniqueIdValue.text = id
+
+        if let image = image, let imageUrl = URL(string: image) {
+            avatarImageView.contentMode = .scaleAspectFill
+            avatarImageView.sd_setImage(with: imageUrl)
+        }
+        else {
+            avatarImageView.contentMode = .scaleAspectFit
+            avatarImageView.image = UIImage(systemName: "person.crop.circle")
+        }
+        avatarImageView.layer.cornerRadius = avatarImageView
+            .frame.width / 2
     }
 
     private func setupConstraints() {
@@ -128,7 +139,7 @@ class MBUserInfoCollectionViewCell: UICollectionViewCell, MBReusableCell {
 
             uniqueIdLabel.topAnchor.constraint(equalTo: usernameLabel.bottomAnchor, constant: 10),
             uniqueIdLabel.rightAnchor.constraint(
-                equalTo: contentView.centerXAnchor, constant: 20
+                equalTo: contentView.centerXAnchor, constant: 25
             ),
 
             uniqueIdValue.topAnchor.constraint(equalTo: usernameLabel.bottomAnchor, constant: 10),

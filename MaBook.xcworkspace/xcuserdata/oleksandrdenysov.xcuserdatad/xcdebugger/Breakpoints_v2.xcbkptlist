@@ -1292,8 +1292,8 @@
             filePath = "MaBook/Managers/LocalStateManager.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "73"
-            endingLineNumber = "73"
+            startingLineNumber = "75"
+            endingLineNumber = "75"
             landmarkName = "LocalStateManager"
             landmarkType = "3">
          </BreakpointContent>
@@ -1802,26 +1802,10 @@
             filePath = "MaBook/Managers/LocalStateManager.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "75"
-            endingLineNumber = "75"
-            landmarkName = "cartItemsCount"
-            landmarkType = "24">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "D8B806F7-F7E0-4B15-A6AA-9DCCADC91EB7"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "MaBook/Managers/LocalStateManager.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "69"
-            endingLineNumber = "69"
-            landmarkName = "loggedUser"
-            landmarkType = "24">
+            startingLineNumber = "77"
+            endingLineNumber = "77"
+            landmarkName = "LocalStateManager"
+            landmarkType = "3">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -1834,8 +1818,8 @@
             filePath = "MaBook/Controllers/Home/Profile/MBMyPageViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "179"
-            endingLineNumber = "179"
+            startingLineNumber = "181"
+            endingLineNumber = "181"
             landmarkName = "applySnapshot()"
             landmarkType = "7">
          </BreakpointContent>
@@ -1850,8 +1834,8 @@
             filePath = "MaBook/Controllers/Home/Profile/MBMyPageViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "173"
-            endingLineNumber = "173"
+            startingLineNumber = "175"
+            endingLineNumber = "175"
             landmarkName = "applySnapshot()"
             landmarkType = "7">
          </BreakpointContent>

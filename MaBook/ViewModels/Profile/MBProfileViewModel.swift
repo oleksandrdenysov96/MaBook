@@ -43,7 +43,9 @@ final class MBProfileViewModel {
         }
         infoItems = [
             AnyProfileCell(MBUserInfoCellViewModel(
-                title: "\(user.name) \(user.lastName)", id: String(user.id)
+                title: "\(user.name) \(user.lastName)",
+                id: String(user.id),
+                image: LocalStateManager.shared.userAvatar
             ))
         ]
         activityItems = [
@@ -72,5 +74,75 @@ final class MBProfileViewModel {
                 title: ProfileItemTitle.logout.rawValue
             )),
         ]
+    }
+
+    public func postAvatarData(
+        _ data: Data?, _ completion: @escaping (Bool) -> Void
+    ) {
+        guard let data = data, let user = LocalStateManager
+            .shared.loggedUser else {
+            return
+        }
+        let boundary = UUID().uuidString
+        let requestCore = MBRequest(
+            endpoint: .user,
+            httpMethod: .patch,
+            pathComponents: [String(user.id)]
+        )
+        guard var request = MBApiCaller.shared.request(
+            from: requestCore, body: nil, accessToken: AuthManager.shared.accessToken
+        ) else {
+            return
+        }
+        request.setValue(
+            "multipart/form-data; boundary=\(boundary)",
+            forHTTPHeaderField: "Content-Type"
+        )
+        var body = Data()
+        let rawBody = [
+            "--\(boundary)\r\n",
+            "Content-Disposition: form-data; name=\"avatar\"; filename=\"avatar.jpg\"\r\n",
+            "Content-Type: image/jpeg\r\n\r\n"
+        ]
+
+        for line in rawBody {
+            if let lineData = line.data(using: .utf8) {
+                body.append(lineData)
+            }
+        }
+        body.append(data)
+
+        if let closingBoundaryData = "\r\n--\(boundary)--\r\n"
+            .data(using: .utf8) {
+            body.append(closingBoundaryData)
+        }
+        request.httpBody = body
+
+        MBApiCaller.shared.performRawRequest(
+            urlRequest: request, responseType: MBGetUserResponse.self
+        ) { result, statusCode in
+            switch result {
+            case .success(let success):
+                LocalStateManager.shared.loggedUser = success.data.user
+                completion(true)
+            case .failure(let failure):
+                MBLogger.shared.debugInfo("vm: failed to parse response result")
+                MBLogger.shared.debugInfo("error - \(failure)")
+                completion(false)
+            }
+        }
+    }
+
+    public func logout() {
+        let request = MBRequest(endpoint: .auth, pathComponents: ["logout"])
+
+        MBApiCaller.shared.executeRequest(request, expected: String.self) { result, statusCode in
+            switch result {
+            case .success(let success):
+                break
+            case .failure(let failure):
+                break
+            }
+        }
     }
 }
