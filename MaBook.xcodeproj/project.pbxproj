@@ -500,8 +500,8 @@
 		6988C5172B320A4600F60F9F /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
-				69E7D06C2B4C773F0082B07E /* Cart */,
 				6988C5242B320CA900F60F9F /* Auth */,
+				69E7D06C2B4C773F0082B07E /* Cart */,
 				6988C5252B320CC500F60F9F /* Onboarding */,
 				6988C52A2B320D4300F60F9F /* Home */,
 				69E7D1F82B4D992B0082B07E /* MBCartProvidingViewController.swift */,

@@ -29,6 +29,7 @@ class MBBookCollectionViewCell: UICollectionViewCell, MBReusableCell {
         imageView.backgroundColor = .clear
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
+        imageView.layer.cornerRadius = 5
         return imageView
     }()
 

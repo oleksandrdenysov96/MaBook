@@ -24,6 +24,7 @@ class MBBookListCollectionViewCell: MBBookCollectionViewCell {
         setupCommonSubviews()
         contentView.addSubview(addToCartButton)
         
+        super.imageView.layer.cornerRadius = 10
         super.setupConstraints()
         setupConstraintsForListCell()
 

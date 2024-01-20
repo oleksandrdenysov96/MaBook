@@ -60,6 +60,7 @@ class MBButton: UIButton {
             ).cgColor
             layer.borderWidth = 1
         }
+        layer.cornerRadius = 5
         addSubview(loader)
         setupImageView()
     }

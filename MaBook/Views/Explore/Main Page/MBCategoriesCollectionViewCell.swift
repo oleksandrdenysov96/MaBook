@@ -34,6 +34,7 @@ class MBCategoriesCollectionViewCell: UICollectionViewCell, MBReusableCell {
             red: 0.98, green: 0.98, blue: 0.98, alpha: 1
         )
         setupConstraints()
+        contentView.layer.cornerRadius = 10
     }
     
     required init?(coder: NSCoder) {
