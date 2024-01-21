@@ -24,6 +24,7 @@ class MBMyPageViewController: UIViewController, UICollectionViewDelegate {
     private var cancellables = Set<AnyCancellable>()
     private let imagePicker = UIImagePickerController()
     private let selectedImage = CurrentValueSubject<UIImage?, Never>(nil)
+    private let loader = MBLoader()
 
 
     private let collectionView: UICollectionView = {
@@ -52,7 +53,9 @@ class MBMyPageViewController: UIViewController, UICollectionViewDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
-        view.addSubview(collectionView)
+        view.addSubviews(
+            views: collectionView, loader
+        )
         configureCollection()
         applySnapshot()
 
@@ -60,6 +63,10 @@ class MBMyPageViewController: UIViewController, UICollectionViewDelegate {
         imagePicker.sourceType = .photoLibrary
         imagePicker.allowsEditing = true
     }
+//    override func viewWillAppear(_ animated: Bool) {
+//        super.viewWillAppear(animated)
+//        viewModel.fetchFavorites()
+//    }
 
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
@@ -106,8 +113,7 @@ class MBMyPageViewController: UIViewController, UICollectionViewDelegate {
                     .dequeueReusableCell(for: indexPath)
                 cell.configure(
                     username: model.title,
-                    id: model.id,
-                    image: model.image
+                    id: model.id
                 )
 
                 cell.tapSubject.flatMap { _ -> AnyPublisher<UIImage?, Never> in
@@ -168,6 +174,9 @@ class MBMyPageViewController: UIViewController, UICollectionViewDelegate {
             collectionView.leftAnchor.constraint(equalTo: view.leftAnchor),
             collectionView.rightAnchor.constraint(equalTo: view.rightAnchor),
             collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+
+            loader.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            loader.centerYAnchor.constraint(equalTo: view.centerYAnchor)
         ])
     }
 
@@ -226,9 +235,23 @@ class MBMyPageViewController: UIViewController, UICollectionViewDelegate {
             switch cell.cellTitle.text {
 
             case rows.favorites.rawValue:
-                let favoritesListVC = MBBooksListViewController()
-                favoritesListVC.title = "Favorites"
-                navigationController?.pushViewController(favoritesListVC, animated: true)
+                if LocalStateManager.shared.shouldFetchFavorites {
+                    loader.startLoader()
+                    viewModel.fetchFavorites() { [weak self] books in
+                        guard let books = books else {
+                            return
+                        }
+                        DispatchQueue.main.async {
+                            self?.loader.stopLoader()
+                            self?.displayFavoritesPage(with: books)
+                        }
+                        LocalStateManager.shared
+                            .shouldFetchFavorites = false
+                    }
+                }
+                else {
+                    displayFavoritesPage(with: viewModel.favorites)
+                }
 
             case rows.exchangedBooks.rawValue:
                 break
@@ -245,6 +268,14 @@ class MBMyPageViewController: UIViewController, UICollectionViewDelegate {
             }
         }
     }
+
+    private func displayFavoritesPage(with data: [Book]) {
+        let favoritesListVC = MBBooksListViewController(
+            selectedBooks: data
+        )
+        favoritesListVC.title = "Favorites"
+        navigationController?.pushViewController(favoritesListVC, animated: true)
+    }
 }
 
 
@@ -253,17 +284,16 @@ extension MBMyPageViewController: UIImagePickerControllerDelegate, UINavigationC
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         if let selectedImage = info[.editedImage] as? UIImage {
             let avatarData = selectedImage.jpegData(compressionQuality: 0.7)
-            self.selectedImage.send(selectedImage)
-//            viewModel.postAvatarData(avatarData) { [weak self] success in
-//                if success {
-//                    self?.selectedImage.send(selectedImage)
-//                }
-//                else {
-//                    self?.presentSingleOptionErrorAlert(
-//                        message: "We have an error with uploading your avatar"
-//                    )
-//                }
-//            }
+            viewModel.postAvatarData(avatarData) { [weak self] success in
+                if success {
+                    self?.selectedImage.send(selectedImage)
+                }
+                else {
+                    self?.presentSingleOptionErrorAlert(
+                        message: "We have an error with uploading your avatar"
+                    )
+                }
+            }
         }
         dismiss(animated: true)
     }

@@ -110,9 +110,10 @@ class MBBooksListViewController: MBCartProvidingViewController {
             }
         }
         else if let selectedBooks = selectedBooks {
+            self.viewModel.books = selectedBooks
             self.listView.hideSortAndFilterButtons()
             self.listView.configureCollectionView()
-            self.applySnapshot(books: selectedBooks)
+            self.applySnapshot(books: self.viewModel.books)
             self.listView.updateCollectionView()
         }
         else {

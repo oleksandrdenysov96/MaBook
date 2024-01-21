@@ -66,12 +66,12 @@ public class LocalStateManager {
                 return
             }
             recentSearches = history
-            userAvatar = user.avatar
+            userAvatar.send(user.avatar)
         }
     }
 
-    public var userAvatar: String?
-
+    public var userAvatar = CurrentValueSubject<String?, Never>(nil)
+    public var shouldFetchFavorites = true
     public var recentSearches = [[String: String]]()
 
     public lazy var cartItemsCount: CurrentValueSubject<String?, Never> = {

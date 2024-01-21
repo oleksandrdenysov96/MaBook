@@ -30,6 +30,8 @@ final class MBProfileViewModel {
     public var activityItems = [AnyProfileCell]()
     public var settingsItems = [AnyProfileCell]()
 
+    public var favorites = [Book]()
+
     init() {
         setupSectionsStructure()
     }
@@ -44,8 +46,7 @@ final class MBProfileViewModel {
         infoItems = [
             AnyProfileCell(MBUserInfoCellViewModel(
                 title: "\(user.name) \(user.lastName)",
-                id: String(user.id),
-                image: LocalStateManager.shared.userAvatar
+                id: String(user.id)
             ))
         ]
         activityItems = [
@@ -142,6 +143,25 @@ final class MBProfileViewModel {
                 break
             case .failure(let failure):
                 break
+            }
+        }
+    }
+
+    public func fetchFavorites(_ completion: @escaping ([Book]?) -> Void) {
+        let request = MBRequest(endpoint: .user, pathComponents: ["favorites"])
+
+        MBApiCaller.shared.executeRequest(
+            request, expected: MBRequestedBooksResponse.self
+        ) { [weak self] result, statusCode in
+            switch result {
+            case .success(let success):
+                self?.favorites = success.data.books
+                completion(success.data.books)
+            case .failure(let failure):
+                MBLogger.shared.debugInfo(
+                    "vm: failed to retrieve favorites books"
+                )
+                MBLogger.shared.debugInfo("error - \(failure)")
             }
         }
     }

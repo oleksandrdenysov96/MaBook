@@ -12,9 +12,9 @@ import Foundation
 struct MBRequestedBooksResponse: Codable {
     let status: Int
     let message: String
-    let data: BookSearchData
+    let data: RequestedBooksData
 }
 
-struct BookSearchData: Codable {
+struct RequestedBooksData: Codable {
     let books: [Book]
 }

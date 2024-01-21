@@ -7,6 +7,7 @@
 
 import UIKit
 import Combine
+import SDWebImage
 
 
 class MBUserInfoCollectionViewCell: UICollectionViewCell, MBReusableCell {
@@ -22,6 +23,7 @@ class MBUserInfoCollectionViewCell: UICollectionViewCell, MBReusableCell {
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.tintColor = .lightGray
         imageView.clipsToBounds = true
+        imageView.layer.masksToBounds = true
         imageView.isUserInteractionEnabled = true
         return imageView
     }()
@@ -110,20 +112,34 @@ class MBUserInfoCollectionViewCell: UICollectionViewCell, MBReusableCell {
         return label
     }
 
-    public func configure(username: String, id: String, image: String?) {
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        avatarImageView.image = nil
+    }
+
+    public func configure(username: String, id: String) {
         usernameLabel.text = username.capitalized
         uniqueIdValue.text = id
 
-        if let image = image, let imageUrl = URL(string: image) {
-            avatarImageView.contentMode = .scaleAspectFill
-            avatarImageView.sd_setImage(with: imageUrl)
+
+        LocalStateManager.shared.userAvatar
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] imageUrl in
+            guard let self = self,
+                  let imageUrl = imageUrl,
+                  let url = URL(string: imageUrl) 
+            else {
+                self?.avatarImageView.contentMode = .scaleAspectFit
+                self?.avatarImageView.image = UIImage(systemName: "person.crop.circle")
+                return
+            }
+            self.avatarImageView.image = nil
+            self.avatarImageView.contentMode = .scaleAspectFill
+            self.avatarImageView.sd_setImage(with: url)
+            avatarImageView.layer.cornerRadius = avatarImageView
+                .frame.width / 2
         }
-        else {
-            avatarImageView.contentMode = .scaleAspectFit
-            avatarImageView.image = UIImage(systemName: "person.crop.circle")
-        }
-        avatarImageView.layer.cornerRadius = avatarImageView
-            .frame.width / 2
+        .store(in: &cancellables)
     }
 
     private func setupConstraints() {

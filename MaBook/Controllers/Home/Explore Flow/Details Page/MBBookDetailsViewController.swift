@@ -84,17 +84,19 @@ class MBBookDetailsViewController: UIViewController {
         UIView.animate(withDuration: 0.2) { [weak self] in
             guard let self = self else {return}
             if self.viewModel.isFavorite.value {
-//                navigationItem.rightBarButtonItem?.tintColor = .black
-//                navigationItem.rightBarButtonItem?.image = UIImage(systemName: "heart")
-                self.viewModel.updateFavoritesForBook(action: .delete, id: String(self.bookData.id))
+                self.viewModel.updateFavoritesForBook(
+                    action: .delete, id: String(self.bookData.id)
+                )
             }
             else {
-//                navigationItem.rightBarButtonItem?.tintColor = .red
-//                navigationItem.rightBarButtonItem?.image = UIImage(systemName: "heart.fill")
-                self.viewModel.updateFavoritesForBook(action: .post, body: self.bookData)
+                self.viewModel.updateFavoritesForBook(
+                    action: .post, body: self.bookData
+                )
             }
         }
         viewModel.isFavorite.value.toggle()
+        LocalStateManager.shared
+            .shouldFetchFavorites = true
     }
 
     private func setupConstraints() {
