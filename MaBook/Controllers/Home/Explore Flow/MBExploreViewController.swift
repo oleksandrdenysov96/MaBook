@@ -103,9 +103,15 @@ class MBExploreViewController: MBCartProvidingViewController, UISearchController
     }
 
     @objc private func refreshHome(_ sender: UIRefreshControl) {
-        updateHomePage() {
+        exploreView.updateCollectionView() { [unowned self] success in
             DispatchQueue.main.async {
                 self.refreshControl.endRefreshing()
+
+                if !success {
+                    self.presentSingleOptionErrorAlert(
+                        message: "We have an issues with feed update"
+                    )
+                }
             }
         }
     }
@@ -207,6 +213,23 @@ extension MBExploreViewController: MBExploreViewDelegate {
         }
     }
 
+    func mbExploreViewNeedUpdate(_ collection: UICollectionView, 
+                                 _ completion: @escaping (Bool) -> Void) {
+        viewModel.fetchHomeData { success in
+            if success {
+                DispatchQueue.main.async { [unowned self] in
+                    self.snapshot.reloadSections(
+                        MBExploreViewViewModel.Sections.allCases
+                    )
+                }
+                completion(true)
+            }
+            else {
+                completion(false)
+            }
+        }
+    }
+
     private func applySnapshot() {
         MBExploreViewViewModel.Sections.allCases.forEach { [unowned self] section in
             snapshot.appendSections([section])
@@ -224,7 +247,8 @@ extension MBExploreViewController: MBExploreViewDelegate {
 
 extension MBExploreViewController: UICollectionViewDelegate {
     
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+    func collectionView(_ collectionView: UICollectionView, 
+                        didSelectItemAt indexPath: IndexPath) {
         var dataToPass: Book?
         switch viewModel.sections[indexPath.section] {
         case .categories:

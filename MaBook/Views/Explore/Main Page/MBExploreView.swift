@@ -12,6 +12,11 @@ protocol MBExploreViewDelegate: AnyObject {
         collectionView: UICollectionView,
         _ completion: @escaping () -> Void
     )
+
+    func mbExploreViewNeedUpdate(
+        _ collection: UICollectionView,
+        _ completion: @escaping (Bool) -> Void
+    )
 }
 
 class MBExploreView: MBCartProvidingView {
@@ -66,6 +71,12 @@ class MBExploreView: MBCartProvidingView {
                 self?.floatingButton.isHidden = false
                 self?.floatingButton.alpha = 1
             }
+        }
+    }
+
+    public func updateCollectionView(_ completion: @escaping (Bool) -> Void) {
+        delegate?.mbExploreViewNeedUpdate(collectionView) { result in
+            completion(result)
         }
     }
 
