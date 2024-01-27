@@ -35,11 +35,6 @@ class MBMyPageViewController: UIViewController, UICollectionViewDelegate {
         collection.backgroundColor = .clear
         collection.translatesAutoresizingMaskIntoConstraints = false
         collection.register(
-            MBProfileCollectionViewCell.self,
-            forCellWithReuseIdentifier: MBProfileCollectionViewCell
-                .identifier
-        )
-        collection.register(
             MBHeaderCollectionReusableView.self,
             forSupplementaryViewOfKind: UICollectionView
                 .elementKindSectionHeader,
@@ -63,10 +58,6 @@ class MBMyPageViewController: UIViewController, UICollectionViewDelegate {
         imagePicker.sourceType = .photoLibrary
         imagePicker.allowsEditing = true
     }
-//    override func viewWillAppear(_ animated: Bool) {
-//        super.viewWillAppear(animated)
-//        viewModel.fetchFavorites()
-//    }
 
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
@@ -87,7 +78,9 @@ class MBMyPageViewController: UIViewController, UICollectionViewDelegate {
                     groupWidthDimension: .fractionalWidth(1.0),
                     groupHeightDimension:  .absolute(65)
                 )
-                config.boundarySupplementaryItems = [self.layout.createHomeSectionHeader(withHeight: 45)]
+                config.boundarySupplementaryItems = [
+                    self.layout.createHomeSectionHeader(withHeight: 45)
+                ]
                 return config
             }
         }

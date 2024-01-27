@@ -1308,8 +1308,8 @@
             filePath = "MaBook/Resources/Components/MBBadgeable.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "40"
-            endingLineNumber = "40"
+            startingLineNumber = "34"
+            endingLineNumber = "34"
             landmarkName = "showBadge(withBlink:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -1324,8 +1324,8 @@
             filePath = "MaBook/Resources/Components/MBBadgeable.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "46"
-            endingLineNumber = "46"
+            startingLineNumber = "40"
+            endingLineNumber = "40"
             landmarkName = "showBadge(withBlink:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -1340,8 +1340,8 @@
             filePath = "MaBook/Resources/Components/MBBadgeable.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "59"
-            endingLineNumber = "59"
+            startingLineNumber = "53"
+            endingLineNumber = "53"
             landmarkName = "showBadge(withBlink:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -1356,8 +1356,8 @@
             filePath = "MaBook/Resources/Components/MBBadgeable.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "83"
-            endingLineNumber = "83"
+            startingLineNumber = "77"
+            endingLineNumber = "77"
             landmarkName = "showBadge(withBlink:)"
             landmarkType = "7">
             <Locations>
@@ -1397,22 +1397,6 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "C799347D-A767-4E0F-BCE6-E91D39FA7C78"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "MaBook/Resources/Components/MBBadgeable.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "22"
-            endingLineNumber = "22"
-            landmarkName = "showBadge(withBlink:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
             uuid = "B58518EF-2F7D-4F5C-A992-0A69F7C39323"
             shouldBeEnabled = "No"
             ignoreCount = "0"
@@ -1420,8 +1404,8 @@
             filePath = "MaBook/Resources/Components/MBBadgeable.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "30"
-            endingLineNumber = "30"
+            startingLineNumber = "24"
+            endingLineNumber = "24"
             landmarkName = "showBadge(withBlink:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -1818,8 +1802,8 @@
             filePath = "MaBook/Controllers/Home/Profile/MBMyPageViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "190"
-            endingLineNumber = "190"
+            startingLineNumber = "183"
+            endingLineNumber = "183"
             landmarkName = "applySnapshot()"
             landmarkType = "7">
          </BreakpointContent>
@@ -1834,8 +1818,8 @@
             filePath = "MaBook/Controllers/Home/Profile/MBMyPageViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "184"
-            endingLineNumber = "184"
+            startingLineNumber = "177"
+            endingLineNumber = "177"
             landmarkName = "applySnapshot()"
             landmarkType = "7">
          </BreakpointContent>
@@ -1850,8 +1834,8 @@
             filePath = "MaBook/Controllers/Home/Profile/MBMyPageViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "238"
-            endingLineNumber = "238"
+            startingLineNumber = "231"
+            endingLineNumber = "231"
             landmarkName = "collectionView(_:didSelectItemAt:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -1866,8 +1850,8 @@
             filePath = "MaBook/Controllers/Home/Profile/MBMyPageViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "240"
-            endingLineNumber = "240"
+            startingLineNumber = "233"
+            endingLineNumber = "233"
             landmarkName = "collectionView(_:didSelectItemAt:)"
             landmarkType = "7">
             <Locations>
@@ -1929,8 +1913,8 @@
             filePath = "MaBook/Controllers/Home/Profile/MBMyPageViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "246"
-            endingLineNumber = "246"
+            startingLineNumber = "239"
+            endingLineNumber = "239"
             landmarkName = "collectionView(_:didSelectItemAt:)"
             landmarkType = "7">
          </BreakpointContent>

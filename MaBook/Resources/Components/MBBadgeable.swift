@@ -19,12 +19,6 @@ protocol MBBadgeable: AnyObject {
 extension MBBadgeable where Self: UIView {
 
     func showBadge(withBlink: Bool) {
-//        guard let numberOfItems = LocalStateManager.shared.cartItemsCount,
-//              numberOfItems != "0" else {
-//            MBLogger.shared.debugInfo("badgeable: no items in cart for showing the badge")
-//            return
-//        }
-
         if let badgeView = badgeView {
             if !badgeView.isHidden {
                 return

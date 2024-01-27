@@ -17,13 +17,6 @@ class MBCartProvidingViewController: UIViewController, MBCartProvidingViewDelega
         view.cartProviderDelegate = self
     }
 
-
-//    internal func needUpdateBadgeOn<T: MBCartProvidingView>(_ view: T) {
-//        if let count = LocalStateManager.shared.cartItemsCount {
-//            view.floatingButton.updateBadgeCounter(withCount: count)
-//        }
-//    }
-
     public func mbCartProvidingViewDidTapCartButton() {
         let cartVC = MBCartViewController()
         modalPresentationStyle = .fullScreen
@@ -31,5 +24,4 @@ class MBCartProvidingViewController: UIViewController, MBCartProvidingViewDelega
         navWrapper.modalPresentationStyle = .fullScreen
         present(navWrapper, animated: true)
     }
-
 }

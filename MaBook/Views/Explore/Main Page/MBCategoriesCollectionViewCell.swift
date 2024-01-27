@@ -9,8 +9,6 @@ import UIKit
 
 class MBCategoriesCollectionViewCell: UICollectionViewCell, MBReusableCell {
 
-    public static let cellIdentifier = "MBCategoriesCollectionViewCell"
-
     private let imageView: UIImageView = {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false

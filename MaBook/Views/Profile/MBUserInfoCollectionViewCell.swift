@@ -12,8 +12,6 @@ import SDWebImage
 
 class MBUserInfoCollectionViewCell: UICollectionViewCell, MBReusableCell {
 
-    static let identifier = "MBUserInfoCollectionViewCell"
-
     public private(set) var tapSubject = PassthroughSubject<Void, Never>()
     public let avatarImage = CurrentValueSubject<UIImage?, Never>(nil)
     private var cancellables = Set<AnyCancellable>()

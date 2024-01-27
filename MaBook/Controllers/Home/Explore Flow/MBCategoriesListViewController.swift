@@ -64,13 +64,8 @@ extension MBCategoriesListViewController: UICollectionViewDelegate, UICollection
     
     func collectionView(_ collectionView: UICollectionView, 
                         cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(
-            withReuseIdentifier: MBCategoriesCollectionViewCell.cellIdentifier,
-            for: indexPath
-        ) as? MBCategoriesCollectionViewCell else {
-            MBLogger.shared.debugInfo("end: categories vc unable to setup cells")
-            return UICollectionViewCell()
-        }
+        let cell: MBCategoriesCollectionViewCell = collectionView
+            .dequeueReusableCell(for: indexPath)
         cell.configure(
             image: data[indexPath.row].image,
             titleText: data[indexPath.row].name

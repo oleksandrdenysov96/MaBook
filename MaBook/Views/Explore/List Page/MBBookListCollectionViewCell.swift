@@ -15,10 +15,6 @@ class MBBookListCollectionViewCell: MBBookCollectionViewCell {
 
     public weak var delegate: MBBookListCollectionViewCellDelegate?
 
-    override class var cellIdentifier: String {
-        "MBDetailsListBookCollectionViewCell"
-    }
-
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupCommonSubviews()

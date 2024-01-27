@@ -27,18 +27,7 @@ class MBExploreView: MBCartProvidingView {
         collectionView.isHidden = true
         collectionView.alpha = 0
         collectionView.backgroundColor = .clear
-        collectionView.register(
-            MBCategoriesCollectionViewCell.self,
-            forCellWithReuseIdentifier: 
-                MBCategoriesCollectionViewCell
-                .cellIdentifier
-        )
-        collectionView.register(
-            MBBookCollectionViewCell.self,
-            forCellWithReuseIdentifier: 
-                MBBookCollectionViewCell
-                .cellIdentifier
-        )
+
         collectionView.register(
             MBExploreSectionCollectionReusableView.self,
             forSupplementaryViewOfKind: UICollectionView
@@ -59,7 +48,8 @@ class MBExploreView: MBCartProvidingView {
             collectionView
         )
         setupCartButton()
-        setupConstraints()
+        setupCartProvideableConstraints()
+//        setupConstraints()
         setupSelfConstraints()
         floatingButton.isHidden = true
         floatingButton.alpha = 0

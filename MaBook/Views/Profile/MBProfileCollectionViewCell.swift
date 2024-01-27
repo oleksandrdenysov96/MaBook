@@ -9,8 +9,6 @@ import UIKit
 
 class MBProfileCollectionViewCell: UICollectionViewCell, MBReusableCell {
 
-    static let identifier = "MBProfileCollectionViewCell"
-
     public let cellTitle: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false

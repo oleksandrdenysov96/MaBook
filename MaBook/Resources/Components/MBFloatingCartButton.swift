@@ -10,7 +10,6 @@ import Combine
 
 class MBFloatingCartButton: UIButton, MBBadgeable {
     var badgeView: UIView?
-    
     var badgeLabel: UILabel?
 
     var cancelables = Set<AnyCancellable>()

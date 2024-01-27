@@ -73,7 +73,7 @@ final class MBBooksListView: MBCartProvidingView {
 
     override func layoutSubviews() {
         super.layoutSubviews()
-        super.setupConstraints()
+        setupCartProvideableConstraints()
         setupSelfConstraints()
     }
 

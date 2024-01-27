@@ -25,10 +25,6 @@ class MBCategoriesListView: MBCartProvidingView {
         )
         layout.minimumInteritemSpacing = -5
         let collection = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        collection.register(
-            MBCategoriesCollectionViewCell.self,
-            forCellWithReuseIdentifier: MBCategoriesCollectionViewCell.cellIdentifier
-        )
         collection.translatesAutoresizingMaskIntoConstraints = false
         collection.backgroundColor = .clear
         return collection
@@ -40,11 +36,14 @@ class MBCategoriesListView: MBCartProvidingView {
         backgroundColor = .white
         addSubview(collectionView)
         setupCartButton()
-        setupConstraints()
-        setupSelfConstraints()
-        
     }
-    
+
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        setupCartProvideableConstraints()
+        setupSelfConstraints()
+    }
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
