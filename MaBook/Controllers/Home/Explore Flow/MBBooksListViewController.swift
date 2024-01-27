@@ -39,11 +39,11 @@ class MBBooksListViewController: MBCartProvidingViewController {
             fatalError()
         }
         switch currentController {
-        case MBHomeSections.allBooks.rawValue:
+        case MBExploreViewViewModel.Sections.allBooks.rawValue:
             return .none
-        case MBHomeSections.recentlyAdded.rawValue:
+        case MBExploreViewViewModel.Sections.recentlyAdded.rawValue:
             return .timestamp
-        case MBHomeSections.mostViewed.rawValue:
+        case MBExploreViewViewModel.Sections.mostViewed.rawValue:
             return .views
         default:
             break
@@ -220,22 +220,8 @@ extension MBBooksListViewController: MBBooksListViewDelegate {
                 guard let self = self else { fatalError() }
                 let cell: MBBookListCollectionViewCell = collectionView
                     .dequeueReusableCell(for: indexPath)
-                var badgeText: String?
 
-                switch self.cellBadge {
-                case .none:
-                    badgeText = nil
-                case .timestamp:
-                    badgeText = book.createdAt
-                case .views:
-                    badgeText = String(book.view)
-                }
-
-                cell.configure(
-                    badgeType: cellBadge, badgeText: badgeText,
-                    price: String(book.price), bookTitle: book.title,
-                    bookImage: book.images.first, genre: book.genre
-                )
+                cell.configure(with: book, withBadge: cellBadge)
                 cell.tag = indexPath.row
                 cell.delegate = self
                 return cell

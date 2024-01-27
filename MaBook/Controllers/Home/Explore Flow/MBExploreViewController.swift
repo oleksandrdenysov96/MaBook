@@ -7,6 +7,13 @@
 
 import UIKit
 
+fileprivate typealias DataSource = UICollectionViewDiffableDataSource<
+    MBExploreViewViewModel.Sections, MBExploreViewViewModel.Items
+>
+fileprivate typealias DataSourceSnapshot = NSDiffableDataSourceSnapshot<
+    MBExploreViewViewModel.Sections, MBExploreViewViewModel.Items
+>
+
 class MBExploreViewController: MBCartProvidingViewController, UISearchControllerDelegate {
 
     private let viewModel = MBExploreViewViewModel()
@@ -14,6 +21,9 @@ class MBExploreViewController: MBCartProvidingViewController, UISearchController
     private let searchController = MBSearchViewController()
     private let refreshControl = UIRefreshControl()
     private let loader = MBLoader()
+
+    private var dataSource: DataSource?
+    private var snapshot = DataSourceSnapshot()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -58,7 +68,7 @@ class MBExploreViewController: MBCartProvidingViewController, UISearchController
             if success {
                 DispatchQueue.main.async {
                     self?.exploreView.configureCollectionView()
-//                    self?.exploreView.floatingButton.initiateBadge()
+                    self?.applySnapshot()
                 }
             }
             else {
@@ -113,27 +123,80 @@ class MBExploreViewController: MBCartProvidingViewController, UISearchController
 }
 
 
-
-
 // MARK: VIEW DELEGATE
 
 extension MBExploreViewController: MBExploreViewDelegate {
 
-    func mbExploreViewNeedConfigureCollectionView(
-        _ exploreView: MBExploreView,
+    func mbExploreViewNeedConfigure(
         collectionView: UICollectionView,
         _ completion: @escaping () -> Void)
     {
         let layout = UICollectionViewCompositionalLayout { [weak self] section, _ in
             return self?.viewModel.createSectionLayout(for: section)
         }
-        DispatchQueue.main.async { [weak self] in
-            collectionView.delegate = self
-            collectionView.dataSource = self
-            collectionView.collectionViewLayout = layout
-            collectionView.refreshControl = self?.refreshControl
-            collectionView.reloadData()
 
+        collectionView.collectionViewLayout = layout
+        collectionView.refreshControl = self.refreshControl
+        collectionView.delegate = self
+
+        dataSource = UICollectionViewDiffableDataSource(
+            collectionView: collectionView, cellProvider: {
+                (collectionView, indexPath, item) -> UICollectionViewCell? in
+                
+                switch item {
+                case .categoryItems(let model):
+                    let cell: MBCategoriesCollectionViewCell = collectionView
+                        .dequeueReusableCell(for: indexPath)
+                    cell.configure(image: model.image, titleText: model.name)
+                    return cell
+
+                case .allBooksItems(let model):
+                    let cell: MBBookCollectionViewCell = collectionView
+                        .dequeueReusableCell(for: indexPath)
+                    cell.configure(with: model, withBadge: .none)
+                    return cell
+
+                case .recentlyAddedItems(let model):
+                    let cell: MBBookCollectionViewCell = collectionView
+                        .dequeueReusableCell(for: indexPath)
+                    cell.configure(with: model, withBadge: .timestamp)
+                    return cell
+
+                case .mostViewedItems(let model):
+                    let cell: MBBookCollectionViewCell = collectionView
+                        .dequeueReusableCell(for: indexPath)
+                    cell.configure(with: model, withBadge: .views)
+                    return cell
+                }
+        })
+
+        dataSource?.supplementaryViewProvider = {
+            [unowned self] (
+                collection, kind, indexPath
+            ) -> UICollectionReusableView? in
+
+            if kind == UICollectionView.elementKindSectionHeader {
+
+                guard let header = collectionView
+                    .dequeueReusableSupplementaryView(
+                        ofKind: UICollectionView.elementKindSectionHeader,
+                        withReuseIdentifier: MBExploreSectionCollectionReusableView.identifier,
+                        for: indexPath
+                    ) as? MBExploreSectionCollectionReusableView
+                else {
+                    return UICollectionReusableView()
+                }
+
+                let currentSection = viewModel.sections[indexPath.section]
+                header.delegate = self
+                header.configureHeader(with: currentSection.rawValue)
+                header.tag = indexPath.section
+                return header
+            }
+            return nil
+        }
+
+        DispatchQueue.main.async { [weak self] in
             self?.loader.stopLoader()
 
             UIView.animate(withDuration: 0.2) {
@@ -143,13 +206,23 @@ extension MBExploreViewController: MBExploreViewDelegate {
             completion()
         }
     }
+
+    private func applySnapshot() {
+        MBExploreViewViewModel.Sections.allCases.forEach { [unowned self] section in
+            snapshot.appendSections([section])
+            snapshot.appendItems(
+                viewModel.setupBooksCellModels(for: section),
+                toSection: section
+            )
+        }
+        dataSource?.apply(snapshot, animatingDifferences: true)
+    }
 }
 
 
 // MARK: COLLECTION VIEW DELEGATE
 
-extension MBExploreViewController: UICollectionViewDelegate, 
-                                    UICollectionViewDataSource {
+extension MBExploreViewController: UICollectionViewDelegate {
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         var dataToPass: Book?
@@ -176,101 +249,6 @@ extension MBExploreViewController: UICollectionViewDelegate,
         navigationController?.pushViewController(sectionListVC, animated: true)
     }
 
-    func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return viewModel.sections.count
-    }
-    func collectionView(_ collectionView: UICollectionView,
-                        numberOfItemsInSection section: Int) -> Int {
-        guard let allBooks = viewModel.allBooks?.books,
-              let recentlyAdded = viewModel.recentlyAdded?.books,
-              let mostViewed = viewModel.mostViewed?.books
-        else { return 0 }
-
-        switch viewModel.sections[section] {
-        case .categories:
-            return viewModel.categories.count
-        case .allBooks:
-            return allBooks.count
-        case .recentlyAdded:
-            return recentlyAdded.count
-        case .mostViewed:
-            return mostViewed.count
-        }
-    }
-
-    func collectionView(_ collectionView: UICollectionView,
-                        cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-
-        switch viewModel.sections[indexPath.section] {
-        case .categories:
-            let cell: MBCategoriesCollectionViewCell = collectionView
-                .dequeueReusableCell(for: indexPath)
-            cell.configure(
-                image: viewModel.categories[indexPath.row].image,
-                titleText: viewModel.categories[indexPath.row].name
-            )
-            return cell
-
-        case .allBooks:
-            guard let book = viewModel.allBooks?.books[indexPath.row] else {fatalError()}
-            let cell: MBBookCollectionViewCell = collectionView
-                .dequeueReusableCell(for: indexPath)
-            cell.configure(
-                badgeType: .none, badgeText: nil,
-                price: book.price, bookTitle: book.title,
-                bookImage: book.images[0], genre: book.genre
-            )
-            return cell
-
-        case .recentlyAdded:
-            guard let recentlyAddedBook = viewModel.recentlyAdded?.books[indexPath.row] else {fatalError()}
-            let cell: MBBookCollectionViewCell = collectionView
-                .dequeueReusableCell(for: indexPath)
-            cell.configure(
-                badgeType: .timestamp, badgeText: recentlyAddedBook.createdAt,
-                price: recentlyAddedBook.price, bookTitle: recentlyAddedBook.title,
-                bookImage: recentlyAddedBook.images.first, genre: recentlyAddedBook.genre
-            )
-            return cell
-
-        case .mostViewed:
-            guard let mostViewedBook = viewModel.mostViewed?.books[indexPath.row] else {fatalError()}
-            let cell: MBBookCollectionViewCell = collectionView
-                .dequeueReusableCell(for: indexPath)
-            cell.configure(
-                badgeType: .views, badgeText: String(mostViewedBook.view),
-                price: mostViewedBook.price, bookTitle: mostViewedBook.title,
-                bookImage: mostViewedBook.images[0], genre: mostViewedBook.genre
-            )
-            return cell
-        }
-    }
-
-
-    // MARK: HEADER SEE ALL TARGETS
-
-    func collectionView(_ collectionView: UICollectionView,
-                        viewForSupplementaryElementOfKind kind: String,
-                        at indexPath: IndexPath) -> UICollectionReusableView {
-
-        if kind == UICollectionView.elementKindSectionHeader {
-            guard let header = collectionView.dequeueReusableSupplementaryView(
-                ofKind: UICollectionView.elementKindSectionHeader,
-                withReuseIdentifier: MBExploreSectionCollectionReusableView.identifier,
-                for: indexPath
-            ) as? MBExploreSectionCollectionReusableView
-            else {
-                return UICollectionReusableView()
-            }
-            
-            let currentSection = viewModel.sections[indexPath.section]
-            header.delegate = self
-            header.configureHeader(with: currentSection.rawValue)
-            header.tag = indexPath.section
-            return header
-        }
-        return UICollectionReusableView()
-    }
 
     func collectionView(_ collectionView: UICollectionView,
                         layout collectionViewLayout: UICollectionViewLayout,

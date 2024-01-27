@@ -116,7 +116,7 @@ class MBSearchViewController: UISearchController, UISearchResultsUpdating {
 
                 DispatchQueue.main.async {
                     let booksListVC = MBBooksListViewController(selectedBooks: books)
-                    booksListVC.title = MBHomeSections.allBooks.rawValue
+                    booksListVC.title = MBExploreViewViewModel.Sections.allBooks.rawValue
                     self?.presentingViewController?.navigationController?
                         .pushViewController(booksListVC, animated: true)
                 }

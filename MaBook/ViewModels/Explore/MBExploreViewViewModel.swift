@@ -8,16 +8,23 @@
 import UIKit
 import Foundation
 
-enum MBHomeSections: String, CaseIterable {
-    case categories = "Categories"
-    case allBooks = "All Books"
-    case recentlyAdded = "Recently Added"
-    case mostViewed = "Most Viewed"
-}
-
 final class MBExploreViewViewModel {
 
-    public let sections = MBHomeSections.allCases
+    enum Sections: String, CaseIterable {
+        case categories = "Categories"
+        case allBooks = "All Books"
+        case recentlyAdded = "Recently Added"
+        case mostViewed = "Most Viewed"
+    }
+
+    enum Items: Hashable {
+        case categoryItems(Categories)
+        case allBooksItems(Book)
+        case recentlyAddedItems(Book)
+        case mostViewedItems(Book)
+    }
+
+    public let sections = Sections.allCases
 
     private let layout = MBCompositionalLayout()
 
@@ -33,10 +40,34 @@ final class MBExploreViewViewModel {
             mostViewed = data.data.mostViewed
         }
     }
-    public var categories: [Categories] = []
+    public var categories = [Categories]()
     public var allBooks: BooksData?
     public var recentlyAdded: BooksData?
     public var mostViewed: BooksData?
+
+    public func setupBooksCellModels(for section: Sections) -> [Items] {
+        guard let allBooks, let recentlyAdded, let mostViewed else {
+            return []
+        }
+        switch section {
+        case .categories:
+            return categories.compactMap({
+                .categoryItems($0)
+            })
+        case .allBooks:
+            return allBooks.books.compactMap({
+                .allBooksItems($0)
+            })
+        case .recentlyAdded:
+            return recentlyAdded.books.compactMap({
+                .allBooksItems($0)
+            })
+        case .mostViewed:
+            return mostViewed.books.compactMap({
+                .allBooksItems($0)
+            })
+        }
+    }
 
     public func fetchHomeData(_ completion: @escaping (Bool) -> Void) {
         let request = MBRequest(endpoint: .books, pathComponents: ["home"])
@@ -86,7 +117,7 @@ final class MBExploreViewViewModel {
     }
 
     public func createSectionLayout(for section: Int) -> NSCollectionLayoutSection {
-        let sections: [MBHomeSections] = [.categories, .allBooks, .recentlyAdded, .mostViewed]
+        let sections: [Sections] = [.categories, .allBooks, .recentlyAdded, .mostViewed]
 
         switch sections[section] {
         case .categories:
@@ -106,35 +137,7 @@ final class MBExploreViewViewModel {
         }
     }
 
-    public func dequeueCellFor(
-        _ collectionView: UICollectionView,
-        index: IndexPath,
-        badgeType: CellBadgeType,
-        badgeText: String? = nil,
-        price: String,
-        bookTitle: String,
-        bookImage: String,
-        genre: String
-    ) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(
-            withReuseIdentifier: MBBookCollectionViewCell.cellIdentifier,
-            for: index
-        ) as? MBBookCollectionViewCell else {
-            MBLogger.shared.debugInfo("vc: failed to create categories cell")
-            fatalError()
-        }
-        cell.configure(
-            badgeType: badgeType,
-            badgeText: badgeText,
-            price: price,
-            bookTitle: bookTitle,
-            bookImage: bookImage,
-            genre: genre
-        )
-        return cell
-    }
-
-    public func setSelectedSectionData(for section: MBHomeSections) {
+    public func setSelectedSectionData(for section: Sections) {
         switch section {
         case .allBooks:
             LocalStateManager.shared.selectedCategoryData = allBooks

@@ -121,16 +121,16 @@ class MBBookCollectionViewCell: UICollectionViewCell, MBReusableCell {
         }
     }
 
-    public func configure(badgeType: CellBadgeType, badgeText: String?, price: String,
-                          bookTitle: String, bookImage: String?, genre: String) {
-        switch badgeType {
+
+    public func configure(with model: Book, withBadge badge: CellBadgeType) {
+        switch badge {
         case .views:
             badgeView = MBViewsBadgeView()
             guard let view = badgeView as? MBViewsBadgeView else {
                 return
             }
             addSubview(view)
-            view.configureViewsBadge(with: badgeText)
+            view.configureViewsBadge(with: String(model.view))
             setupBagdeConstraints(badgeView: view)
 
         case .timestamp:
@@ -139,17 +139,18 @@ class MBBookCollectionViewCell: UICollectionViewCell, MBReusableCell {
                 return
             }
             addSubview(view)
-            view.configureTimestampBadge(with: badgeText)
+            view.configureTimestampBadge(with: model.createdAt)
             setupBagdeConstraints(badgeView: view)
             
         case .none:
             break
         }
-        priceLabel.text = "\(price) P"
-        cellBookTitle.text = bookTitle
-        genreLabel.text = genre
+        priceLabel.text = "\(model.price) P"
+        cellBookTitle.text = model.title
+        genreLabel.text = model.genre
 
-        guard let bookImage = bookImage, let url = URL(string: bookImage) else {
+        guard let bookImage = model.images.first,
+              let url = URL(string: bookImage) else {
             MBLogger.shared.debugInfo(
                 "book cell: Image for book isn't found"
             )
@@ -160,6 +161,7 @@ class MBBookCollectionViewCell: UICollectionViewCell, MBReusableCell {
         imageView.sd_setImage(with: url)
     }
 
+    
     internal func setupBagdeConstraints<T: UIView>(badgeView: T) {
         NSLayoutConstraint.activate([
             badgeView.topAnchor.constraint(equalTo: imageView.topAnchor),

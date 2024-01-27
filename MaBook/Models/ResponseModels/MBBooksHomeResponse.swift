@@ -21,7 +21,7 @@ public struct AllData: Codable {
     let mostViewed: BooksData
 }
 
-public struct Categories: Codable {
+public struct Categories: Codable, Hashable {
     let name: String
     let image: String
     let count: Int

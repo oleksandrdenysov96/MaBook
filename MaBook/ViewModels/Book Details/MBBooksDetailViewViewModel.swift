@@ -65,14 +65,31 @@ final class MBBooksDetailViewViewModel {
             return Items.photoCell(.init(imageURL: $0))
         }
         items = [
-            .summaryCell(.init(title: data.title, author: data.author, summary: data.description, genre: data.genre)),
-            .conditionCell(.init(infoParam: "Condition:", value: data.condition)),
-            .pagesCell(.init(infoParam: "Pages:", value: String(data.pages))),
-            .dimensionsCell(.init(infoParam: "Dimensions:", value: data.dimensions))
+            .summaryCell(
+                .init(
+                    title: data.title,
+                    author: data.author,
+                    summary: data.description,
+                    genre: data.genre
+                )
+            ),
+            .conditionCell(
+                .init(infoParam: "Condition:", value: data.condition)
+            ),
+            .pagesCell(
+                .init(infoParam: "Pages:", value: String(data.pages))
+            ),
+            .dimensionsCell(
+                .init(infoParam: "Dimensions:", value: data.dimensions)
+            )
         ]
     }
 
-    public func updateFavoritesForBook(action: MBRequest.HttpMethod, body: Book? = nil, id: String? = nil) {
+    public func updateFavoritesForBook(
+        action: MBRequest.HttpMethod,
+        body: Book? = nil,
+        id: String? = nil
+    ) {
         if action == .post {
             guard let body = body else {
                 MBLogger.shared.debugInfo("no body for update favorites")

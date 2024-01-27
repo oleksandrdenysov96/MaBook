@@ -8,8 +8,7 @@
 import UIKit
 
 protocol MBExploreViewDelegate: AnyObject {
-    func mbExploreViewNeedConfigureCollectionView(
-        _ exploreView: MBExploreView,
+    func mbExploreViewNeedConfigure(
         collectionView: UICollectionView,
         _ completion: @escaping () -> Void
     )
@@ -60,8 +59,8 @@ class MBExploreView: MBCartProvidingView {
     }
 
     public func configureCollectionView() {
-        delegate?.mbExploreViewNeedConfigureCollectionView(
-            self, collectionView: collectionView
+        delegate?.mbExploreViewNeedConfigure(
+            collectionView: collectionView
         ) {
             UIView.animate(withDuration: 0.2) { [weak self] in
                 self?.floatingButton.isHidden = false
