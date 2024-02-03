@@ -6,18 +6,20 @@
 //
 
 import UIKit
+import Combine
 import UIScrollView_InfiniteScroll
 
 fileprivate typealias DataSource = UICollectionViewDiffableDataSource<
-    MBBookListViewViewModel.Sections, Book
+    MBBookListViewViewModel.Sections, UUID
 >
 fileprivate typealias DataSourceSnapshot = NSDiffableDataSourceSnapshot<
-    MBBookListViewViewModel.Sections, Book
+    MBBookListViewViewModel.Sections, UUID
 >
 
 
 class MBBooksListViewController: MBCartProvidingViewController {
-
+    
+    private let selectedSeeAllSection: MBEndpoint?
     private let selectedCategory: String?
     private let selectedBooks: [Book]?
 
@@ -26,6 +28,10 @@ class MBBooksListViewController: MBCartProvidingViewController {
 
     private let listView = MBBooksListView()
     private let viewModel = MBBookListViewViewModel()
+
+    private var shouldUpdateCartButtonSubject = PassthroughSubject<Void, Never>()
+    private var cancellables = Set<AnyCancellable>()
+
     private let loader: MBLoader = {
         let loader = MBLoader()
         loader.backgroundColor = .clear
@@ -51,13 +57,15 @@ class MBBooksListViewController: MBCartProvidingViewController {
         return .none
     }
 
-    init() {
+    init(selectedSeeAllSection: MBEndpoint) {
+        self.selectedSeeAllSection = selectedSeeAllSection
         self.selectedCategory = nil
         self.selectedBooks = nil
         super.init(nibName: nil, bundle: nil)
     }
 
     init(selectedCategory: String) {
+        self.selectedSeeAllSection = nil
         self.selectedCategory = selectedCategory
         self.selectedBooks = nil
         super.init(nibName: nil, bundle: nil)
@@ -65,6 +73,7 @@ class MBBooksListViewController: MBCartProvidingViewController {
     }
 
     init(selectedBooks: [Book]) {
+        self.selectedSeeAllSection = nil
         self.selectedCategory = nil
         self.selectedBooks = selectedBooks
         super.init(nibName: nil, bundle: nil)
@@ -80,31 +89,31 @@ class MBBooksListViewController: MBCartProvidingViewController {
         view.addSubview(listView)
         view.addSubview(loader)
         listView.delegate = self
-        applyCartView(fromChild: listView)
-        //        listView.floatingButton.initiateBadge()
+//        applyCartView(fromChild: listView)
         configureView()
+        self.applyCartButtonTarget(
+            listView.floatingButton
+        )
     }
 
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        setupConstraints()
-    }
-
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
+        setupDedicatedView(listView, topMargin: 10)
+        setupLoader(loader)
     }
 
     private func configureView() {
         if let selectedCategory = selectedCategory {
+            self.loader.startLoader()
             viewModel.fetchCategoriesBooks(
                 for: selectedCategory
-            ) { [weak self] success, _ in
-                guard let self = self else {return}
+            ) { [unowned self] success, _ in
                 if success {
                     DispatchQueue.main.async {
                         self.listView.configureCollectionView()
-                        self.applySnapshot(books: self.viewModel.books)
+                        self.applySnapshot()
                         self.listView.updateCollectionView()
+                        self.loader.stopLoader()
                     }
                 }
             }
@@ -113,32 +122,30 @@ class MBBooksListViewController: MBCartProvidingViewController {
             self.viewModel.books = selectedBooks
             self.listView.hideSortAndFilterButtons()
             self.listView.configureCollectionView()
-            self.applySnapshot(books: self.viewModel.books)
-            self.listView.updateCollectionView()
+            self.applySnapshot()
+//            self.listView.updateCollectionView()
         }
         else {
-            self.listView.configureCollectionView()
-            self.applySnapshot(books: viewModel.books)
-            self.listView.updateCollectionView()
+            guard let selectedSeeAllSection else {return}
+            self.loader.startLoader()
+            self.viewModel.fetchInitialBooks(in: selectedSeeAllSection) { [unowned self] success in
+                DispatchQueue.main.async {
+                    if success {
+                        self.listView.configureCollectionView()
+                        self.applySnapshot()
+                        self.listView.updateCollectionView()
+                        self.loader.stopLoader()
+                    }
+                }
+            }
         }
-    }
-
-    private func setupConstraints() {
-        NSLayoutConstraint.activate([
-            listView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 10),
-            listView.leftAnchor.constraint(equalTo: view.leftAnchor),
-            listView.rightAnchor.constraint(equalTo: view.rightAnchor),
-            listView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            loader.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            loader.centerYAnchor.constraint(equalTo: view.centerYAnchor)
-        ])
     }
 }
 
 extension MBBooksListViewController: MBBooksListViewDelegate {
     func mbBooksListViewShouldShowFilters(updateOnCompletion collection: UICollectionView) {
 
-        guard let currentPage = viewModel.allBooksData.info.currentPage else {
+        guard let currentPage = viewModel.allBooksData!.info.currentPage else {
             MBLogger.shared.debugInfo(
                 "end: list vc unable to create filter vc without current page url"
             )
@@ -151,22 +158,20 @@ extension MBBooksListViewController: MBBooksListViewDelegate {
                 UIView.animate(withDuration: 0.3) {
                     collection.alpha = 0.5
                 } completion: { _ in
-                    self?.viewModel.fetchBooks(via: filterUrl) { [weak self] success, newData  in
-                        guard let self = self, let newData = newData else {return}
+                    self?.viewModel.fetchInitialBooks(via: filterUrl) { [weak self] in
+                        guard let self = self else {return}
                         DispatchQueue.main.async {
-
-                            self.viewModel.books = newData
-                            self.dataSourceSnapshot.deleteAllItems()
-                            self.applySnapshot(books: newData)
+                            self.applySnapshot(resetOldItems: true)
 
                             UIView.animate(withDuration: 0.1) {
                                 collection.alpha = 1
                             } completion: { _ in
                                 self.loader.stopLoader()
-
-                                let indexPath = IndexPath(item: 0, section: 0)
-                                collection.scrollToItem(at: indexPath, at: .top, animated: true)
+                                //
+                                //                                let indexPath = IndexPath(item: 0, section: 0)
+                                //                                collection.scrollToItem(at: indexPath, at: .top, animated: true)
                             }
+
                         }
                     }
                 }
@@ -174,7 +179,10 @@ extension MBBooksListViewController: MBBooksListViewDelegate {
         }
         filtersVC.modalTransitionStyle = .coverVertical
         filtersVC.title = "Choose Filter"
-        navigationController?.present(UINavigationController(rootViewController: filtersVC), animated: true)
+        navigationController?.present(
+            UINavigationController(rootViewController: filtersVC), 
+            animated: true
+        )
     }
 
     func mbBooksListView(_ listView: MBBooksListView, needsSort collection: UICollectionView) {
@@ -189,8 +197,7 @@ extension MBBooksListViewController: MBBooksListViewDelegate {
                     guard let self = self else {return}
                     DispatchQueue.main.async {
                         if success {
-                            self.dataSourceSnapshot.deleteAllItems()
-                            self.applySnapshot(books: self.viewModel.books)
+                            self.applySnapshot(resetOldItems: true)
                         }
                         else {
                             self.presentSingleOptionErrorAlert(
@@ -215,46 +222,68 @@ extension MBBooksListViewController: MBBooksListViewDelegate {
         collection.delegate = self
         dataSource = DataSource(
             collectionView: collection, cellProvider: {
-                [weak self] (collectionView, indexPath, book) -> MBBookListCollectionViewCell in
+                [weak self] (collectionView, indexPath, identifier) -> MBBookListCollectionViewCell in
 
                 guard let self = self else { fatalError() }
+//                guard let model = self.viewModel.bookCellsModels.first(where: {
+//                    $0.identifier == identifier
+//                }) else {
+//                    fatalError()
+//                }
+                let model = self.viewModel.bookCellsModels[indexPath.row]
                 let cell: MBBookListCollectionViewCell = collectionView
                     .dequeueReusableCell(for: indexPath)
-
-                cell.configure(with: book, withBadge: cellBadge)
+                cell.configure(with: model.book, withBadge: cellBadge)
                 cell.tag = indexPath.row
                 cell.delegate = self
+
                 return cell
             }
         )
-
     }
 
-    private func applySnapshot(books: [Book]) {
+    private func applySnapshot(resetOldItems: Bool = false) {
+        if resetOldItems {
+            dataSourceSnapshot.deleteAllItems()
+        }
         dataSourceSnapshot.appendSections([MBBookListViewViewModel.Sections.list])
-        dataSourceSnapshot.appendItems(books)
+        let identifiers = viewModel.bookCellsModels.compactMap {
+            return $0.identifier
+        }
+        dataSourceSnapshot.appendItems(identifiers)
         guard let dataSource = dataSource else { return }
         dataSource.apply(dataSourceSnapshot, animatingDifferences: true)
     }
+
+
+    private func appendItems(_ modelIdentifiers: [UUID], to: DataSourceSnapshot) {
+        dataSourceSnapshot.appendItems(modelIdentifiers)
+        guard let dataSource = dataSource else { return }
+        dataSource.apply(dataSourceSnapshot, animatingDifferences: true)
+    }
+
+    private func updateDataSourceItemAt(index: Int) {
+        viewModel.updateModelsIfAddedToCartAt(index: index)
+        let itemIdentifier = dataSourceSnapshot.itemIdentifiers[index]
+        dataSourceSnapshot.reloadItems([itemIdentifier])
+        dataSource?.apply(dataSourceSnapshot, animatingDifferences: true)
+    }
+
 
     func mbBooksListView(_ listView: MBBooksListView, needsUpdate collection: UICollectionView) {
         collection.infiniteScrollDirection = .vertical
 
         collection.addInfiniteScroll { [weak self] collectionView in
-            self?.viewModel.fetchBooks { [weak self] success, newData in
+            self?.viewModel.fetchNextPageBooks { [weak self] success, newData in
                 DispatchQueue.main.async { [weak self] in
                     guard let self = self, success == true,
-                          let newData = newData, let dataSource = self.dataSource else {
+                          let newData = newData
+                    else {
                         collectionView.finishInfiniteScroll()
                         return
                     }
-
-                    self.viewModel.books.append(contentsOf: newData)
-                    self.dataSourceSnapshot.appendItems(newData)
-                    dataSource.apply(dataSourceSnapshot, animatingDifferences: true)
-
+                    self.appendItems(newData, to: self.dataSourceSnapshot)
                     collectionView.finishInfiniteScroll()
-
                 }
             }
         }
@@ -271,8 +300,18 @@ extension MBBooksListViewController: UICollectionViewDelegate, UICollectionViewD
     }
 
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-
         let detailsVC = MBBookDetailsViewController(with: viewModel.books[indexPath.row])
+
+        detailsVC.isAddedToCartSubject
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] isAdded in
+            guard let self else {return}
+            if isAdded {
+                self.updateDataSourceItemAt(index: indexPath.row)
+            }
+        }
+        .store(in: &cancellables)
+
         navigationController?.pushViewController(detailsVC, animated: true)
     }
 }
@@ -280,8 +319,12 @@ extension MBBooksListViewController: UICollectionViewDelegate, UICollectionViewD
 extension MBBooksListViewController: MBBookListCollectionViewCellDelegate {
     func mbBookListCollectionViewCellDidTapAddToCart(on cell: MBBookListCollectionViewCell) {
         let selectedItem = viewModel.books[cell.tag]
-        viewModel.addToCart(item: selectedItem) {_ in}
-
+        viewModel.addToCart(item: selectedItem) { success in
+            if success {
+                DispatchQueue.main.async {
+                    self.updateDataSourceItemAt(index: cell.tag)
+                }
+            }
+        }
     }
-
 }

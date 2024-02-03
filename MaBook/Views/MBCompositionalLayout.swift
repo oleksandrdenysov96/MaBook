@@ -10,7 +10,6 @@ import Foundation
 
 class MBCompositionalLayout {
 
-    // MARK: BOOK DETAILS
 
     public func createHomeSectionLayout(
         itemWidthDimension: NSCollectionLayoutDimension,
@@ -38,6 +37,8 @@ class MBCompositionalLayout {
         return section
     }
 
+    
+    // MARK: BOOK DETAILS
 
     public func createBookPhotoDetailsLayout(
         itemWidthDimension: NSCollectionLayoutDimension,
@@ -68,7 +69,11 @@ class MBCompositionalLayout {
         itemWidthDimension: NSCollectionLayoutDimension,
         itemHeightDimension: NSCollectionLayoutDimension,
         groupWidthDimension: NSCollectionLayoutDimension,
-        groupHeightDimension: NSCollectionLayoutDimension
+        groupHeightDimension: NSCollectionLayoutDimension,
+        sectionTopInset: CGFloat = 0,
+        sectionLeftInset: CGFloat = 0,
+        sectionRightInset: CGFloat = 0,
+        sectionBottomInset: CGFloat = 0
     ) -> NSCollectionLayoutSection {
         let item = NSCollectionLayoutItem(
             layoutSize: NSCollectionLayoutSize(
@@ -83,7 +88,12 @@ class MBCompositionalLayout {
                                                heightDimension: groupHeightDimension),
             subitems: [item])
         let section = NSCollectionLayoutSection(group: group)
-//        section.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 0, bottom: 30, trailing: 0)
+        section.contentInsets = NSDirectionalEdgeInsets(
+            top: sectionTopInset,
+            leading: sectionLeftInset,
+            bottom: sectionBottomInset,
+            trailing: sectionRightInset
+        )
         return section
     }
 

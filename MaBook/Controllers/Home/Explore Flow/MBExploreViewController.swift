@@ -40,8 +40,9 @@ class MBExploreViewController: MBCartProvidingViewController, UISearchController
 
         searchController.delegate = self
         searchController.searchBar.placeholder = "Book name or author name"
+
         view.addSubviews(views: exploreView, loader)
-        applyCartView(fromChild: exploreView)
+//        applyCartView(fromChild: exploreView)
 
         loader.startLoader()
         exploreView.delegate = self
@@ -60,7 +61,9 @@ class MBExploreViewController: MBCartProvidingViewController, UISearchController
 
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        setupConstraints()
+//        setupConstraints()
+        setupDedicatedView(exploreView)
+        setupLoader(loader)
     }
 
     private func updateHomePage(_ completion: @escaping () -> Void = {}) {
@@ -100,6 +103,7 @@ class MBExploreViewController: MBCartProvidingViewController, UISearchController
 
     private func addTargets() {
         refreshControl.addTarget(self, action: #selector(refreshHome(_:)), for: .valueChanged)
+        self.applyCartButtonTarget(exploreView.floatingButton)
     }
 
     @objc private func refreshHome(_ sender: UIRefreshControl) {
@@ -114,17 +118,6 @@ class MBExploreViewController: MBCartProvidingViewController, UISearchController
                 }
             }
         }
-    }
-
-    private func setupConstraints() {
-        NSLayoutConstraint.activate([
-            exploreView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            exploreView.leftAnchor.constraint(equalTo: view.leftAnchor),
-            exploreView.rightAnchor.constraint(equalTo: view.rightAnchor),
-            exploreView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            loader.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            loader.centerYAnchor.constraint(equalTo: view.centerYAnchor),
-        ])
     }
 }
 
@@ -288,9 +281,20 @@ extension MBExploreViewController: MBExploreSectionCollectionReusableViewDelegat
         _ reusableView: MBExploreSectionCollectionReusableView
     ) {
         let section = viewModel.sections[reusableView.tag]
-        let listVC = section == .categories ?
-        MBCategoriesListViewController() : MBBooksListViewController()
+        var listVC: UIViewController
 
+        switch section {
+        case .categories:
+            listVC = MBCategoriesListViewController()
+        case .allBooks:
+            listVC = MBBooksListViewController(selectedSeeAllSection: .all)
+        case .mostViewed:
+            listVC = MBBooksListViewController(selectedSeeAllSection: .popular)
+        case .recentlyAdded:
+            listVC = MBBooksListViewController(selectedSeeAllSection: .recently)
+        }
+
+        // MARK: REMOVE THIS SHIT
         viewModel.setSelectedSectionData(for: section)
         listVC.title = section.rawValue
         navigationController?.pushViewController(

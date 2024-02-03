@@ -13,20 +13,20 @@ protocol MBCartProvidingViewDelegate: AnyObject {
     func mbCartProvidingViewDidTapCartButton()
 }
 
-protocol MBCartProvideable {
+protocol MBCartProvider {
     var floatingButton: MBFloatingCartButton { get set }
     func setupCartButton()
-    func setupCartProvideableConstraints()
+    func setupCartConstraints()
 }
 
-extension MBCartProvideable where Self: UIView {
+extension MBCartProvider where Self: UIView {
 
     func setupCartButton() {
         addSubview(floatingButton)
-        self.setupCartProvideableConstraints()
+        self.setupCartConstraints()
     }
 
-    func setupCartProvideableConstraints() {
+    func setupCartConstraints() {
         NSLayoutConstraint.activate([
             floatingButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
             floatingButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -120),

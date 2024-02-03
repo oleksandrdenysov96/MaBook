@@ -25,6 +25,8 @@ class MBBookDetailsViewController: UIViewController {
     private let detailsView = MBBookDetailsView()
     private let viewModel: MBBooksDetailViewViewModel
 
+    public private(set) var isAddedToCartSubject = PassthroughSubject<Bool, Never>()
+
     private var cancellable = Set<AnyCancellable>()
 
 
@@ -46,23 +48,23 @@ class MBBookDetailsViewController: UIViewController {
         detailsView.delegate = self
         detailsView.configureCollectionView()
         applySnapshot()
-        detailsView.configureCartButtonPrice()
+//        detailsView.configureCartButtonPrice()
         setupLikeButton()
     }
 
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        setupConstraints()
+        setupDedicatedView(detailsView)
     }
 
     private func setupLikeButton() {
         navigationItem.rightBarButtonItem = UIBarButtonItem(
-            image: /*self.viewModel.isFavorite ? UIImage(systemName: "heart.fill") :*/ UIImage(systemName: "heart"),
+            image: UIImage(systemName: "heart"),
             style: .plain,
             target: self,
             action: #selector(didTapHeart)
         )
-        navigationItem.rightBarButtonItem?.tintColor = /*self.viewModel.isFavorite ? .red :*/ .black
+        navigationItem.rightBarButtonItem?.tintColor = .black
 
         self.viewModel.isFavorite
             .receive(on: DispatchQueue.main)
@@ -98,15 +100,6 @@ class MBBookDetailsViewController: UIViewController {
         LocalStateManager.shared
             .shouldFetchFavorites = true
     }
-
-    private func setupConstraints() {
-        NSLayoutConstraint.activate([
-            detailsView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20),
-            detailsView.leftAnchor.constraint(equalTo: view.leftAnchor),
-            detailsView.rightAnchor.constraint(equalTo: view.rightAnchor),
-            detailsView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
-        ])
-    }
 }
 
 
@@ -119,7 +112,7 @@ extension MBBookDetailsViewController: MBBookDetailsViewDelegate {
         collection.collectionViewLayout = layout
 
         dataSource = DataSource(collectionView: collection, cellProvider: { 
-            (collectionView, indexPath, item) -> UICollectionViewCell? in
+            [unowned self] (collectionView, indexPath, item) -> UICollectionViewCell? in
 
             switch item {
             case .photoCell(let model):
@@ -147,6 +140,23 @@ extension MBBookDetailsViewController: MBBookDetailsViewDelegate {
                     .dequeueReusableCell(for: indexPath)
                 cell.configure(with: model)
                 return cell
+            case .addToCartCell(let model):
+                let cell: MBCartButtonCollectionViewCell = collection
+                    .dequeueReusableCell(for: indexPath)
+                self.viewModel.fetchSecondaryData { newData in
+                    cell.configure(
+                        pointValue: model.pointPrice,
+                        currencyValue: newData.price
+                    )
+                }
+                cell.tapCartButtonSubject.sink {
+                    self.viewModel.addToCart(item: self.bookData) { success in
+                        self.isAddedToCartSubject.send(true)
+                    }
+                }
+                .store(in: &cancellable)
+                return cell
+
             }
         })
     }
@@ -180,21 +190,6 @@ extension MBBookDetailsViewController: MBBookDetailsViewDelegate {
                     for: .normal
                 )
                 button.isLoading = false
-
-//                UIView.animate(withDuration: 0.2) {
-//                    if self.viewModel.isFavorite {
-//                        self.navigationItem.rightBarButtonItem?.tintColor = .red
-//                        self.navigationItem.rightBarButtonItem?.image = UIImage(systemName: "heart.fill")
-////                        self.viewModel.updateFavoritesForBook(action: .post, body: self.bookData)
-//
-//                    }
-//                    else {
-//                        self.navigationItem.rightBarButtonItem?.tintColor = .black
-//                        self.navigationItem.rightBarButtonItem?.image = UIImage(systemName: "heart")
-////                        self.viewModel.updateFavoritesForBook(action: .delete, id: String(self.bookData.id))
-//                    }
-//
-//                }
             }
         }
     }

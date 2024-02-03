@@ -14,9 +14,16 @@ protocol MBCategoriesListViewDelegate: AnyObject {
     )
 }
 
-class MBCategoriesListView: MBCartProvidingView {
+class MBCategoriesListView: UIView, MBCartProvider {
 
     public weak var delegate: MBCategoriesListViewDelegate?
+
+    var floatingButton: MBFloatingCartButton = {
+        let button = MBFloatingCartButton(frame: .zero)
+        button.isHidden = false
+        button.alpha = 1
+        return button
+    }()
 
     private let collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
@@ -40,8 +47,9 @@ class MBCategoriesListView: MBCartProvidingView {
 
     override func layoutSubviews() {
         super.layoutSubviews()
-        setupCartProvideableConstraints()
+//        setupCartProvideableConstraints()
         setupSelfConstraints()
+        setupCartConstraints()
     }
 
     required init?(coder: NSCoder) {
@@ -51,7 +59,6 @@ class MBCategoriesListView: MBCartProvidingView {
     public func setupCollectionView() {
         delegate?.mbCategoriesListView(self, needsSetup: collectionView)
     }
-
 
     private func setupSelfConstraints() {
         NSLayoutConstraint.activate([

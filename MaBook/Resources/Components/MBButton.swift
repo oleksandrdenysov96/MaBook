@@ -141,4 +141,19 @@ class MBButton: UIButton {
             heightAnchor.constraint(equalToConstant: height),
         ])
     }
+
+    public func setSelected() {
+        UIView.animate(withDuration: 0.2) { [weak self] in
+            guard let self else {return}
+            self.backgroundColor = .clear
+            self.setTitleColor(
+                UIColor(red: 0.243, green: 0.286, blue: 0.29, alpha: 1),
+                for: .normal
+            )
+            self.layer.borderColor = UIColor(
+                red: 0.243, green: 0.286, blue: 0.29, alpha: 1
+            ).cgColor
+            self.layer.borderWidth = 1
+        }
+    }
 }

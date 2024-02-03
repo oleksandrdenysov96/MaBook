@@ -12,4 +12,7 @@ enum MBEndpoint: String, CaseIterable {
     case user = "user"
     case books = "books"
     case category = "category"
+    case all = "all"
+    case recently = "recently"
+    case popular = "popular"
 }

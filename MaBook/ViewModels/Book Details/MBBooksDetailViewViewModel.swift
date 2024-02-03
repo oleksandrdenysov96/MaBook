@@ -18,6 +18,7 @@ final class MBBooksDetailViewViewModel {
         case condition
         case pages
         case dimensions
+        case addToCart
     }
 
     enum Items: Hashable {
@@ -26,6 +27,7 @@ final class MBBooksDetailViewViewModel {
         case conditionCell(MBInfoSectionViewModel)
         case pagesCell(MBInfoSectionViewModel)
         case dimensionsCell(MBInfoSectionViewModel)
+        case addToCartCell(MBCartSectionViewModel)
     }
 
 
@@ -39,6 +41,13 @@ final class MBBooksDetailViewViewModel {
     public var photoItems = [Items]()
 
     private let layout = MBCompositionalLayout()
+
+    public let photoCellIdentifier = UUID()
+    public let summaryCellIdentifier = UUID()
+    public let conditionCellIdentifier = UUID()
+    public let pagesCellIdentifier = UUID()
+    public let dimensionsCellIdentifier = UUID()
+    public let addToCartCellIdentifier = UUID()
 
     init(with data: Book) {
         self.data = data
@@ -81,6 +90,9 @@ final class MBBooksDetailViewViewModel {
             ),
             .dimensionsCell(
                 .init(infoParam: "Dimensions:", value: data.dimensions)
+            ),
+            .addToCartCell(
+                .init(pointPrice: data.price)
             )
         ]
     }
@@ -122,6 +134,27 @@ final class MBBooksDetailViewViewModel {
         }
     }
 
+
+    public func addToCart(item: Book, _ completion: @escaping (Bool) -> Void) {
+        let request = MBRequest(endpoint: .user, httpMethod: .post, pathComponents: ["basket"])
+        let jsonBody = try? JSONEncoder().encode(item)
+
+        MBApiCaller.shared.executeRequest(
+            request, body: jsonBody, expected: MBAddToCartResponse.self, shouldCache: false
+        ) { result, statusCode in
+            switch result {
+            case .success(let success):
+                MBLogger.shared.debugInfo("details vm: successfuly add to basket")
+                LocalStateManager.shared.cartItemsCount.send(String(success.count))
+                completion(true)
+            case .failure(let failure):
+                MBLogger.shared.debugInfo("details vm: failed to retrieve more books data")
+                MBLogger.shared.debugInfo("error - \(failure)")
+                completion(false)
+            }
+        }
+    }
+
     public func createLayout(for section: Int) -> NSCollectionLayoutSection {
         switch sections[section] {
         case .photo:
@@ -134,9 +167,9 @@ final class MBBooksDetailViewViewModel {
         case .summary:
             return layout.createBaseLayout(
                 itemWidthDimension: .fractionalWidth(1.0),
-                itemHeightDimension: .absolute(270),
+                itemHeightDimension: .estimated(270),
                 groupWidthDimension: .fractionalWidth(1.0),
-                groupHeightDimension: .absolute(310)
+                groupHeightDimension: .estimated(310)
             )
         case .condition, .dimensions, .pages:
             return layout.createBaseLayout(
@@ -144,6 +177,14 @@ final class MBBooksDetailViewViewModel {
                 itemHeightDimension: .absolute(25),
                 groupWidthDimension: .fractionalWidth(1.0),
                 groupHeightDimension: .absolute(25)
+            )
+        case .addToCart:
+            return layout.createBaseLayout(
+                itemWidthDimension: .fractionalWidth(1.0),
+                itemHeightDimension: .absolute(80),
+                groupWidthDimension: .fractionalWidth(1.0),
+                groupHeightDimension: .absolute(80),
+                sectionTopInset: 20
             )
         }
     }

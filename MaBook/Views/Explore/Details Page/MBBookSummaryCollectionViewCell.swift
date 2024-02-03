@@ -9,7 +9,6 @@ import UIKit
 
 class MBBookSummaryCollectionViewCell: UICollectionViewCell, MBReusableCell {
 
-
     private let genreView: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -76,7 +75,19 @@ class MBBookSummaryCollectionViewCell: UICollectionViewCell, MBReusableCell {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
+    override func preferredLayoutAttributesFitting(
+        _ layoutAttributes: UICollectionViewLayoutAttributes
+    ) -> UICollectionViewLayoutAttributes {
+        setNeedsLayout()
+        layoutIfNeeded()
+        let size = contentView.systemLayoutSizeFitting(layoutAttributes.size)
+        var newFrame = layoutAttributes.frame
+        newFrame.size.height = ceil(size.height)
+        layoutAttributes.frame = newFrame
+        return layoutAttributes
+    }
+
     public func configure(with viewModel: MBSummarySectionViewModel) {
         genreLabel.text = viewModel.genre
         title.text = viewModel.title
@@ -104,11 +115,12 @@ class MBBookSummaryCollectionViewCell: UICollectionViewCell, MBReusableCell {
             authorName.topAnchor.constraint(equalTo: title.bottomAnchor, constant: 15),
             authorName.leftAnchor.constraint(equalTo: contentView.leftAnchor),
             authorName.widthAnchor.constraint(equalToConstant: contentView.bounds.width / 2.5),
-            authorName.heightAnchor.constraint(equalToConstant: 15),
+            authorName.heightAnchor.constraint(equalToConstant: 20),
 
             bookSummary.topAnchor.constraint(equalTo: authorName.bottomAnchor, constant: 25),
             bookSummary.leftAnchor.constraint(equalTo: contentView.leftAnchor),
-            bookSummary.rightAnchor.constraint(equalTo: contentView.rightAnchor, constant: -35)
+            bookSummary.rightAnchor.constraint(equalTo: contentView.rightAnchor, constant: -35),
+            bookSummary.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -20)
         ])
     }
 }

@@ -49,7 +49,9 @@ class MBBookFilterViewController: UIViewController {
         filterView.delegate = self
         filterView.configureTable()
 
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+        let tapGesture = UITapGestureRecognizer(
+            target: self, action: #selector(dismissKeyboard)
+        )
         tapGesture.cancelsTouchesInView = false
         view.addGestureRecognizer(tapGesture)
 
@@ -58,21 +60,15 @@ class MBBookFilterViewController: UIViewController {
 
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        setupConstraints()
-    }
-
-    private func setupConstraints() {
-        NSLayoutConstraint.activate([
-            filterView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            filterView.leftAnchor.constraint(equalTo: view.leftAnchor),
-            filterView.rightAnchor.constraint(equalTo: view.rightAnchor),
-            filterView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-        ])
+        setupDedicatedView(filterView)
     }
 
     private func setupNavBarControls() {
         navigationItem.leftBarButtonItem = UIBarButtonItem(
-            title: "Reset", style: .plain, target: self, action: #selector(didTapReset)
+            title: "Reset", 
+            style: .plain,
+            target: self,
+            action: #selector(didTapReset)
         )
         navigationItem.leftBarButtonItem?.tintColor = .systemRed
 
@@ -143,12 +139,6 @@ extension MBBookFilterViewController: UITableViewDelegate, UITableViewDataSource
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-//        var sections: [MBBookListFiltersViewModel.Sections] = [.available, .categories, .price]
-//
-//        if viewModel.sections.first(where: { $0.title == "Categories" }) == nil {
-//            sections.remove(at: 1)
-//        }
-
         switch actualSections[indexPath.section] {
 
             // MARK: TOGGLE CELL

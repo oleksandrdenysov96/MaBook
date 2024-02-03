@@ -33,8 +33,35 @@ class MBBookListCollectionViewCell: MBBookCollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
 
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        addToCartButton.titleLabel?.text = nil
+        imageView.image = nil
+        cellBookTitle.text = nil
+        genreLabel.text = nil
+        priceLabel.text = nil
+    }
+
     @objc private func didTapAddToCart() {
         delegate?.mbBookListCollectionViewCellDidTapAddToCart(on: self)
+    }
+
+    override public func configure(with model: Book, withBadge badge: CellBadgeType) {
+        super.configure(with: model, withBadge: badge)
+
+        DispatchQueue.main.async {
+//            self.addToCartButton.setTitle(
+//                model.isAddedToCart ? "In Cart" : "Add to Cart",
+//                for: .normal
+//            )
+            if model.isAddedToCart {
+                self.addToCartButton.setSelected()
+                self.addToCartButton.setTitle(
+                    "In Cart", for: .normal
+                )
+            }
+        }
+
     }
 
     private func setupConstraintsForListCell() {
@@ -44,4 +71,10 @@ class MBBookListCollectionViewCell: MBBookCollectionViewCell {
             addToCartButton.heightAnchor.constraint(equalToConstant: 35),
         ])
     }
+//
+//    public func updateCartButton() {
+//        DispatchQueue.main.async { [weak self] in
+//            self?.addToCartButton.setTitle("In cart", for: .normal)
+//        }
+//    }
 }

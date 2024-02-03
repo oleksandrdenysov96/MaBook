@@ -18,6 +18,7 @@ struct Book: Codable, Hashable {
     let dimensions, status: String
     let view: Int
     let isFavorite: Bool
+    var isAddedToCart: Bool
     let createdAt: String
 
     func hash(into hasher: inout Hasher) {

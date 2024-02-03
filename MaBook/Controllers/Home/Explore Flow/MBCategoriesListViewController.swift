@@ -21,29 +21,19 @@ class MBCategoriesListViewController: MBCartProvidingViewController {
         view.addSubview(listView)
         listView.delegate = self
         listView.setupCollectionView()
-        applyCartView(fromChild: listView)
-        listView.floatingButton.showBadge(withBlink: true)
+//        applyCartView(fromChild: listView)
+        self.applyCartButtonTarget(listView.floatingButton)
+//        listView.floatingButton.showBadge(withBlink: true)
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-//        needUpdateBadgeOn(listView)
     }
 
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        setupConstraints()
+        setupDedicatedView(listView)
     }
-
-    private func setupConstraints() {
-        NSLayoutConstraint.activate([
-            listView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            listView.leftAnchor.constraint(equalTo: view.leftAnchor),
-            listView.rightAnchor.constraint(equalTo: view.rightAnchor),
-            listView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-        ])
-    }
-
 }
 
 extension MBCategoriesListViewController: MBCategoriesListViewDelegate {

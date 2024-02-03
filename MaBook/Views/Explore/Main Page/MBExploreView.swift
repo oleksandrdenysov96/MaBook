@@ -19,9 +19,16 @@ protocol MBExploreViewDelegate: AnyObject {
     )
 }
 
-class MBExploreView: MBCartProvidingView {
+class MBExploreView: UIView, MBCartProvider {
 
     public weak var delegate: MBExploreViewDelegate?
+
+    var floatingButton: MBFloatingCartButton = {
+        let button = MBFloatingCartButton(frame: .zero)
+        button.isHidden = false
+        button.alpha = 1
+        return button
+    }()
 
     private let collectionView: UICollectionView = {
         let collectionView = UICollectionView(
@@ -51,10 +58,10 @@ class MBExploreView: MBCartProvidingView {
             views:
             collectionView
         )
-        setupCartButton()
-        setupCartProvideableConstraints()
-//        setupConstraints()
         setupSelfConstraints()
+        
+        setupCartButton()
+        setupCartConstraints()
         floatingButton.isHidden = true
         floatingButton.alpha = 0
     }
@@ -87,5 +94,13 @@ class MBExploreView: MBCartProvidingView {
             collectionView.rightAnchor.constraint(equalTo: rightAnchor, constant: -15),
             collectionView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -15),
         ])
+    }
+
+    func applyCartSelector(_ selector: Selector) {
+        floatingButton.addTarget(
+            self,
+            action: selector,
+            for: .touchUpInside
+        )
     }
 }

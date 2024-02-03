@@ -20,30 +20,50 @@ final class MBBookListViewViewModel {
 
     public static private(set) var selectedSortingType: SortDirection = .desc
 
-    public lazy var allBooksData: BooksData = {
-        guard let data = LocalStateManager.shared.selectedCategoryData else {
-            MBLogger.shared.debugInfo(
-                "list vm: failed to retrieve books data from LS"
-            )
-            return BooksData(
-                books: [], info: Info(
-                    currentPage: nil, nextPage: nil)
-            )
+    public var allBooksData: BooksData? {
+        didSet {
+            guard let allBooksData else {return}
+            books = allBooksData.books
+            info = allBooksData.info
         }
-        books = data.books
-        return data
-    }()
+    }
 
-    private lazy var info: Info = {
-        return allBooksData.info
-    }()
+    private var info: Info?
 
-    public lazy var books: [Book] = {
-        return allBooksData.books
-    }()
+    public var books = [Book]() {
+        didSet {
+            bookCellsModels = books.compactMap({
+                return .init(identifier: UUID(), book: $0)
+            })
+        }
+    }
+
+    public var bookCellsModels = [MBBookEntityCellModel]()
+
+    public func cellModel(_ identifier: UUID, for book: Book) -> MBBookEntityCellModel {
+        return .init(
+            identifier: UUID(),
+            book: book
+        )
+    }
+
+    @discardableResult
+    public func appendModels(_ models: [Book]) -> [UUID] {
+        books.append(contentsOf: models)
+        let newModels = models.compactMap({
+            return cellModel(UUID(), for: $0)
+        })
+        bookCellsModels.append(contentsOf: newModels)
+        return newModels.map { $0.identifier }
+    }
+
+    public func updateModelsIfAddedToCartAt(index: Int) {
+        books[index].isAddedToCart = true
+        bookCellsModels[index].book.isAddedToCart = true
+    }
 
     private lazy var configuredUrl: URL? = {
-        guard let url = info.currentPage,
+        guard let info, let url = info.currentPage,
                 var components = URLComponents(string: url) else {
             return nil
         }
@@ -112,27 +132,64 @@ final class MBBookListViewViewModel {
     }
 
 
-    public func fetchBooks(via url: URL? = nil, _ completion: @escaping (Bool, [Book]?) -> Void) {
-        var request: MBRequest!
-        if let url = url {
-            request = MBRequest(url: url)
-        }
-        else {
-            guard let urlString = info.nextPage,
-                  let url = URL(string: urlString)
-            else {
-                MBLogger.shared.debugInfo("vm: failed to get next page pagination link")
-                completion(false, nil)
+    public func fetchInitialBooks(
+        in section: MBEndpoint,
+        _ completion: @escaping (Bool) -> Void
+    ) {
+        let request = MBRequest(
+            endpoint: .books,
+            pathComponents: [section.rawValue]
+        )
+
+        self.perform(request, receive: MBBooksSectionResponse.self) 
+        { [weak self] isSuccess, data in
+            guard isSuccess, let data = data else {
                 return
             }
-            request = MBRequest(url: url)
+            self?.allBooksData = data.data
+            completion(isSuccess)
         }
+    }
+
+    public func fetchInitialBooks(
+        via url: URL,
+        _ completion: @escaping () -> Void
+    ) {
+        guard let urlRequest = MBRequest(url: url) else {
+            return
+        }
+
+        self.perform(urlRequest, receive: MBBooksSectionResponse.self)
+        { [weak self] isSuccess, data in
+            guard isSuccess, let data = data else {
+                return
+            }
+            self?.allBooksData = data.data
+            completion()
+        }
+    }
+
+
+    public func fetchNextPageBooks(
+        _ completion: @escaping (Bool, [UUID]?) -> Void
+    ) {
+
+        guard let info, let urlString = info.nextPage,
+              let url = URL(string: urlString),
+              let request = MBRequest(url: url)
+        else {
+            MBLogger.shared.debugInfo("vm: failed to get next page pagination link")
+            completion(false, nil)
+            return
+        }
+
         self.perform(request, receive: MBBooksSectionResponse.self) { [weak self] isSuccess, data in
             guard isSuccess, let data = data else {
                 return
             }
             self?.info = data.data.info
-            completion(isSuccess, data.data.books)
+            let modelsIdentifiers = self?.appendModels(data.data.books)
+            completion(isSuccess, modelsIdentifiers)
         }
     }
 
@@ -141,17 +198,17 @@ final class MBBookListViewViewModel {
               let request = MBRequest(url: url) else {
             return
         }
+        
         self.perform(request, receive: MBBooksSectionResponse.self) { [weak self] isSuccess, data in
             guard isSuccess, let data = data else {
                 MBLogger.shared.debugInfo("vm: failed to retrieve sorted books data")
                 completion(false)
                 return
             }
-            self?.books = data.data.books
-            self?.info = data.data.info
-
-            Self.selectedSortingType = (Self.selectedSortingType == .asc) ?
-                .desc : .asc
+            self?.allBooksData = data.data
+            Self.selectedSortingType = (Self.selectedSortingType == .asc) 
+            ? .desc
+            : .asc
             completion(isSuccess)
         }
     }

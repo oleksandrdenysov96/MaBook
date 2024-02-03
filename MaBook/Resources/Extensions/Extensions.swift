@@ -75,4 +75,20 @@ extension UIViewController {
             }
         }
     }
+
+    func setupDedicatedView(_ view: UIView, topMargin margin: CGFloat = 0) {
+        NSLayoutConstraint.activate([
+            view.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor),
+            view.leftAnchor.constraint(equalTo: self.view.leftAnchor),
+            view.rightAnchor.constraint(equalTo: self.view.rightAnchor),
+            view.bottomAnchor.constraint(equalTo: self.view.bottomAnchor),
+        ])
+    }
+
+    func setupLoader(_ loader: MBLoader) {
+        NSLayoutConstraint.activate([
+            loader.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            loader.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+        ])
+    }
 }

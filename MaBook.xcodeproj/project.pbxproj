@@ -42,6 +42,8 @@
 		6905F96C2B3F5FEB006D45FE /* UIScrollView_InfiniteScroll in Frameworks */ = {isa = PBXBuildFile; productRef = 6905F96B2B3F5FEB006D45FE /* UIScrollView_InfiniteScroll */; };
 		6916E19F2B52AD610089505A /* MBUserInfoCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6916E19E2B52AD610089505A /* MBUserInfoCollectionViewCell.swift */; };
 		6916E1A12B52AD860089505A /* MBGenericSettingsOptionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6916E1A02B52AD860089505A /* MBGenericSettingsOptionView.swift */; };
+		69179C802B6D7CC900B1215D /* MBBookEntityCellModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69179C7F2B6D7CC900B1215D /* MBBookEntityCellModel.swift */; };
+		69179DD42B6EB38C00B1215D /* MBCartPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69179DD32B6EB38C00B1215D /* MBCartPresenter.swift */; };
 		691BDCE12B40904300F680F6 /* MBBookDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 691BDCE02B40904300F680F6 /* MBBookDetailsViewController.swift */; };
 		691BDCE42B40909700F680F6 /* MBBookDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 691BDCE32B40909700F680F6 /* MBBookDetailsView.swift */; };
 		691BDCE62B41A3CC00F680F6 /* MBBookPhotosCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 691BDCE52B41A3CC00F680F6 /* MBBookPhotosCollectionViewCell.swift */; };
@@ -112,7 +114,9 @@
 		69E7D1F92B4D992B0082B07E /* MBCartProvidingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69E7D1F82B4D992B0082B07E /* MBCartProvidingViewController.swift */; };
 		69E7D4542B4EE06D0082B07E /* MBBadgeable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69E7D4532B4EE06D0082B07E /* MBBadgeable.swift */; };
 		69E7D4562B50413D0082B07E /* MBAddToCartResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69E7D4552B50413D0082B07E /* MBAddToCartResponse.swift */; };
-		69F6BC212B6445DE008A87ED /* MBCartProvideable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69F6BC202B6445DE008A87ED /* MBCartProvideable.swift */; };
+		69F6BC212B6445DE008A87ED /* MBCartProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69F6BC202B6445DE008A87ED /* MBCartProvider.swift */; };
+		69F6BC432B66C38B008A87ED /* MBCartButtonCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69F6BC422B66C38B008A87ED /* MBCartButtonCollectionViewCell.swift */; };
+		69F6BC452B66C8CB008A87ED /* MBCartSectionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69F6BC442B66C8CB008A87ED /* MBCartSectionViewModel.swift */; };
 		CE8950D9F2269DE7C3A214D9 /* Pods_MaBook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F8BEBA31FEC7F672C227D851 /* Pods_MaBook.framework */; };
 /* End PBXBuildFile section */
 
@@ -152,6 +156,8 @@
 		6905F9682B3F15D3006D45FE /* MBBooksSectionResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MBBooksSectionResponse.swift; sourceTree = "<group>"; };
 		6916E19E2B52AD610089505A /* MBUserInfoCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MBUserInfoCollectionViewCell.swift; sourceTree = "<group>"; };
 		6916E1A02B52AD860089505A /* MBGenericSettingsOptionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MBGenericSettingsOptionView.swift; sourceTree = "<group>"; };
+		69179C7F2B6D7CC900B1215D /* MBBookEntityCellModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MBBookEntityCellModel.swift; sourceTree = "<group>"; };
+		69179DD32B6EB38C00B1215D /* MBCartPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MBCartPresenter.swift; sourceTree = "<group>"; };
 		691BDCE02B40904300F680F6 /* MBBookDetailsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MBBookDetailsViewController.swift; sourceTree = "<group>"; };
 		691BDCE32B40909700F680F6 /* MBBookDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MBBookDetailsView.swift; sourceTree = "<group>"; };
 		691BDCE52B41A3CC00F680F6 /* MBBookPhotosCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MBBookPhotosCollectionViewCell.swift; sourceTree = "<group>"; };
@@ -224,7 +230,9 @@
 		69E7D1F82B4D992B0082B07E /* MBCartProvidingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MBCartProvidingViewController.swift; sourceTree = "<group>"; };
 		69E7D4532B4EE06D0082B07E /* MBBadgeable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MBBadgeable.swift; sourceTree = "<group>"; };
 		69E7D4552B50413D0082B07E /* MBAddToCartResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MBAddToCartResponse.swift; sourceTree = "<group>"; };
-		69F6BC202B6445DE008A87ED /* MBCartProvideable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MBCartProvideable.swift; sourceTree = "<group>"; };
+		69F6BC202B6445DE008A87ED /* MBCartProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MBCartProvider.swift; sourceTree = "<group>"; };
+		69F6BC422B66C38B008A87ED /* MBCartButtonCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MBCartButtonCollectionViewCell.swift; sourceTree = "<group>"; };
+		69F6BC442B66C8CB008A87ED /* MBCartSectionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MBCartSectionViewModel.swift; sourceTree = "<group>"; };
 		F60A00F761281F82B42C9982 /* Pods-MaBook.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MaBook.debug.xcconfig"; path = "Target Support Files/Pods-MaBook/Pods-MaBook.debug.xcconfig"; sourceTree = "<group>"; };
 		F8BEBA31FEC7F672C227D851 /* Pods_MaBook.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MaBook.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -267,10 +275,9 @@
 		6905F7DB2B3B6137006D45FE /* Explore */ = {
 			isa = PBXGroup;
 			children = (
+				69179C7E2B6D7C8900B1215D /* Book List */,
 				697C666F2B4989180073659C /* Search */,
 				6905F7DC2B3B6146006D45FE /* MBExploreViewViewModel.swift */,
-				6905F9662B3EE3DB006D45FE /* MBBookListViewViewModel.swift */,
-				697C665F2B459DF40073659C /* MBBookListFiltersViewModel.swift */,
 			);
 			path = Explore;
 			sourceTree = "<group>";
@@ -340,6 +347,27 @@
 			path = Profile;
 			sourceTree = "<group>";
 		};
+		69179C7E2B6D7C8900B1215D /* Book List */ = {
+			isa = PBXGroup;
+			children = (
+				6905F9662B3EE3DB006D45FE /* MBBookListViewViewModel.swift */,
+				697C665F2B459DF40073659C /* MBBookListFiltersViewModel.swift */,
+				69179C7F2B6D7CC900B1215D /* MBBookEntityCellModel.swift */,
+			);
+			path = "Book List";
+			sourceTree = "<group>";
+		};
+		69179DD22B6EB36B00B1215D /* Protocols */ = {
+			isa = PBXGroup;
+			children = (
+				691BDCF62B42116500F680F6 /* MBReusableCell.swift */,
+				69E7D4532B4EE06D0082B07E /* MBBadgeable.swift */,
+				69F6BC202B6445DE008A87ED /* MBCartProvider.swift */,
+				69179DD32B6EB38C00B1215D /* MBCartPresenter.swift */,
+			);
+			path = Protocols;
+			sourceTree = "<group>";
+		};
 		691BDCDF2B40901700F680F6 /* Details Page */ = {
 			isa = PBXGroup;
 			children = (
@@ -355,6 +383,7 @@
 				691BDCE52B41A3CC00F680F6 /* MBBookPhotosCollectionViewCell.swift */,
 				691BDCE72B41A41A00F680F6 /* MBBookSummaryCollectionViewCell.swift */,
 				691BDCF82B42417B00F680F6 /* MBBookInfoCollectionViewCell.swift */,
+				69F6BC422B66C38B008A87ED /* MBCartButtonCollectionViewCell.swift */,
 			);
 			path = "Details Page";
 			sourceTree = "<group>";
@@ -366,6 +395,7 @@
 				691BDCEC2B41FF1900F680F6 /* MBPhotoSectionViewModel.swift */,
 				691BDCEE2B41FF5700F680F6 /* MBSummarySectionViewModel.swift */,
 				691BDCF02B41FFC300F680F6 /* MBInfoSectionViewModel.swift */,
+				69F6BC442B66C8CB008A87ED /* MBCartSectionViewModel.swift */,
 			);
 			path = "Book Details";
 			sourceTree = "<group>";
@@ -489,6 +519,7 @@
 		6988C5162B320A3A00F60F9F /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				69179DD22B6EB36B00B1215D /* Protocols */,
 				691BDCF42B42111900F680F6 /* Utils */,
 				691BDCF32B42110000F680F6 /* Fonts */,
 				691BDCF22B4210F200F680F6 /* Extensions */,
@@ -634,7 +665,6 @@
 		6988C6F52B36218D00F60F9F /* Components */ = {
 			isa = PBXGroup;
 			children = (
-				691BDCF62B42116500F680F6 /* MBReusableCell.swift */,
 				6988C6F62B3621AA00F60F9F /* MBButton.swift */,
 				6988C6F82B3710EB00F60F9F /* MBTextField.swift */,
 				6988C7022B387E2900F60F9F /* MBLoader.swift */,
@@ -643,8 +673,6 @@
 				6905F9512B3D69D1006D45FE /* MBTimestamtBadgeView.swift */,
 				6905F9532B3D8C06006D45FE /* MBFloatingCartButton.swift */,
 				69E7D0742B4C86000082B07E /* MBSeparator.swift */,
-				69E7D4532B4EE06D0082B07E /* MBBadgeable.swift */,
-				69F6BC202B6445DE008A87ED /* MBCartProvideable.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -835,7 +863,7 @@
 				6988C50A2B32072100F60F9F /* MaBook.xcdatamodeld in Sources */,
 				6905F9672B3EE3DB006D45FE /* MBBookListViewViewModel.swift in Sources */,
 				691BDCEF2B41FF5700F680F6 /* MBSummarySectionViewModel.swift in Sources */,
-				69F6BC212B6445DE008A87ED /* MBCartProvideable.swift in Sources */,
+				69F6BC212B6445DE008A87ED /* MBCartProvider.swift in Sources */,
 				6988C5042B32072100F60F9F /* MBSignInViewController.swift in Sources */,
 				69E7D4562B50413D0082B07E /* MBAddToCartResponse.swift in Sources */,
 				691BDCE82B41A41A00F680F6 /* MBBookSummaryCollectionViewCell.swift in Sources */,
@@ -872,6 +900,7 @@
 				6905F67D2B3A0432006D45FE /* MBPermissionsOnboardingView.swift in Sources */,
 				6905F9502B3CBE0B006D45FE /* MBGetUserResponse.swift in Sources */,
 				6988C5332B32120600F60F9F /* MBApiCaller.swift in Sources */,
+				69F6BC452B66C8CB008A87ED /* MBCartSectionViewModel.swift in Sources */,
 				6988C6EC2B35EEFA00F60F9F /* LocalStateManager.swift in Sources */,
 				691BDCFB2B424FBD00F680F6 /* MBBookDetailsResponse.swift in Sources */,
 				6988C7012B3862D700F60F9F /* MBUsernameSignUpView.swift in Sources */,
@@ -886,6 +915,7 @@
 				6905F67B2B39FDCE006D45FE /* MBMyPageViewController.swift in Sources */,
 				697C66602B459DF40073659C /* MBBookListFiltersViewModel.swift in Sources */,
 				6905F7E82B3B6BEF006D45FE /* MBBookCollectionViewCell.swift in Sources */,
+				69F6BC432B66C38B008A87ED /* MBCartButtonCollectionViewCell.swift in Sources */,
 				6988C52E2B320D8400F60F9F /* MBTabBarViewController.swift in Sources */,
 				6988C51D2B320B0D00F60F9F /* MBSignUpViewController.swift in Sources */,
 				697C66712B49892B0073659C /* MBSearchViewModel.swift in Sources */,
@@ -895,6 +925,7 @@
 				6905F7DA2B3B6120006D45FE /* MBExploreView.swift in Sources */,
 				6905F9572B3DC026006D45FE /* MBBooksListViewController.swift in Sources */,
 				697C66732B49C3E20073659C /* MBTableHeaderReusableView.swift in Sources */,
+				69179C802B6D7CC900B1215D /* MBBookEntityCellModel.swift in Sources */,
 				697C66752B49CB790073659C /* MBSearchResponse.swift in Sources */,
 				69E7D0712B4C77EE0082B07E /* MBCartView.swift in Sources */,
 				697C66772B49DFAC0073659C /* MBSearchTableViewCell.swift in Sources */,
@@ -905,6 +936,7 @@
 				6901F1242B56CC5E005B9B9C /* MBProfileCollectionViewCell.swift in Sources */,
 				6916E1A12B52AD860089505A /* MBGenericSettingsOptionView.swift in Sources */,
 				6988C7052B3889CF00F60F9F /* MBOnboardingResponse.swift in Sources */,
+				69179DD42B6EB38C00B1215D /* MBCartPresenter.swift in Sources */,
 				6988C6F92B3710EB00F60F9F /* MBTextField.swift in Sources */,
 				697C66692B489A4E0073659C /* MBSearchViewController.swift in Sources */,
 				6988C6F72B3621AA00F60F9F /* MBButton.swift in Sources */,

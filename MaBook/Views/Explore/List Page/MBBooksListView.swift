@@ -18,9 +18,16 @@ protocol MBBooksListViewDelegate: AnyObject {
     func mbBooksListViewShouldShowFilters(updateOnCompletion collection: UICollectionView)
 }
 
-final class MBBooksListView: MBCartProvidingView {
+final class MBBooksListView: UIView, MBCartProvider {
 
     public weak var delegate: MBBooksListViewDelegate?
+
+    var floatingButton: MBFloatingCartButton = {
+        let button = MBFloatingCartButton(frame: .zero)
+        button.isHidden = false
+        button.alpha = 1
+        return button
+    }()
 
     private let sortButton: UIButton = {
         let button = UIButton()
@@ -62,19 +69,23 @@ final class MBBooksListView: MBCartProvidingView {
 
     override init(frame: CGRect) {
         super.init(frame: frame)
+        backgroundColor = .white
+        translatesAutoresizingMaskIntoConstraints = false
         addSubviews(
             views: sortButton,
             filterButton,
             collectionView
         )
-        setupCartButton()
+//        setupCartButton()
         addTargets()
     }
 
     override func layoutSubviews() {
         super.layoutSubviews()
-        setupCartProvideableConstraints()
+//        setupCartProvideableConstraints()
         setupSelfConstraints()
+        setupCartButton()
+
     }
 
     required init?(coder: NSCoder) {
