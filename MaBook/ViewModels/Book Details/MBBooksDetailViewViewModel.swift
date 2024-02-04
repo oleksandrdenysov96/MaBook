@@ -12,7 +12,7 @@ import Foundation
 
 final class MBBooksDetailViewViewModel {
 
-    enum SectionCellType: CaseIterable {
+    enum SectionCellType: String, CaseIterable {
         case photo
         case summary
         case condition
@@ -21,28 +21,17 @@ final class MBBooksDetailViewViewModel {
         case addToCart
     }
 
-    enum Items: Hashable {
-        case photoCell(MBPhotoSectionViewModel)
-        case summaryCell(MBSummarySectionViewModel)
-        case conditionCell(MBInfoSectionViewModel)
-        case pagesCell(MBInfoSectionViewModel)
-        case dimensionsCell(MBInfoSectionViewModel)
-        case addToCartCell(MBCartSectionViewModel)
-    }
-
-
     private var data: Book
     public var isFavorite = CurrentValueSubject<Bool, Never>(false)
 
     public var sections: [SectionCellType] {
         return SectionCellType.allCases
     }
-    public var items = [Items]()
-    public var photoItems = [Items]()
+    public var items = [UUID]()
 
     private let layout = MBCompositionalLayout()
 
-    public let photoCellIdentifier = UUID()
+    public var photosIdentifiers = [UUID]()
     public let summaryCellIdentifier = UUID()
     public let conditionCellIdentifier = UUID()
     public let pagesCellIdentifier = UUID()
@@ -70,30 +59,15 @@ final class MBBooksDetailViewViewModel {
     }
 
     private func retrieveCellItems() {
-        photoItems = data.images.compactMap {
-            return Items.photoCell(.init(imageURL: $0))
+        data.images.forEach { _ in
+            photosIdentifiers.append(UUID())
         }
         items = [
-            .summaryCell(
-                .init(
-                    title: data.title,
-                    author: data.author,
-                    summary: data.description,
-                    genre: data.genre
-                )
-            ),
-            .conditionCell(
-                .init(infoParam: "Condition:", value: data.condition)
-            ),
-            .pagesCell(
-                .init(infoParam: "Pages:", value: String(data.pages))
-            ),
-            .dimensionsCell(
-                .init(infoParam: "Dimensions:", value: data.dimensions)
-            ),
-            .addToCartCell(
-                .init(pointPrice: data.price)
-            )
+            self.summaryCellIdentifier,
+            self.conditionCellIdentifier,
+            self.pagesCellIdentifier,
+            self.dimensionsCellIdentifier,
+            self.addToCartCellIdentifier
         ]
     }
 

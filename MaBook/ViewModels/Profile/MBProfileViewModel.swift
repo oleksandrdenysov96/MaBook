@@ -147,7 +147,7 @@ final class MBProfileViewModel {
         }
     }
 
-    public func fetchFavorites(_ completion: @escaping ([Book]?) -> Void) {
+    public func fetchFavorites(_ completion: @escaping (Bool, [Book]?) -> Void) {
         let request = MBRequest(endpoint: .user, pathComponents: ["favorites"])
 
         MBApiCaller.shared.executeRequest(
@@ -156,12 +156,13 @@ final class MBProfileViewModel {
             switch result {
             case .success(let success):
                 self?.favorites = success.data.books
-                completion(success.data.books)
+                completion(true, success.data.books)
             case .failure(let failure):
                 MBLogger.shared.debugInfo(
                     "vm: failed to retrieve favorites books"
                 )
                 MBLogger.shared.debugInfo("error - \(failure)")
+                completion(false, nil)
             }
         }
     }

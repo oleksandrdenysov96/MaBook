@@ -88,11 +88,11 @@ class MBBookSummaryCollectionViewCell: UICollectionViewCell, MBReusableCell {
         return layoutAttributes
     }
 
-    public func configure(with viewModel: MBSummarySectionViewModel) {
+    public func configure(with viewModel: Book) {
         genreLabel.text = viewModel.genre
         title.text = viewModel.title
         authorName.text = viewModel.author
-        bookSummary.text = viewModel.summary
+        bookSummary.text = viewModel.description
     }
 
     private func setupConstraints() {

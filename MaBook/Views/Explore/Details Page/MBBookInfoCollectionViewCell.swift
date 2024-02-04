@@ -44,9 +44,9 @@ class MBBookInfoCollectionViewCell: UICollectionViewCell, MBReusableCell {
         fatalError("init(coder:) has not been implemented")
     }
 
-    public func configure(with viewModel: MBInfoSectionViewModel) {
-        infoParameter.text = viewModel.infoParam
-        infoValue.text = viewModel.value
+    public func configure(title: String, value: String) {
+        infoParameter.text = title
+        infoValue.text = value
     }
 
     private func setupConstraints() {

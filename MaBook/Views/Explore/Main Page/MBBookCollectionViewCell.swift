@@ -16,7 +16,7 @@ enum CellBadgeType {
 class MBBookCollectionViewCell: UICollectionViewCell, MBReusableCell {
 
     internal let addToCartButton: MBButton = {
-        return MBButton(title: "Add to Cart")
+        return MBButton(title: nil)
     }()
 
     internal let imageView: UIImageView = {

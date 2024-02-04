@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Combine
 
 fileprivate typealias DataSource = UICollectionViewDiffableDataSource<
     MBBookListViewViewModel.Sections, Book
@@ -15,6 +16,8 @@ fileprivate typealias DataSourceSnapshot = NSDiffableDataSourceSnapshot<
 >
 
 class MBCartViewController: UIViewController {
+
+    public let removeFromCartEvent = PassthroughSubject<Int, Never>()
 
     private let cartView = MBCartView()
     private let viewModel = MBCartViewModel()
@@ -28,13 +31,16 @@ class MBCartViewController: UIViewController {
         view.backgroundColor = .white
         view.addSubview(cartView)
         cartView.delegate = self
-        cartView.setupCollection()
 
         navigationItem.leftBarButtonItem = UIBarButtonItem(
             barButtonSystemItem: .close,
             target: self,
             action: #selector((didTapClose))
         )
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
 
         viewModel.fetchBasket { [weak self] success in
             guard let self = self else { return }
@@ -49,6 +55,11 @@ class MBCartViewController: UIViewController {
                 self.applySnapshot()
             }
         }
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        dataSourceSnapshot.deleteAllItems()
     }
 
     override func viewDidLayoutSubviews() {
@@ -135,6 +146,7 @@ extension MBCartViewController: MBCartItemCollectionViewCellDelegate {
                         LocalStateManager.shared.cartItemsCount.send(String(
                             self.viewModel.basketItems.count
                         ))
+                        self.removeFromCartEvent.send(selectedOnItem.id)
                     }
                 }
             }

@@ -50,16 +50,9 @@ class MBBookListCollectionViewCell: MBBookCollectionViewCell {
         super.configure(with: model, withBadge: badge)
 
         DispatchQueue.main.async {
-//            self.addToCartButton.setTitle(
-//                model.isAddedToCart ? "In Cart" : "Add to Cart",
-//                for: .normal
-//            )
-            if model.isAddedToCart {
-                self.addToCartButton.setSelected()
-                self.addToCartButton.setTitle(
-                    "In Cart", for: .normal
-                )
-            }
+            self.addToCartButton.updateInCartState(
+                to: model.isAddedToCart
+            )
         }
 
     }

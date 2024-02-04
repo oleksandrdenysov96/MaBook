@@ -46,13 +46,24 @@ class MBCartButtonCollectionViewCell: UICollectionViewCell, MBReusableCell {
         ])
     }
 
-    public func configure(pointValue: String, currencyValue: String) {
+    public func configure(pointValue: String, currencyValue: String, inCart: Bool) {
         DispatchQueue.main.async { [unowned self] in
-            addToCartButton.setTitle(
-                "Add to Cart (\(pointValue)P | \(String(currencyValue)))",
-                for: .normal
-            )
+            if inCart {
+                self.addToCartButton.updateInCartState(to: true)
+            }
+            else {
+                addToCartButton.setTitle(
+                    "Add to Cart (\(pointValue)P | \(String(currencyValue)))",
+                    for: .normal
+                )
+            }
             addToCartButton.isLoading = false
+        }
+    }
+
+    public func updateButtonState(to state: Bool) {
+        DispatchQueue.main.async { [weak self] in
+            self?.addToCartButton.updateInCartState(to: state)
         }
     }
 

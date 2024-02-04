@@ -368,6 +368,18 @@
 			path = Protocols;
 			sourceTree = "<group>";
 		};
+		69179DD52B6F0D9F00B1215D /* Deprecated */ = {
+			isa = PBXGroup;
+			children = (
+				691BDCEC2B41FF1900F680F6 /* MBPhotoSectionViewModel.swift */,
+				691BDCEE2B41FF5700F680F6 /* MBSummarySectionViewModel.swift */,
+				691BDCF02B41FFC300F680F6 /* MBInfoSectionViewModel.swift */,
+				69F6BC442B66C8CB008A87ED /* MBCartSectionViewModel.swift */,
+				69E7D06A2B4C66F60082B07E /* MBCartProvidingView.swift */,
+			);
+			path = Deprecated;
+			sourceTree = "<group>";
+		};
 		691BDCDF2B40901700F680F6 /* Details Page */ = {
 			isa = PBXGroup;
 			children = (
@@ -392,10 +404,6 @@
 			isa = PBXGroup;
 			children = (
 				691BDCEA2B41D7C500F680F6 /* MBBooksDetailViewViewModel.swift */,
-				691BDCEC2B41FF1900F680F6 /* MBPhotoSectionViewModel.swift */,
-				691BDCEE2B41FF5700F680F6 /* MBSummarySectionViewModel.swift */,
-				691BDCF02B41FFC300F680F6 /* MBInfoSectionViewModel.swift */,
-				69F6BC442B66C8CB008A87ED /* MBCartSectionViewModel.swift */,
 			);
 			path = "Book Details";
 			sourceTree = "<group>";
@@ -504,6 +512,7 @@
 		6988C4FE2B32072100F60F9F /* MaBook */ = {
 			isa = PBXGroup;
 			children = (
+				69179DD52B6F0D9F00B1215D /* Deprecated */,
 				6988C51B2B320A6800F60F9F /* Managers */,
 				6988C51A2B320A6200F60F9F /* Models */,
 				6988C5192B320A5B00F60F9F /* ViewModels */,
@@ -536,7 +545,6 @@
 				69E7D06C2B4C773F0082B07E /* Cart */,
 				6988C5252B320CC500F60F9F /* Onboarding */,
 				6988C52A2B320D4300F60F9F /* Home */,
-				69E7D1F82B4D992B0082B07E /* MBCartProvidingViewController.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -550,7 +558,6 @@
 				6988C7062B38904B00F60F9F /* Onboarding */,
 				6988C6ED2B361B8B00F60F9F /* Auth */,
 				6905F9472B3C6665006D45FE /* MBCompositionalLayout.swift */,
-				69E7D06A2B4C66F60082B07E /* MBCartProvidingView.swift */,
 				6901F2D22B599EF3005B9B9C /* MBHeaderCollectionReusableView.swift */,
 			);
 			path = Views;
@@ -619,7 +626,6 @@
 				6916E1982B52AB540089505A /* Profile */,
 				6905F9552B3DBFBF006D45FE /* Explore Flow */,
 				6988C52B2B320D5300F60F9F /* Core */,
-				6988C52C2B320D5900F60F9F /* General */,
 			);
 			path = Home;
 			sourceTree = "<group>";
@@ -628,16 +634,10 @@
 			isa = PBXGroup;
 			children = (
 				6988C52D2B320D8400F60F9F /* MBTabBarViewController.swift */,
+				69E7D1F82B4D992B0082B07E /* MBCartProvidingViewController.swift */,
 				6905F6782B39FDC2006D45FE /* MBExchangeBookViewController.swift */,
 			);
 			path = Core;
-			sourceTree = "<group>";
-		};
-		6988C52C2B320D5900F60F9F /* General */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = General;
 			sourceTree = "<group>";
 		};
 		6988C5382B322E7700F60F9F /* Auth */ = {

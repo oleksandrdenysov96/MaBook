@@ -57,26 +57,19 @@ class MBBooksListViewController: MBCartProvidingViewController {
         return .none
     }
 
-    init(selectedSeeAllSection: MBEndpoint) {
+    init(
+        selectedSeeAllSection: MBEndpoint? = nil,
+        selectedCategory: String? = nil,
+        selectedBooks: [Book]? = nil
+    ) {
         self.selectedSeeAllSection = selectedSeeAllSection
-        self.selectedCategory = nil
-        self.selectedBooks = nil
-        super.init(nibName: nil, bundle: nil)
-    }
-
-    init(selectedCategory: String) {
-        self.selectedSeeAllSection = nil
         self.selectedCategory = selectedCategory
-        self.selectedBooks = nil
-        super.init(nibName: nil, bundle: nil)
-        title = "\(selectedCategory) books"
-    }
-
-    init(selectedBooks: [Book]) {
-        self.selectedSeeAllSection = nil
-        self.selectedCategory = nil
         self.selectedBooks = selectedBooks
         super.init(nibName: nil, bundle: nil)
+
+        if let category = selectedCategory {
+            title = "\(category) books"
+        }
     }
 
     required init?(coder: NSCoder) {
@@ -89,8 +82,8 @@ class MBBooksListViewController: MBCartProvidingViewController {
         view.addSubview(listView)
         view.addSubview(loader)
         listView.delegate = self
-//        applyCartView(fromChild: listView)
         configureView()
+        observeRemovalFromCart()
         self.applyCartButtonTarget(
             listView.floatingButton
         )
@@ -123,7 +116,6 @@ class MBBooksListViewController: MBCartProvidingViewController {
             self.listView.hideSortAndFilterButtons()
             self.listView.configureCollectionView()
             self.applySnapshot()
-//            self.listView.updateCollectionView()
         }
         else {
             guard let selectedSeeAllSection else {return}
@@ -140,7 +132,29 @@ class MBBooksListViewController: MBCartProvidingViewController {
             }
         }
     }
+
+    private func observeRemovalFromCart() {
+        self.cartViewController.removeFromCartEvent
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] id in
+                guard let self,
+                      let model = self.viewModel.bookCellsModels
+                    .first(where: { $0.book.id == id }),
+                      let index = self.viewModel.bookCellsModels
+                    .firstIndex(of: model)
+                else {
+                    MBLogger.shared.debugInfo(
+                        "list vm: unable to retrieve needed index of deleted book"
+                    )
+                    return
+                }
+                self.updateItemCartState(false, atIndex: index)
+            }
+            .store(in: &cancellables)
+    }
 }
+
+// MARK: COLLECTION VIEW ACTIONS
 
 extension MBBooksListViewController: MBBooksListViewDelegate {
     func mbBooksListViewShouldShowFilters(updateOnCompletion collection: UICollectionView) {
@@ -167,11 +181,7 @@ extension MBBooksListViewController: MBBooksListViewDelegate {
                                 collection.alpha = 1
                             } completion: { _ in
                                 self.loader.stopLoader()
-                                //
-                                //                                let indexPath = IndexPath(item: 0, section: 0)
-                                //                                collection.scrollToItem(at: indexPath, at: .top, animated: true)
                             }
-
                         }
                     }
                 }
@@ -225,11 +235,7 @@ extension MBBooksListViewController: MBBooksListViewDelegate {
                 [weak self] (collectionView, indexPath, identifier) -> MBBookListCollectionViewCell in
 
                 guard let self = self else { fatalError() }
-//                guard let model = self.viewModel.bookCellsModels.first(where: {
-//                    $0.identifier == identifier
-//                }) else {
-//                    fatalError()
-//                }
+
                 let model = self.viewModel.bookCellsModels[indexPath.row]
                 let cell: MBBookListCollectionViewCell = collectionView
                     .dequeueReusableCell(for: indexPath)
@@ -241,6 +247,27 @@ extension MBBooksListViewController: MBBooksListViewDelegate {
             }
         )
     }
+
+    func mbBooksListView(_ listView: MBBooksListView, needsUpdate collection: UICollectionView) {
+        collection.infiniteScrollDirection = .vertical
+
+        collection.addInfiniteScroll { [weak self] collectionView in
+            self?.viewModel.fetchNextPageBooks { [weak self] success, newData in
+                DispatchQueue.main.async { [weak self] in
+                    guard let self = self, success == true,
+                          let newData = newData
+                    else {
+                        collectionView.finishInfiniteScroll()
+                        return
+                    }
+                    self.appendItems(newData, to: self.dataSourceSnapshot)
+                    collectionView.finishInfiniteScroll()
+                }
+            }
+        }
+    }
+
+    // MARK: DATASOURCE SNAPSHOT
 
     private func applySnapshot(resetOldItems: Bool = false) {
         if resetOldItems {
@@ -263,32 +290,18 @@ extension MBBooksListViewController: MBBooksListViewDelegate {
     }
 
     private func updateDataSourceItemAt(index: Int) {
-        viewModel.updateModelsIfAddedToCartAt(index: index)
         let itemIdentifier = dataSourceSnapshot.itemIdentifiers[index]
         dataSourceSnapshot.reloadItems([itemIdentifier])
         dataSource?.apply(dataSourceSnapshot, animatingDifferences: true)
     }
 
-
-    func mbBooksListView(_ listView: MBBooksListView, needsUpdate collection: UICollectionView) {
-        collection.infiniteScrollDirection = .vertical
-
-        collection.addInfiniteScroll { [weak self] collectionView in
-            self?.viewModel.fetchNextPageBooks { [weak self] success, newData in
-                DispatchQueue.main.async { [weak self] in
-                    guard let self = self, success == true,
-                          let newData = newData
-                    else {
-                        collectionView.finishInfiniteScroll()
-                        return
-                    }
-                    self.appendItems(newData, to: self.dataSourceSnapshot)
-                    collectionView.finishInfiniteScroll()
-                }
-            }
-        }
+    private func updateItemCartState(_ cartState: Bool, atIndex index: Int) {
+        viewModel.updateModelIsAddedToCart(cartState, atIndex: index)
+        self.updateDataSourceItemAt(index: index)
     }
 }
+
+// MARK: DETAILS VIEW TRANSITION
 
 extension MBBooksListViewController: UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
 
@@ -307,7 +320,7 @@ extension MBBooksListViewController: UICollectionViewDelegate, UICollectionViewD
             .sink { [weak self] isAdded in
             guard let self else {return}
             if isAdded {
-                self.updateDataSourceItemAt(index: indexPath.row)
+                self.updateItemCartState(isAdded, atIndex: indexPath.row)
             }
         }
         .store(in: &cancellables)
@@ -316,13 +329,15 @@ extension MBBooksListViewController: UICollectionViewDelegate, UICollectionViewD
     }
 }
 
+// MARK: ADD TO CART ACTION
+
 extension MBBooksListViewController: MBBookListCollectionViewCellDelegate {
     func mbBookListCollectionViewCellDidTapAddToCart(on cell: MBBookListCollectionViewCell) {
         let selectedItem = viewModel.books[cell.tag]
-        viewModel.addToCart(item: selectedItem) { success in
-            if success {
+        viewModel.addToCart(item: selectedItem) { isAdded in
+            if isAdded {
                 DispatchQueue.main.async {
-                    self.updateDataSourceItemAt(index: cell.tag)
+                    self.updateItemCartState(isAdded, atIndex: cell.tag)
                 }
             }
         }

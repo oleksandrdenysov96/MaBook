@@ -57,9 +57,9 @@ final class MBBookListViewViewModel {
         return newModels.map { $0.identifier }
     }
 
-    public func updateModelsIfAddedToCartAt(index: Int) {
-        books[index].isAddedToCart = true
-        bookCellsModels[index].book.isAddedToCart = true
+    public func updateModelIsAddedToCart(_ inCart: Bool, atIndex: Int) {
+        books[atIndex].isAddedToCart = inCart
+        bookCellsModels[atIndex].book.isAddedToCart = inCart
     }
 
     private lazy var configuredUrl: URL? = {

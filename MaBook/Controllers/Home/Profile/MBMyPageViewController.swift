@@ -230,19 +230,9 @@ class MBMyPageViewController: UIViewController, UICollectionViewDelegate {
             case rows.favorites.rawValue:
                 if LocalStateManager.shared.shouldFetchFavorites {
                     loader.startLoader()
-                    viewModel.fetchFavorites() { [weak self] books in
-                        guard let books = books else {
-                            return
-                        }
-                        DispatchQueue.main.async {
-                            self?.loader.stopLoader()
-                            self?.displayFavoritesPage(with: books)
-                        }
-                        LocalStateManager.shared
-                            .shouldFetchFavorites = false
-                    }
+                    shouldFetchFavorites()
                 }
-                else {
+                else if viewModel.favorites.isEmpty == false {
                     displayFavoritesPage(with: viewModel.favorites)
                 }
 
@@ -253,11 +243,34 @@ class MBMyPageViewController: UIViewController, UICollectionViewDelegate {
                 break
 
             case rows.logout.rawValue:
-                presentMultiOptionAlert(message: "Want to logout?", actionTitle: "Yes", buttonTitle: "Cancel") {
+                presentMultiOptionAlert(
+                    message: "Want to logout?",
+                    actionTitle: "Yes",
+                    buttonTitle: "Cancel"
+                ) {
 
                 }
             default:
                 break
+            }
+        }
+    }
+
+    private func shouldFetchFavorites() {
+        viewModel.fetchFavorites() { [weak self] success, books in
+            DispatchQueue.main.async {
+                guard success, let books = books else {
+                    self?.loader.stopLoader()
+                    self?.presentSingleOptionErrorAlert(
+                        message: "We're in trouble to show your favorites :("
+                    )
+                    return
+                }
+
+                self?.loader.stopLoader()
+                self?.displayFavoritesPage(with: books)
+                LocalStateManager.shared
+                    .shouldFetchFavorites = false
             }
         }
     }

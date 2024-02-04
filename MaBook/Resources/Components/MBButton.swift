@@ -38,7 +38,7 @@ class MBButton: UIButton {
     }
 
     init(
-        title: String, 
+        title: String?, 
         buttonColor: UIColor = UIColor(
         red: 0.243, green: 0.286, blue: 0.29, alpha: 1
         ),
@@ -142,18 +142,30 @@ class MBButton: UIButton {
         ])
     }
 
-    public func setSelected() {
+    public func updateInCartState(to state: Bool) {
         UIView.animate(withDuration: 0.2) { [weak self] in
             guard let self else {return}
-            self.backgroundColor = .clear
-            self.setTitleColor(
-                UIColor(red: 0.243, green: 0.286, blue: 0.29, alpha: 1),
-                for: .normal
-            )
-            self.layer.borderColor = UIColor(
-                red: 0.243, green: 0.286, blue: 0.29, alpha: 1
-            ).cgColor
-            self.layer.borderWidth = 1
+
+            if state == true {
+                self.backgroundColor = .clear
+                self.setTitleColor(
+                    UIColor(red: 0.243, green: 0.286, blue: 0.29, alpha: 1),
+                    for: .normal
+                )
+                self.layer.borderColor = UIColor(
+                    red: 0.243, green: 0.286, blue: 0.29, alpha: 1
+                ).cgColor
+                self.layer.borderWidth = 1
+                self.setTitle("In Cart", for: .normal)
+            }
+            else {
+                self.backgroundColor = UIColor(
+                    red: 0.243, green: 0.286, blue: 0.29, alpha: 1
+                    )
+                self.setTitleColor(.white, for: .normal)
+                self.layer.borderWidth = 0
+                self.setTitle("Add to Cart", for: .normal)
+            }
         }
     }
 }

@@ -8,7 +8,9 @@
 import UIKit
 
 class MBCartProvidingViewController: UIViewController {
-    
+
+    let cartViewController = MBCartViewController()
+
     var floatingButton: MBFloatingCartButton = {
         let button = MBFloatingCartButton(frame: .zero)
         button.isHidden = false
@@ -20,10 +22,6 @@ class MBCartProvidingViewController: UIViewController {
         super.viewDidLoad()
     }
 
-//    internal func applyCartView<T: MBCartProvidingView>(fromChild view: T) {
-//        view.cartProviderDelegate = self
-//    }
-
     internal func applyCartButtonTarget(_ button: MBFloatingCartButton) {
         button.addTarget(
             self,
@@ -33,9 +31,8 @@ class MBCartProvidingViewController: UIViewController {
     }
 
     @objc internal func shouldPresentCartController() {
-        let cartVC = MBCartViewController()
         modalPresentationStyle = .fullScreen
-        let navWrapper = UINavigationController(rootViewController: cartVC)
+        let navWrapper = UINavigationController(rootViewController: cartViewController)
         navWrapper.modalPresentationStyle = .fullScreen
         present(navWrapper, animated: true)
     }
